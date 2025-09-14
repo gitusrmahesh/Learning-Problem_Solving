@@ -371,6 +371,7 @@
         function toggleCompletion(day) {
             completionStatus[day] = !completionStatus[day];
             document.getElementById(`day-card-${day}`).classList.toggle('completed-card', completionStatus[day]);
+            document.getElementById(`check-${day}`).checked = completionStatus[day];
             saveCompletionStatus();
             updateProgress();
         }
