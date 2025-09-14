@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30-Day Intermediate Problem Solving Roadmap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: The application is structured as an interactive dashboard rather than a static list. The core components are: 1) A main header with progress tracking (a dynamic progress bar and key stats) and a topic distribution chart to give an immediate overview. 2) A tab-based weekly navigation system to break down the 30-day plan into manageable, thematic chunks (Foundations, Arrays, Sorting/Bits, Strings). This is more user-friendly than a long scroll. 3) A grid-based daily view for the selected week, where each day is an interactive card. Users can click a card to expand it and view details, and check it off to update their progress. This structure turns a passive document into an active learning tracker, enhancing user engagement and motivation. -->
+    <!-- Visualization & Content Choices: 1. Overall Progress: Goal=Track Completion, Method=HTML/CSS Progress Bar, Interaction=Updates on day completion, Justification=Visual feedback on user's journey. 2. Topic Distribution: Goal=Inform about course structure, Method=Donut Chart, Interaction=Hover for details, Justification=Quickly shows the focus areas of the course, Library=Chart.js. 3. Daily Tasks: Goal=Organize daily content, Method=Interactive HTML Cards in a Grid, Interaction=Click to expand details, checkbox to mark complete, Justification=Manages information density and provides satisfying interactive feedback, preventing overwhelm. 4. Weekly Navigation: Goal=Organize content, Method=HTML Buttons, Interaction=Click to filter displayed week, Justification=Thematic grouping is more intuitive than a single long list. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #3f3c3a;
+        }
+        .active-week {
+            background-color: #0d9488 !important;
+            color: #ffffff !important;
+        }
+        .day-card {
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+        .day-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .day-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .day-details.expanded {
+            max-height: 500px;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .completed-card {
+            opacity: 0.6;
+            background-color: #e5e7eb;
+        }
+        .completed-card .day-title {
+            text-decoration: line-through;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
+            <p class="text-lg md:text-xl text-gray-600 mt-2">Your 30-Day Interactive Roadmap</p>
+        </header>
+
+        <main>
+            <section id="dashboard" class="bg-white rounded-2xl p-6 mb-8 shadow-sm border border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <div class="md:col-span-2">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Progress</h2>
+                        <div class="w-full bg-gray-200 rounded-full h-6 mb-2">
+                            <div id="progressBar" class="bg-teal-600 h-6 rounded-full text-center text-white text-sm leading-6 transition-all duration-500" style="width: 0%">0%</div>
+                        </div>
+                         <div class="flex justify-between text-sm text-gray-600">
+                            <span id="progressText">0 of 30 days completed</span>
+                            <span>Goal: Day 30</span>
+                        </div>
+                        <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
+                            <div class="bg-teal-50 p-4 rounded-lg">
+                                <p class="text-2xl font-bold text-teal-700">30</p>
+                                <p class="text-sm text-teal-600">Total Days</p>
+                            </div>
+                            <div class="bg-amber-50 p-4 rounded-lg">
+                                <p class="text-2xl font-bold text-amber-700">5</p>
+                                <p class="text-sm text-amber-600">Contests</p>
+                            </div>
+                            <div class="bg-sky-50 p-4 rounded-lg col-span-2 sm:col-span-1">
+                                <p class="text-2xl font-bold text-sky-700">20+</p>
+                                <p class="text-sm text-sky-600">Key Topics</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:col-span-1">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Topic Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="topicChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <nav id="week-navigation" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                <button data-week="1" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 1: Foundations</button>
+                <button data-week="2" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 2: Arrays</button>
+                <button data-week="3" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 3: Sorting & Bits</button>
+                <button data-week="4" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 4: Strings</button>
+            </nav>
+
+            <div id="roadmap-content"></div>
+            
+            <section id="final-outcome" class="bg-teal-700 text-white rounded-2xl p-8 mt-10 text-center">
+                 <h2 class="text-3xl font-bold mb-4">Course Outcomes</h2>
+                 <p class="max-w-3xl mx-auto mb-6 text-teal-100">By successfully completing this 30-day plan, you will have developed the core skills needed to confidently tackle intermediate-level coding challenges.</p>
+                 <div class="flex flex-wrap justify-center gap-4 text-left">
+                     <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
+                         <span class="text-2xl">✅</span><span>Analyze time & space complexity</span>
+                     </div>
+                     <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
+                         <span class="text-2xl">✅</span><span>Solve array & string problems efficiently</span>
+                     </div>
+                     <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
+                         <span class="text-2xl">✅</span><span>Implement sorting & bit manipulation</span>
+                     </div>
+                     <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
+                         <span class="text-2xl">✅</span><span>Handle problems in contests/interviews</span>
+                     </div>
+                 </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const roadmapData = [
+            { day: 1, week: 1, title: 'Introduction to Problem Solving', details: 'Understanding problem statements, constraints, inputs/outputs. Brute force vs optimized approaches. Practice: 3 simple problems (sum of array, find max/min, reverse array).', type: 'Topic' },
+            { day: 2, week: 1, title: 'Time Complexity Basics', details: 'O(1), O(n), O(n²), O(log n) examples. Nested loops analysis. Practice: 5 problems (analyze complexity, compare methods).', type: 'Topic' },
+            { day: 3, week: 1, title: 'Space Complexity Basics', details: 'Auxiliary space vs input space. Recursion & stack space. Practice: Fibonacci recursion vs iteration space.', type: 'Topic' },
+            { day: 4, week: 1, title: 'Dry Runs & Edge Cases', details: 'Debugging techniques. Handling corner cases (empty arrays, large numbers, negatives). Practice: 5 edge-case-based problems.', type: 'Topic' },
+            { day: 5, week: 1, title: 'Mini Problem Set (Mix)', details: 'Problems involving loops, conditionals, and complexity checks.', type: 'Practice' },
+            { day: 6, week: 1, title: 'Contest Simulation (2 hrs)', details: '3 problems: (easy array, easy math, complexity reasoning).', type: 'Contest' },
+            { day: 7, week: 1, title: 'Review & Revision', details: 'Revise complexity, dry runs, and debugging techniques from the week.', type: 'Review' },
+            { day: 8, week: 2, title: 'Array Basics', details: 'Traversal, insertion, deletion. Practice: Implement left/right rotation.', type: 'Topic' },
+            { day: 9, week: 2, title: 'Prefix & Suffix Arrays', details: 'Range sum queries. Practice: Subarray sum problems.', type: 'Topic' },
+            { day: 10, week: 2, title: 'Sliding Window (Fixed Size)', details: 'Find max sum of subarray of size k. Practice: 5 problems.', type: 'Topic' },
+            { day: 11, week: 2, title: 'Sliding Window (Variable Size)', details: 'Smallest subarray with sum ≥ target. Longest substring with k unique chars. Practice: 4–5 problems.', type: 'Topic' },
+            { day: 12, week: 2, title: 'Two Pointer Technique', details: 'Pair sum, triplet sum, remove duplicates from sorted array. Practice: 5 problems.', type: 'Topic' },
+            { day: 13, week: 2, title: 'Kadane’s Algorithm', details: 'Maximum subarray sum. Variations (circular subarray sum). Practice: 3–4 problems.', type: 'Topic' },
+            { day: 14, week: 2, title: 'Weekly Contest (Arrays Only)', details: '4 problems mixing prefix sum, sliding window, and two pointers.', type: 'Contest' },
+            { day: 15, week: 3, title: 'Sorting Basics', details: 'Bubble, Selection, Insertion (manual implementation). Practice: Sorting arrays.', type: 'Topic' },
+            { day: 16, week: 3, title: 'Efficient Sorting', details: 'Merge Sort, Quick Sort (divide & conquer). Practice: Sort with recursion.', type: 'Topic' },
+            { day: 17, week: 3, title: 'Sorting Applications', details: 'Kth largest element. Sort by frequency. Practice: 4–5 problems.', type: 'Topic' },
+            { day: 18, week: 3, title: 'Bit Manipulation Basics', details: 'AND, OR, XOR, NOT. Set/unset/check bit. Practice: 10 small problems.', type: 'Topic' },
+            { day: 19, week: 3, title: 'Advanced Bit Tricks', details: 'Counting set bits (Brian Kernighan’s Algorithm). Subset generation using bits. Practice: 3–4 problems.', type: 'Topic' },
+            { day: 20, week: 3, title: 'Applications of Bit Manipulation', details: 'Single number problem. Power of two check. Swap numbers using XOR. Practice: 5 problems.', type: 'Topic' },
+            { day: 21, week: 3, title: 'Weekly Contest (Sorting + Bits)', details: '4 problems mixing sorting & bit manipulation.', type: 'Contest' },
+            { day: 22, week: 4, title: 'String Basics', details: 'Palindrome, reverse string. Practice: 4 problems.', type: 'Topic' },
+            { day: 23, week: 4, title: 'Anagrams & Frequency Maps', details: 'Check anagram, group anagrams. Practice: 3–4 problems.', type: 'Topic' },
+            { day: 24, week: 4, title: 'Substring & Subsequence', details: 'Longest substring without repeating characters. Longest common subsequence (intro). Practice: 3–4 problems.', type: 'Topic' },
+            { day: 25, week: 4, title: 'String Pattern Matching', details: 'Naive approach. KMP / Rabin-Karp basics. Practice: 3 problems.', type: 'Topic' },
+            { day: 26, week: 4, title: 'String Hashing Concepts', details: 'Hashmaps for strings. Frequency counting. Practice: 3 problems.', type: 'Topic' },
+            { day: 27, week: 4, title: 'Mixed Problem Practice', details: '5 problems covering both arrays and strings.', type: 'Practice' },
+            { day: 28, week: 4, title: 'Contest Simulation (Full Mix)', details: '5 problems combining arrays, strings, and bits.', type: 'Contest' },
+            { day: 29, week: 4, title: 'Revision Day', details: 'Review weak areas from the past weeks. Re-solve tricky problems.', type: 'Review' },
+            { day: 30, week: 4, title: 'Final Mock Contest (3 hrs)', details: '6 problems (easy-medium-hard mix).', type: 'Contest' },
+        ];
+
+        let completionStatus = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCompletionStatus();
+            renderWeek(1);
+            updateProgress();
+            initializeChart();
+
+            document.querySelectorAll('.week-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const week = parseInt(button.dataset.week);
+                    document.querySelectorAll('.week-btn').forEach(btn => btn.classList.remove('active-week'));
+                    button.classList.add('active-week');
+                    renderWeek(week);
+                });
+            });
+            document.querySelector('.week-btn[data-week="1"]').classList.add('active-week');
+        });
+
+        function getTypePill(type) {
+            switch(type) {
+                case 'Contest': return `<span class="text-xs font-semibold px-2 py-1 bg-amber-200 text-amber-800 rounded-full">${type}</span>`;
+                case 'Practice': return `<span class="text-xs font-semibold px-2 py-1 bg-sky-200 text-sky-800 rounded-full">${type}</span>`;
+                case 'Review': return `<span class="text-xs font-semibold px-2 py-1 bg-gray-200 text-gray-800 rounded-full">${type}</span>`;
+                default: return `<span class="text-xs font-semibold px-2 py-1 bg-teal-200 text-teal-800 rounded-full">${type}</span>`;
+            }
+        }
+        
+        function renderWeek(weekNumber) {
+            const contentDiv = document.getElementById('roadmap-content');
+            const weekData = roadmapData.filter(item => item.week === weekNumber);
+            
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">`;
+            weekData.forEach(day => {
+                const isCompleted = completionStatus[day.day];
+                html += `
+                    <div id="day-card-${day.day}" class="day-card bg-white rounded-xl border border-gray-200 cursor-pointer ${isCompleted ? 'completed-card' : ''}" onclick="toggleDetails(${day.day})">
+                        <div class="p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm text-gray-500">Day ${day.day}</p>
+                                    <h3 class="font-bold text-lg day-title text-gray-800 mt-1">${day.title}</h3>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    ${getTypePill(day.type)}
+                                    <input type="checkbox" id="check-${day.day}" class="h-5 w-5 rounded text-teal-600 focus:ring-teal-500" ${isCompleted ? 'checked' : ''} onclick="event.stopPropagation(); toggleCompletion(${day.day});">
+                                </div>
+                            </div>
+                            <div id="details-${day.day}" class="day-details">
+                                <p class="text-gray-600 text-sm">${day.details}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            contentDiv.innerHTML = html;
+        }
+
+        function toggleDetails(day) {
+            const detailsDiv = document.getElementById(`details-${day}`);
+            detailsDiv.classList.toggle('expanded');
+        }
+
+        function toggleCompletion(day) {
+            completionStatus[day] = !completionStatus[day];
+            document.getElementById(`day-card-${day}`).classList.toggle('completed-card', completionStatus[day]);
+            saveCompletionStatus();
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const completedCount = Object.values(completionStatus).filter(Boolean).length;
+            const totalDays = roadmapData.length;
+            const percentage = totalDays > 0 ? Math.round((completedCount / totalDays) * 100) : 0;
+            
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = `${percentage}%`;
+            progressText.textContent = `${completedCount} of ${totalDays} days completed`;
+        }
+
+        function saveCompletionStatus() {
+            localStorage.setItem('problemSolvingRoadmapStatus', JSON.stringify(completionStatus));
+        }
+
+        function loadCompletionStatus() {
+            const savedStatus = localStorage.getItem('problemSolvingRoadmapStatus');
+            if (savedStatus) {
+                completionStatus = JSON.parse(savedStatus);
+            } else {
+                roadmapData.forEach(day => completionStatus[day.day] = false);
+            }
+        }
+        
+        function initializeChart() {
+            const ctx = document.getElementById('topicChart').getContext('2d');
+            const topicCounts = {
+                'Foundations': 7,
+                'Arrays': 7,
+                'Sorting': 3,
+                'Bit Manipulation': 4,
+                'Strings': 7,
+                'Mixed Practice': 2
+            };
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(topicCounts),
+                    datasets: [{
+                        label: 'Days per Topic',
+                        data: Object.values(topicCounts),
+                        backgroundColor: [
+                            '#a7f3d0', 
+                            '#6ee7b7', 
+                            '#34d399', 
+                            '#10b981', 
+                            '#059669', 
+                            '#047857'
+                        ],
+                        borderColor: '#f8f7f4',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + ' days';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

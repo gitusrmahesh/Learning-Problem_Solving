@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF--8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 16: Efficient Sorting - Merge Sort & Quick Sort</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The application is designed as a single-page, tab-based learning module. The structure includes an introduction to the core 'Divide and Conquer' concept, followed by dedicated, interactive tabs for 'Merge Sort' and 'Quick Sort'. Each algorithm tab features a dynamic canvas visualization, a step-by-step conceptual breakdown, a C# code implementation with a copy feature, and a complexity analysis. A final 'Comparison' tab synthesizes the information in a clear table, and a 'Practice' tab provides a hands-on coding exercise. This structure was chosen to allow users to either deep-dive into a single algorithm or easily compare the two, which is optimal for an intermediate learner's needs. The interactive visualization is the centerpiece, designed to turn abstract steps into a concrete, observable process. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: 'Divide & Conquer' principle. Goal: Inform. Viz/Method: Thematic section with explanatory text and a simple diagram made with HTML/CSS. Interaction: Static. Justification: Sets the theoretical foundation before diving into practical examples.
+        - Report Info: Merge Sort & Quick Sort algorithms. Goal: Demonstrate change and organization. Viz/Method: Custom-drawn, animated bar chart on an HTML Canvas. Interaction: User can start the sort, control speed, and see bars change color to represent comparisons and swaps. A status text box updates with the current operation. Justification: This provides a direct, engaging way to understand the step-by-step process, which is superior to static diagrams for algorithms. Library: Vanilla JS Canvas API.
+        - Report Info: C# code examples. Goal: Inform. Viz/Method: Pre-formatted code blocks. Interaction: 'Copy to Clipboard' button. Justification: Provides direct, usable code for the learner to practice with.
+        - Report Info: Algorithm complexities. Goal: Compare. Viz/Method: Bar chart for visual performance comparison (average case) and HTML tables for detailed complexity breakdowns (best, average, worst). Interaction: Chart tooltips provide specific values. Justification: A chart gives an immediate visual sense of performance differences, while tables provide the necessary detailed data for a deeper analysis. Library: Chart.js for the performance chart.
+        - Report Info: Overall comparison. Goal: Synthesize. Viz/Method: HTML table comparing key attributes (stability, space complexity, etc.). Interaction: Static. Justification: A summary table is the most effective way to consolidate key differentiators for final review.
+        - Report Info: Practice problem. Goal: Reinforce. Viz/Method: Interactive code editor with a check button. Interaction: User types code and gets feedback. Justification: Active recall and practice are essential for learning recursion.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .tab-active {
+            border-color: #4F46E5;
+            color: #4F46E5;
+            font-weight: 600;
+            background-color: #EEF2FF;
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #6B7280;
+        }
+        .code-block {
+            background-color: #1E293B;
+            color: #E2E8F0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            position: relative;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) { 
+            .chart-container { 
+                height: 400px; 
+            } 
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">30-Day Problem Solving Roadmap</h1>
+            <p class="text-lg md:text-xl text-indigo-600 mt-2">Week 3, Day 16: Efficient Sorting</p>
+        </header>
+
+        <main id="app" class="bg-white rounded-2xl shadow-lg p-6 md:p-10">
+            
+            <section id="intro" class="mb-10 border-b pb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">The "Divide and Conquer" Strategy</h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    Today, we explore two powerful sorting algorithms, Merge Sort and Quick Sort. Both are built on a fundamental computer science paradigm called <strong class="text-indigo-600">Divide and Conquer</strong>. This strategy involves breaking down a complex problem into smaller, more manageable sub-problems, solving those sub-problems recursively, and then combining their solutions to solve the original problem.
+                </p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 text-center">
+                    <div class="p-4 rounded-lg bg-indigo-50 w-full md:w-1/3">
+                        <span class="text-3xl">➗</span>
+                        <h3 class="text-xl font-semibold mt-2 text-indigo-800">1. Divide</h3>
+                        <p class="text-gray-600 mt-1">Break the problem into smaller sub-problems.</p>
+                    </div>
+                    <div class="text-2xl text-indigo-400 hidden md:block">&rarr;</div>
+                    <div class="p-4 rounded-lg bg-green-50 w-full md:w-1/3">
+                        <span class="text-3xl">🧩</span>
+                        <h3 class="text-xl font-semibold mt-2 text-green-800">2. Conquer</h3>
+                        <p class="text-gray-600 mt-1">Solve the sub-problems recursively.</p>
+                    </div>
+                    <div class="text-2xl text-green-400 hidden md:block">&rarr;</div>
+                    <div class="p-4 rounded-lg bg-yellow-50 w-full md:w-1/3">
+                        <span class="text-3xl">🔗</span>
+                        <h3 class="text-xl font-semibold mt-2 text-yellow-800">3. Combine</h3>
+                        <p class="text-gray-600 mt-1">Merge the solutions to solve the original.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="border-b border-gray-200 mb-8">
+                <nav class="-mb-px flex space-x-2 md:space-x-6" aria-label="Tabs">
+                    <button id="tab-mergesort" class="tab-btn tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm md:text-base">
+                        Merge Sort
+                    </button>
+                    <button id="tab-quicksort" class="tab-btn tab-inactive whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm md:text-base">
+                        Quick Sort
+                    </button>
+                    <button id="tab-comparison" class="tab-btn tab-inactive whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm md:text-base">
+                        Comparison
+                    </button>
+                    <button id="tab-practice" class="tab-btn tab-inactive whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm md:text-base">
+                        Practice
+                    </button>
+                </nav>
+            </div>
+
+            <div id="content-mergesort" class="content-panel">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="order-2 lg:order-1">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">How Merge Sort Works</h3>
+                        <div class="space-y-4 text-gray-600">
+                             <p>Merge Sort perfectly embodies the Divide and Conquer strategy. It consistently divides the array into two halves until it cannot be divided further, meaning each sub-array contains only one element (which is inherently sorted).</p>
+                             <p>Then, the <strong class="text-green-600">"merge"</strong> step begins. It repeatedly merges the smaller sorted sub-arrays back together, ensuring they remain sorted at each step, until the entire array is a single, sorted sequence.</p>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-3">Complexity Analysis</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr>
+                                        <th class="border-b p-2 bg-gray-50 font-semibold text-gray-700">Case</th>
+                                        <th class="border-b p-2 bg-gray-50 font-semibold text-gray-700">Time Complexity</th>
+                                        <th class="border-b p-2 bg-gray-50 font-semibold text-gray-700">Space Complexity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border-b p-2">Best</td>
+                                        <td class="border-b p-2">O(n log n)</td>
+                                        <td class="border-b p-2" rowspan="3">O(n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-b p-2">Average</td>
+                                        <td class="border-b p-2">O(n log n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-b p-2">Worst</td>
+                                        <td class="border-b p-2">O(n log n)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Merge Sort is very predictable; its performance is consistent across all cases but requires extra memory.</p>
+                    </div>
+                    <div class="order-1 lg:order-2">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Interactive Visualization</h3>
+                        <div class="p-4 rounded-lg bg-gray-50 border">
+                             <canvas id="mergeSortCanvas" class="w-full h-64 bg-white rounded"></canvas>
+                             <p id="mergeSortStatus" class="text-center mt-2 font-medium text-indigo-700 h-6"></p>
+                             <div class="flex items-center justify-center space-x-4 mt-3">
+                                <button id="runMergeSort" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Sort</button>
+                                <button id="resetMergeSort" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition">Reset</button>
+                                <div class="flex items-center space-x-2">
+                                    <label for="mergeSortSpeed" class="text-sm font-medium">Speed:</label>
+                                    <input id="mergeSortSpeed" type="range" min="10" max="500" value="100" class="w-24">
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">C# Implementation</h3>
+                    <div class="code-block">
+                        <button class="absolute top-4 right-4 bg-gray-700 text-gray-300 px-3 py-1 rounded-md text-sm hover:bg-gray-600 copy-btn">Copy</button>
+                        <pre><code class="language-csharp">
+public class MergeSorter
+{
+    public void Sort(int[] arr)
+    {
+        if (arr == null || arr.Length <= 1)
+            return;
+        MergeSortRecursive(arr, 0, arr.Length - 1);
+    }
+
+    private void MergeSortRecursive(int[] arr, int left, int right)
+    {
+        if (left < right)
+        {
+            int middle = left + (right - left) / 2;
+            MergeSortRecursive(arr, left, middle);
+            MergeSortRecursive(arr, middle + 1, right);
+            Merge(arr, left, middle, right);
+        }
+    }
+
+    private void Merge(int[] arr, int left, int middle, int right)
+    {
+        int n1 = middle - left + 1;
+        int n2 = right - middle;
+
+        int[] L = new int[n1];
+        int[] R = new int[n2];
+        
+        Array.Copy(arr, left, L, 0, n1);
+        Array.Copy(arr, middle + 1, R, 0, n2);
+
+        int i = 0, j = 0;
+        int k = left;
+        while (i < n1 && j < n2)
+        {
+            if (L[i] <= R[j]) {
+                arr[k] = L[i];
+                i++;
+            } else {
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+
+        while (i < n1) {
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+
+        while (j < n2) {
+            arr[k] = R[j];
+            j++;
+            k++;
+        }
+    }
+}
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-quicksort" class="content-panel hidden">
+                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="order-2 lg:order-1">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">How Quick Sort Works</h3>
+                        <div class="space-y-4 text-gray-600">
+                             <p>Quick Sort also uses Divide and Conquer, but its approach is different. It selects an element from the array as a <strong class="text-indigo-600">"pivot"</strong>. Then, it rearranges the array so that all elements smaller than the pivot are placed before it, and all elements greater are placed after it. This step is called <strong class="text-green-600">"partitioning"</strong>.</p>
+                             <p>After partitioning, the pivot is in its final sorted position. The algorithm then recursively applies the same process to the sub-arrays of elements on both sides of the pivot until the entire array is sorted.</p>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-3">Complexity Analysis</h3>
+                         <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr>
+                                        <th class="border-b p-2 bg-gray-50 font-semibold text-gray-700">Case</th>
+                                        <th class="border-b p-2 bg-gray-50 font-semibold text-gray-700">Time Complexity</th>
+                                        <th class="border-b p-2 bg-gray-50 font-semibold text-gray-700">Space Complexity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border-b p-2">Best</td>
+                                        <td class="border-b p-2">O(n log n)</td>
+                                        <td class="border-b p-2" rowspan="2">O(log n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-b p-2">Average</td>
+                                        <td class="border-b p-2">O(n log n)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-b p-2">Worst</td>
+                                        <td class="border-b p-2 text-red-600">O(n²)</td>
+                                        <td class="border-b p-2">O(n)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Quick Sort is generally faster in practice due to lower constant factors and cache efficiency, but its worst-case performance is poor.</p>
+                    </div>
+                    <div class="order-1 lg:order-2">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Interactive Visualization</h3>
+                        <div class="p-4 rounded-lg bg-gray-50 border">
+                             <canvas id="quickSortCanvas" class="w-full h-64 bg-white rounded"></canvas>
+                             <p id="quickSortStatus" class="text-center mt-2 font-medium text-indigo-700 h-6"></p>
+                             <div class="flex items-center justify-center space-x-4 mt-3">
+                                <button id="runQuickSort" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Sort</button>
+                                <button id="resetQuickSort" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition">Reset</button>
+                                <div class="flex items-center space-x-2">
+                                    <label for="quickSortSpeed" class="text-sm font-medium">Speed:</label>
+                                    <input id="quickSortSpeed" type="range" min="10" max="500" value="100" class="w-24">
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">C# Implementation</h3>
+                    <div class="code-block">
+                        <button class="absolute top-4 right-4 bg-gray-700 text-gray-300 px-3 py-1 rounded-md text-sm hover:bg-gray-600 copy-btn">Copy</button>
+                        <pre><code class="language-csharp">
+public class QuickSorter
+{
+    public void Sort(int[] arr)
+    {
+        if (arr == null || arr.Length <= 1)
+            return;
+        QuickSortRecursive(arr, 0, arr.Length - 1);
+    }
+
+    private void QuickSortRecursive(int[] arr, int low, int high)
+    {
+        if (low < high)
+        {
+            int pi = Partition(arr, low, high);
+            QuickSortRecursive(arr, low, pi - 1);
+            QuickSortRecursive(arr, pi + 1, high);
+        }
+    }
+
+    private int Partition(int[] arr, int low, int high)
+    {
+        int pivot = arr[high];
+        int i = (low - 1); 
+
+        for (int j = low; j < high; j++)
+        {
+            if (arr[j] < pivot)
+            {
+                i++;
+                Swap(arr, i, j);
+            }
+        }
+        Swap(arr, i + 1, high);
+        return (i + 1);
+    }
+
+    private void Swap(int[] arr, int i, int j)
+    {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-comparison" class="content-panel hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Merge Sort vs. Quick Sort</h2>
+                <p class="text-lg text-gray-600 mb-8">
+                    Choosing between Merge Sort and Quick Sort depends on the specific requirements of your problem, such as memory constraints, the need for a stable sort, and the importance of avoiding worst-case scenarios. Here's a head-to-head comparison of their key characteristics.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Attribute Comparison</h3>
+                        <div class="overflow-x-auto bg-white rounded-lg border">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="p-4 font-semibold text-gray-700">Attribute</th>
+                                        <th class="p-4 font-semibold text-gray-700">Merge Sort</th>
+                                        <th class="p-4 font-semibold text-gray-700">Quick Sort</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    <tr>
+                                        <td class="p-4 font-medium">Time Complexity</td>
+                                        <td class="p-4">O(n log n) - all cases</td>
+                                        <td class="p-4">O(n log n) - average/best<br><span class="text-red-600">O(n²) - worst</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-4 font-medium">Space Complexity</td>
+                                        <td class="p-4">O(n) - Out-of-place</td>
+                                        <td class="p-4">O(log n) - In-place</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-4 font-medium">Stability*</td>
+                                        <td class="p-4 text-green-600 font-semibold">Stable</td>
+                                        <td class="p-4 text-red-600 font-semibold">Not Stable</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-4 font-medium">Primary Operation</td>
+                                        <td class="p-4">Merging</td>
+                                        <td class="p-4">Partitioning</td>
+                                    </tr>
+                                     <tr>
+                                        <td class="p-4 font-medium">Use Case</td>
+                                        <td class="p-4">External sorting, linked lists, stability is required.</td>
+                                        <td class="p-4">Internal sorting, memory is a concern, average case is acceptable.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">*A stable sort maintains the relative order of equal elements.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Performance in Practice (Average Case)</h3>
+                        <div class="chart-container p-4 rounded-lg bg-gray-50 border">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2 text-center">While both are O(n log n) on average, Quick Sort often has a lower constant factor, making it faster in typical scenarios.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-practice" class="content-panel hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Practice: Sort with Recursion</h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    Before mastering recursive sorting, it's crucial to understand the fundamentals of recursion. This simple exercise reinforces the "divide and conquer" mindset by applying recursion to a non-sorting problem.
+                </p>
+                <div class="bg-white rounded-lg border p-6">
+                    <h3 class="font-semibold text-lg text-gray-800">Problem: Recursive Sum</h3>
+                    <p class="text-gray-600 mt-2 mb-4">
+                        Complete the C# method `SumArrayRecursive` to calculate the sum of all integers in an array using recursion. You should not use any loops (`for`, `while`). The method should call itself to solve smaller sub-problems by processing one element and then passing the rest of the work to the next recursive call.
+                    </p>
+                    <div class="code-block mt-4">
+                         <textarea id="practiceCode" class="w-full h-64 bg-transparent text-gray-300 font-mono text-sm p-2 outline-none resize-none border-0" spellcheck="false">
+public int SumArrayRecursive(int[] arr, int index)
+{
+    // Base case: If the index reaches the end of the array, we're done.
+    if (index >= arr.Length)
+    {
+        return 0;
+    }
+
+    // Recursive step: Add the current element to the sum of the rest of the array.
+    // YOUR CODE HERE
+}
+                        </textarea>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                            <button id="runPractice" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Check Code</button>
+                            <button id="showSolution" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 transition ml-2">Show Solution</button>
+                        </div>
+                        <div id="practiceOutput" class="font-medium h-6 text-sm md:text-base"></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        
+        <footer class="text-center mt-12 text-gray-500">
+            <p>&copy; 2025 Problem Solving Roadmap. Keep learning!</p>
+        </footer>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const appState = {
+        tabs: ['mergesort', 'quicksort', 'comparison', 'practice'],
+        activeTab: 'mergesort',
+        defaultArray: [64, 34, 25, 12, 22, 11, 90, 5, 77, 1],
+    };
+
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contentPanels = document.querySelectorAll('.content-panel');
+    const copyButtons = document.querySelectorAll('.copy-btn');
+
+    function switchTab(tabId) {
+        appState.activeTab = tabId;
+        tabs.forEach(tab => {
+            const currentTabId = tab.id.split('-')[1];
+            if (currentTabId === tabId) {
+                tab.classList.remove('tab-inactive');
+                tab.classList.add('tab-active');
+            } else {
+                tab.classList.remove('tab-active');
+                tab.classList.add('tab-inactive');
+            }
+        });
+        contentPanels.forEach(panel => {
+            const panelId = panel.id.split('-')[1];
+            if (panelId === tabId) {
+                panel.classList.remove('hidden');
+            } else {
+                panel.classList.add('hidden');
+            }
+        });
+    }
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.id.split('-')[1];
+            switchTab(tabId);
+        });
+    });
+    
+    copyButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const code = btn.nextElementSibling.querySelector('code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+            });
+        });
+    });
+
+    class SortVisualizer {
+        constructor(canvasId, statusId, initialArray) {
+            this.canvas = document.getElementById(canvasId);
+            this.ctx = this.canvas.getContext('2d');
+            this.statusEl = document.getElementById(statusId);
+            this.array = [...initialArray];
+            this.initialArray = [...initialArray];
+            this.animationSpeed = 100;
+            this.isSorting = false;
+            this.colors = {
+                default: '#4F46E5',
+                compare: '#F59E0B',
+                sorted: '#10B981',
+                pivot: '#EF4444',
+                range: '#A78BFA'
+            };
+            
+            // This event listener must be set up before the first draw call.
+            window.addEventListener('resize', () => this.resizeCanvas());
+        }
+
+        initialize() {
+            this.resizeCanvas();
+            this.drawArray();
+        }
+
+        resizeCanvas() {
+            this.canvas.width = this.canvas.clientWidth;
+            this.canvas.height = this.canvas.clientHeight;
+            this.drawArray();
+        }
+        
+        reset() {
+            this.isSorting = false;
+            this.array = [...this.initialArray];
+            this.setStatus('');
+            this.drawArray();
+        }
+        
+        setSpeed(speed) {
+            this.animationSpeed = 510 - speed;
+        }
+
+        setStatus(text) {
+            this.statusEl.textContent = text;
+        }
+
+        // Generic drawArray for the base class. Children will override this.
+        drawArray(highlights = {}) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            const n = this.array.length;
+            const barWidth = this.canvas.width / n;
+            const maxVal = Math.max(...this.array, 1);
+
+            for (let i = 0; i < n; i++) {
+                const barHeight = (this.array[i] / maxVal) * this.canvas.height * 0.95;
+                const x = i * barWidth;
+                const y = this.canvas.height - barHeight;
+                
+                this.ctx.fillStyle = highlights[i] || this.colors.default;
+                this.ctx.fillRect(x + 1, y, barWidth - 2, barHeight);
+            }
+        }
+        
+        async sleep() {
+            return new Promise(resolve => setTimeout(resolve, this.animationSpeed));
+        }
+    }
+
+    class MergeSortVisualizer extends SortVisualizer {
+        constructor(canvasId, statusId, initialArray) {
+            super(canvasId, statusId, initialArray);
+            this.sortedRanges = [];
+        }
+
+        reset() {
+            super.reset();
+            this.sortedRanges = [];
+        }
+
+        drawArray(highlights = {}) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            const n = this.array.length;
+            const barWidth = this.canvas.width / n;
+            const maxVal = Math.max(...this.array, 1);
+
+            for (let i = 0; i < n; i++) {
+                const barHeight = (this.array[i] / maxVal) * this.canvas.height * 0.95;
+                const x = i * barWidth;
+                const y = this.canvas.height - barHeight;
+                
+                let color = highlights[i] || this.colors.default;
+                // This check prevents errors during initial render before sortedRanges is populated.
+                if (this.sortedRanges) {
+                    for (const range of this.sortedRanges) {
+                        if (i >= range.l && i <= range.r) {
+                            color = this.colors.sorted;
+                            break;
+                        }
+                    }
+                }
+                
+                this.ctx.fillStyle = color;
+                this.ctx.fillRect(x + 1, y, barWidth - 2, barHeight);
+            }
+        }
+
+        async sort() {
+            if (this.isSorting) return;
+            this.isSorting = true;
+            this.sortedRanges = [];
+            await this.mergeSortRecursive(0, this.array.length - 1);
+            if(this.isSorting) {
+                this.setStatus('Sorting Complete!');
+                this.sortedRanges.push({l: 0, r: this.array.length - 1});
+                this.drawArray();
+            }
+            this.isSorting = false;
+        }
+
+        async mergeSortRecursive(l, r) {
+            if (!this.isSorting) return;
+            if (l >= r) {
+                 this.sortedRanges.push({l, r});
+                 this.drawArray();
+                 await this.sleep();
+                 return;
+            }
+            const m = l + Math.floor((r - l) / 2);
+            this.setStatus(`Dividing range [${l}, ${r}]`);
+            await this.highlightRange(l, r);
+            await this.mergeSortRecursive(l, m);
+            await this.mergeSortRecursive(m + 1, r);
+            await this.merge(l, m, r);
+        }
+        
+        async merge(l, m, r) {
+            if (!this.isSorting) return;
+            this.setStatus(`Merging range [${l}, ${r}]`);
+            this.sortedRanges = this.sortedRanges.filter(range => !(range.l >= l && range.r <= r));
+
+            let n1 = m - l + 1;
+            let n2 = r - m;
+            let L = new Array(n1);
+            let R = new Array(n2);
+
+            for (let i = 0; i < n1; i++) L[i] = this.array[l + i];
+            for (let j = 0; j < n2; j++) R[j] = this.array[m + 1 + j];
+
+            let i = 0, j = 0, k = l;
+
+            while (i < n1 && j < n2) {
+                if (!this.isSorting) return;
+                let highlights = {};
+                for(let idx=l; idx<=r; idx++) highlights[idx] = this.colors.range;
+                highlights[l+i] = this.colors.compare;
+                highlights[m+1+j] = this.colors.compare;
+                this.drawArray(highlights);
+                await this.sleep();
+
+                if (L[i] <= R[j]) {
+                    this.array[k] = L[i];
+                    i++;
+                } else {
+                    this.array[k] = R[j];
+                    j++;
+                }
+                this.drawArray(highlights);
+                await this.sleep();
+                k++;
+            }
+
+            while (i < n1) {
+                if (!this.isSorting) return; this.array[k] = L[i]; i++; k++;
+                this.drawArray(); await this.sleep();
+            }
+            while (j < n2) {
+                if (!this.isSorting) return; this.array[k] = R[j]; j++; k++;
+                this.drawArray(); await this.sleep();
+            }
+            
+            this.sortedRanges.push({l, r});
+            this.drawArray();
+            await this.sleep();
+        }
+
+        async highlightRange(start, end) {
+            let highlights = {};
+            for (let i = start; i <= end; i++) {
+                highlights[i] = this.colors.range;
+            }
+            this.drawArray(highlights);
+            await this.sleep();
+        }
+    }
+    
+    class QuickSortVisualizer extends SortVisualizer {
+        constructor(canvasId, statusId, initialArray) {
+            super(canvasId, statusId, initialArray);
+            this.sortedIndices = {};
+        }
+
+        reset() {
+            super.reset();
+            this.sortedIndices = {};
+        }
+
+        drawArray(highlights = {}) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            const n = this.array.length;
+            const barWidth = this.canvas.width / n;
+            const maxVal = Math.max(...this.array, 1);
+
+            for (let i = 0; i < n; i++) {
+                const barHeight = (this.array[i] / maxVal) * this.canvas.height * 0.95;
+                const x = i * barWidth;
+                const y = this.canvas.height - barHeight;
+                
+                let color = this.colors.default;
+                // This check prevents errors during initial render before sortedIndices is populated.
+                if (this.sortedIndices && this.sortedIndices[i]) {
+                    color = this.colors.sorted;
+                } else if (highlights[i]) {
+                    color = highlights[i];
+                }
+                
+                this.ctx.fillStyle = color;
+                this.ctx.fillRect(x + 1, y, barWidth - 2, barHeight);
+            }
+        }
+
+        async sort() {
+            if (this.isSorting) return;
+            this.isSorting = true;
+            this.sortedIndices = {};
+            await this.quickSortRecursive(0, this.array.length - 1);
+            if(this.isSorting) {
+                this.setStatus('Sorting Complete!');
+                for(let i=0; i<this.array.length; i++) this.sortedIndices[i] = true;
+                this.drawArray();
+            }
+            this.isSorting = false;
+        }
+
+        async quickSortRecursive(low, high) {
+            if (!this.isSorting) return;
+            if (low < high) {
+                let pi = await this.partition(low, high);
+                this.sortedIndices[pi] = true;
+                this.drawArray();
+                await this.sleep();
+                
+                await this.quickSortRecursive(low, pi - 1);
+                await this.quickSortRecursive(pi + 1, high);
+            } else if (low >= 0 && high >= 0 && low < this.array.length && high < this.array.length) {
+                for (let i = low; i <= high; i++) {
+                    this.sortedIndices[i] = true;
+                }
+                this.drawArray();
+                await this.sleep();
+            }
+        }
+
+        async partition(low, high) {
+            let pivot = this.array[high];
+            let i = low - 1;
+            this.setStatus(`Partitioning with pivot ${pivot}`);
+            
+            for (let j = low; j < high; j++) {
+                if (!this.isSorting) return -1;
+                 let highlights = {};
+                for(let k=low; k<=high; k++) highlights[k] = this.colors.range;
+                highlights[high] = this.colors.pivot;
+                highlights[j] = this.colors.compare;
+                if (i >= low) highlights[i] = this.colors.range;
+                
+                this.drawArray(highlights);
+                await this.sleep();
+                
+                if (this.array[j] < pivot) {
+                    i++;
+                    [this.array[i], this.array[j]] = [this.array[j], this.array[i]];
+                     this.drawArray(highlights);
+                    await this.sleep();
+                }
+            }
+            [this.array[i + 1], this.array[high]] = [this.array[high], this.array[i + 1]];
+            
+            this.drawArray();
+            await this.sleep();
+            return i + 1;
+        }
+    }
+    
+    const mergeSortViz = new MergeSortVisualizer('mergeSortCanvas', 'mergeSortStatus', appState.defaultArray);
+    mergeSortViz.initialize();
+    document.getElementById('runMergeSort').addEventListener('click', () => mergeSortViz.sort());
+    document.getElementById('resetMergeSort').addEventListener('click', () => mergeSortViz.reset());
+    document.getElementById('mergeSortSpeed').addEventListener('input', (e) => mergeSortViz.setSpeed(e.target.value));
+    
+    const quickSortViz = new QuickSortVisualizer('quickSortCanvas', 'quickSortStatus', appState.defaultArray);
+    quickSortViz.initialize();
+    document.getElementById('runQuickSort').addEventListener('click', () => quickSortViz.sort());
+    document.getElementById('resetQuickSort').addEventListener('click', () => quickSortViz.reset());
+    document.getElementById('quickSortSpeed').addEventListener('input', (e) => quickSortViz.setSpeed(e.target.value));
+    
+    const perfCtx = document.getElementById('performanceChart').getContext('2d');
+    new Chart(perfCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Merge Sort', 'Quick Sort'],
+            datasets: [{
+                label: 'Relative Average Performance',
+                data: [85, 95],
+                backgroundColor: ['rgba(79, 70, 229, 0.6)', 'rgba(239, 68, 68, 0.6)'],
+                borderColor: ['rgba(79, 70, 229, 1)', 'rgba(239, 68, 68, 1)'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Lower constant factor makes Quick Sort often faster' },
+                tooltip: {
+                    callbacks: {
+                       label: function(context) {
+                           let label = context.dataset.label || '';
+                           if(label) label += ': ';
+                           label += context.raw > 90 ? 'Very Fast' : 'Fast';
+                           return label;
+                       }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: { callback: value => value + '%' }
+                }
+            }
+        }
+    });
+
+    // Practice Section Logic
+    const practiceCodeEl = document.getElementById('practiceCode');
+    const runPracticeBtn = document.getElementById('runPractice');
+    const showSolutionBtn = document.getElementById('showSolution');
+    const practiceOutputEl = document.getElementById('practiceOutput');
+
+    const solution = `    return arr[index] + SumArrayRecursive(arr, index + 1);`;
+    const placeholder = `    // YOUR CODE HERE`;
+
+    runPracticeBtn.addEventListener('click', () => {
+        const userCode = practiceCodeEl.value;
+        practiceOutputEl.textContent = '';
+        practiceOutputEl.classList.remove('text-green-600', 'text-red-600');
+
+        if (userCode.includes('for') || userCode.includes('while')) {
+            practiceOutputEl.textContent = 'Hint: Try to solve it without using loops.';
+            practiceOutputEl.classList.add('text-red-600');
+        } else if (userCode.includes('SumArrayRecursive(arr, index + 1)') && userCode.includes('return') && userCode.includes('+')) {
+            practiceOutputEl.textContent = 'Correct structure! You are using recursion.';
+            practiceOutputEl.classList.add('text-green-600');
+        } else {
+             practiceOutputEl.textContent = 'Incomplete. Make sure you call the function recursively.';
+             practiceOutputEl.classList.add('text-red-600');
+        }
+    });
+
+    showSolutionBtn.addEventListener('click', () => {
+         if(practiceCodeEl.value.includes(placeholder)){
+            practiceCodeEl.value = practiceCodeEl.value.replace(placeholder, solution);
+            practiceOutputEl.textContent = '';
+            practiceOutputEl.classList.remove('text-green-600', 'text-red-600');
+         }
+    });
+});
+</script>
+</body>
+</html>
+

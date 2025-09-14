@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 14: Arrays Contest - Intermediate Problem Solving</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FDFCFB;
+            --sidebar-bg: #F5F3EF;
+            --border-color: #EAE8E2;
+            --text-primary: #2C2A24;
+            --text-secondary: #6B6454;
+            --accent-primary: #8A7F6C;
+            --accent-primary-hover: #736855;
+            --accent-secondary: #CBBFAD;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-primary); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--sidebar-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-secondary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
+        .code-block { background-color: var(--code-bg); color: var(--code-text); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Source Code Pro', monospace; font-size: 0.85rem; line-height: 1.6; }
+        .code-block .keyword { color: #c678dd; } .code-block .type { color: #e5c07b; } .code-block .number { color: #d19a66; } .code-block .comment { color: #5c6370; } .code-block .string { color: #98c379; } .code-block .method { color: #61afef; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 250px; max-height: 300px; }
+        @media (min-width: 768px) { .chart-container { height: 300px; max-height: 350px; } }
+        .solution-content { transition: max-height 0.7s ease-in-out, padding 0.5s ease; overflow: hidden; max-height: 0; padding-top: 0; padding-bottom: 0; }
+        .solution-content.open { max-height: 3000px; padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        .nav-link.active { background-color: var(--border-color); font-weight: 600; color: var(--text-primary); }
+        .contest-mode .solution-details, .contest-mode .reveal-btn { display: none; }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Chosen Palette: Warm Earth Tones -->
+    <!-- Application Structure Plan: The app is a guided learning module with an optional "Contest Mode". A sticky sidebar provides navigation and progress tracking. The main content area features an introduction, a technique refresher, an accordion of four problems, and a final summary. Contest Mode adds a timer, a code editor, and initially hides solutions to simulate a test environment. A reset button appears after a mode is selected to provide an easy way back to the start. This structure allows for both guided learning and self-assessment, enhancing user engagement and skill retention. -->
+    <!-- Visualization & Content Choices: 
+        - Contest Mode: Inform/Engage -> Timer, code editor, & solution hiding -> JS -> Simulates a timed test for practice under pressure.
+        - Progress Bar: Inform -> Dynamic sidebar bar -> JS on scroll -> Provides clear visual feedback on completion.
+        - P1-P4 Visualizations: Compare/Change/Organize -> Interactive Charts/HTML nodes/Tables -> Chart.js & Vanilla JS -> Step-by-step visualizations clarify algorithm execution.
+        - Summary Section: Inform -> Static text -> HTML/CSS -> Reinforces key takeaways from all problems in one place.
+        - Reset Button: Navigation -> Reverts UI to initial state -> JS -> Allows users to easily restart or switch modes.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <div id="app" class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-72 bg-[--sidebar-bg] p-6 border-b md:border-r border-[--border-color] flex-shrink-0 md:sticky top-0 h-screen flex flex-col">
+            <h1 class="text-2xl font-bold text-[--text-primary]">Daily Roadmap</h1>
+            <p class="text-sm text-[--text-secondary] mb-6">Day 14: Arrays Contest</p>
+            <div class="mb-4">
+                <div class="w-full bg-gray-300 rounded-full h-2">
+                    <div id="progress-bar" class="bg-[--accent-primary] h-2 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+            <nav class="flex-grow">
+                <ul class="space-y-2">
+                    <li><a href="#overview" class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block">Overview</a></li>
+                    <li><a href="#refresher" class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block">Technique Refresher</a></li>
+                    <li><a href="#problems-section" class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block">Contest Problems</a></li>
+                    <li><a href="#summary" class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block">Contest Summary</a></li>
+                </ul>
+            </nav>
+            <div id="timer-display" class="hidden text-center p-4 bg-[--border-color] rounded-lg">
+                <div class="text-lg font-bold text-[--text-primary]">Contest Timer</div>
+                <div id="timer" class="text-4xl font-mono font-bold text-[--accent-primary-hover]">20:00</div>
+            </div>
+        </aside>
+
+        <main id="main-content" class="flex-1 p-4 sm:p-6 md:p-10">
+            <div class="flex justify-end mb-4 h-10">
+                <button id="reset-btn" class="hidden bg-gray-500 text-white font-bold py-2 px-4 rounded hover:bg-gray-600 transition-colors">Reset to Home</button>
+            </div>
+            <section id="overview" class="scroll-mt-24">
+                <h2 class="text-3xl font-bold mb-4 text-[--text-primary]">Weekly Contest: Arrays Edition</h2>
+                <p class="text-lg text-[--text-secondary] mb-6 max-w-3xl">
+                    Welcome to Day 14. Today, you'll tackle a simulated contest focused on array manipulation techniques. This session is designed to test your ability to quickly identify and apply the correct algorithm: Prefix Sum, Sliding Window, or Two Pointers.
+                </p>
+                <div class="bg-white p-6 rounded-lg border border-[--border-color]">
+                    <h3 class="font-bold text-xl mb-3">Choose Your Mode</h3>
+                    <p class="mb-4 text-gray-600">Select "Study Mode" for a guided walkthrough with instant access to solutions. Choose "Contest Mode" for a 20-minute timed challenge to test your skills under pressure.</p>
+                    <div class="flex space-x-4">
+                        <button id="study-mode-btn" class="bg-[--accent-primary] text-white font-bold py-2 px-6 rounded hover:bg-[--accent-primary-hover] transition-colors">Study Mode</button>
+                        <button id="contest-mode-btn" class="bg-gray-200 text-gray-800 font-bold py-2 px-6 rounded hover:bg-gray-300 transition-colors">Start Contest Mode</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="refresher" class="scroll-mt-24 my-12">
+                 <h2 class="text-3xl font-bold mb-4">Technique Refresher</h2>
+                 <p class="text-lg text-gray-600 mb-6">A quick review of the core concepts before you begin the contest.</p>
+                 <div class="bg-white rounded-lg p-6 shadow-sm border border-[--border-color]/50">
+                    <div class="flex border-b border-[--border-color]">
+                        <button data-tab="prefixsum" class="tab-btn py-2 px-4 text-lg font-semibold border-b-2 border-[--accent-primary] text-[--text-primary]">Prefix Sum</button>
+                        <button data-tab="slidingwindow" class="tab-btn py-2 px-4 text-lg font-semibold border-b-2 border-transparent text-gray-500">Sliding Window</button>
+                        <button data-tab="twopointers" class="tab-btn py-2 px-4 text-lg font-semibold border-b-2 border-transparent text-gray-500">Two Pointers</button>
+                    </div>
+                    <div id="prefixsum" class="tab-content py-4"><h3 class="font-bold text-xl mb-2">Prefix Sum</h3><p class="mb-4">Create a new array where `prefix[i]` is the sum of all elements from `nums[0]` to `nums[i]`. Allows calculating any subarray sum in O(1) time. Ideal for frequent subarray sum queries.</p><div class="code-block"><pre><code><span class="keyword">public</span> <span class="keyword">int</span>[] <span class="method">BuildPrefixSum</span>(<span class="keyword">int</span>[] nums) {
+    <span class="keyword">int</span> n = nums.Length,[] prefix = <span class="keyword">new</span> <span class="keyword">int</span>[n];
+    prefix[<span class="number">0</span>] = nums[<span class="number">0</span>];
+    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;n; i++) prefix[i]=prefix[i-<span class="number">1</span>]+nums[i];
+    <span class="keyword">return</span> prefix;
+}</span></code></pre></div></div>
+                    <div id="slidingwindow" class="tab-content hidden py-4"><h3 class="font-bold text-xl mb-2">Sliding Window</h3><p class="mb-4">Efficiently finds a subarray satisfying a condition by maintaining a "window" and sliding it through the array. Reduces time complexity from O(n²) to O(n) by avoiding redundant calculations.</p><div class="code-block"><pre><code><span class="keyword">public</span> <span class="keyword">int</span> <span class="method">FindMaxSum</span>(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k) {
+    <span class="keyword">int</span> maxSum=0, windowSum=0;
+    <span class="keyword">for</span>(int i=0; i&lt;k; i++) windowSum += nums[i];
+    <span class="keyword">for</span>(int i=k; i&lt;nums.Length; i++) {
+        windowSum += nums[i] - nums[i-k];
+        maxSum = Math.<span class="method">Max</span>(maxSum, windowSum);
+    } <span class="keyword">return</span> maxSum;
+}</code></pre></div></div>
+                    <div id="twopointers" class="tab-content hidden py-4"><h3 class="font-bold text-xl mb-2">Two Pointers</h3><p class="mb-4">Uses two pointers to iterate through an array, often from different directions on sorted data. Narrows the search space efficiently, providing O(n) solutions for problems that might otherwise take O(n²).</p><div class="code-block"><pre><code><span class="keyword">public</span> <span class="keyword">bool</span> <span class="method">HasPairWithSum</span>(<span class="keyword">int</span>[] sorted, <span class="keyword">int</span> target) {
+    <span class="keyword">int</span> L=0, R=sorted.Length-1;
+    <span class="keyword">while</span> (L < R) {
+        <span class="keyword">int</span> sum = sorted[L] + sorted[R];
+        <span class="keyword">if</span> (sum == target) <span class="keyword">return</span> <span class="keyword">true</span>;
+        <span class="keyword">if</span> (sum < target) L++; <span class="keyword">else</span> R--;
+    } <span class="keyword">return</span> <span class="keyword">false</span>;
+}</code></pre></div></div>
+                 </div>
+            </section>
+
+            <section id="problems-section" class="scroll-mt-24 my-12">
+                <h2 class="text-3xl font-bold mb-4">Contest Problems</h2>
+                <div id="problems-accordion" class="space-y-4"></div>
+            </section>
+            
+            <section id="summary" class="scroll-mt-24 my-12">
+                <h2 class="text-3xl font-bold mb-4">Contest Summary</h2>
+                <div class="bg-white p-6 rounded-lg border border-[--border-color]">
+                    <p class="text-lg text-[--text-secondary] mb-6">Congratulations on completing the contest. This session highlighted how different array problems can be efficiently solved by recognizing the underlying pattern. Let's review the core principles:</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start"><span class="text-xl mr-3 text-[--accent-primary]">▸</span><div><strong class="font-semibold">Fixed-Size Sliding Window:</strong> Ideal for "max/min of subarray size k" problems. The key is constant-time window updates: add the new element, subtract the old.</div></li>
+                        <li class="flex items-start"><span class="text-xl mr-3 text-[--accent-primary]">▸</span><div><strong class="font-semibold">Variable-Size Sliding Window:</strong> Perfect for finding subarrays that meet a target value. The window expands and contracts dynamically, ensuring linear time complexity.</div></li>
+                        <li class="flex items-start"><span class="text-xl mr-3 text-[--accent-primary]">▸</span><div><strong class="font-semibold">Two Pointers on Sorted Arrays:</strong> Unbeatable for finding pairs that sum to a target. By moving pointers from opposite ends, you intelligently eliminate half the search space in each step.</div></li>
+                        <li class="flex items-start"><span class="text-xl mr-3 text-[--accent-primary]">▸</span><div><strong class="font-semibold">Prefix Sums with Hashing:</strong> The go-to for complex subarray sum problems, especially those involving divisibility. It transforms the problem into finding pairs of indices with specific prefix sum properties.</div></li>
+                    </ul>
+                </div>
+            </section>
+
+
+            <div id="problem-template" class="hidden">
+                <div class="bg-white rounded-lg border border-[--border-color]/80 overflow-hidden">
+                    <button class="accordion-header w-full text-left p-6 flex justify-between items-center transition-colors hover:bg-gray-50/50">
+                        <div class="flex flex-col"><h3 class="text-xl md:text-2xl font-bold problem-title"></h3><div class="flex items-center space-x-4 mt-2"><span class="problem-difficulty-badge inline-block px-3 py-1 text-sm font-semibold rounded-full"></span><span class="problem-tags text-sm font-medium text-gray-500"></span></div></div>
+                        <span class="accordion-icon text-3xl font-light transform transition-transform">+</span>
+                    </button>
+                    <div class="solution-content px-6"><div class="border-t border-[--border-color] py-6">
+                        <p class="text-base text-gray-700 mb-6 problem-statement"></p>
+                        <div class="mb-6"><p class="font-semibold text-gray-800">Input: <code class="problem-input-display bg-gray-100 p-1 rounded font-mono"></code></p></div>
+                        <div class="code-editor-container hidden mb-6">
+                             <h4 class="text-xl font-semibold mb-2">Your Code Editor</h4>
+                             <textarea class="code-editor w-full h-64 p-3 font-mono text-sm bg-[--code-bg] text-gray-200 border border-gray-600 rounded-md focus:ring-2 focus:ring-[--accent-primary] focus:outline-none">public class Solution { ... }</textarea>
+                        </div>
+                        <button class="reveal-btn bg-[--accent-primary] text-white font-bold py-2 px-4 rounded hover:bg-[--accent-primary-hover]">Reveal Solution</button>
+                        <div class="solution-details hidden"><div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+                            <div><h4 class="text-xl font-semibold mb-2">Explanation</h4><div class="problem-explanation space-y-3 text-gray-700 text-sm leading-relaxed"></div></div>
+                            <div><h4 class="text-xl font-semibold mb-2">C# Solution</h4><div class="problem-code"></div></div>
+                        </div>
+                        <div class="mt-8"><h4 class="text-xl font-semibold mb-4 text-center">Interactive Visualization</h4><div class="problem-visualization-container min-h-[300px]"></div></div>
+                        <div class="mt-8 pt-6 border-t border-[--border-color]"><h4 class="text-xl font-semibold mb-3">Key Takeaways</h4><div class="problem-takeaways grid grid-cols-1 md:grid-cols-3 gap-4 text-center"></div></div>
+                    </div></div></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const problems = [
+             {
+                id: 'problem1', title: 'Maximum Sum of a Fixed-Size Subarray', difficulty: 'Easy', difficultyColor: 'bg-green-100 text-green-800', tags: 'Sliding Window',
+                statement: 'Given an array of integers `nums` and an integer `k`, find the maximum sum of a contiguous subarray of size `k`.',
+                input: [1, 4, 2, 10, 23, 3, 1, 0, 20], k: 4,
+                solution: {
+                    explanation: [`This is a classic fixed-size sliding window problem. We calculate the sum of the first 'k' elements.`, `Then, we iterate through the rest of the array, sliding the window by adding the next element and subtracting the last, updating the max sum at each step.`],
+                    code: `<pre><code><span class="keyword">public</span> <span class="keyword">int</span> <span class="method">MaxSum</span>(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k) { ... }</code></pre>`,
+                    takeaways: [ { title: 'Time Complexity', value: 'O(n)' }, { title: 'Space Complexity', value: 'O(1)' }, { title: 'Core Idea', value: 'Sliding Window' } ]
+                }
+            },
+            {
+                id: 'problem2', title: 'Subarray with Target Sum', difficulty: 'Medium', difficultyColor: 'bg-yellow-100 text-yellow-800', tags: 'Sliding Window (Variable)',
+                statement: 'Given an array of positive integers `nums` and a positive integer `target`, find a contiguous subarray whose sum equals `target`. Return the start/end indices.',
+                input: [2, 3, 1, 2, 4, 3], target: 7,
+                solution: {
+                    explanation: [`This requires a variable-size sliding window. We use 'left' and 'right' pointers.`, `We expand the window by moving 'right'. If the sum exceeds the target, we shrink the window by moving 'left' until the condition is met again.`],
+                    code: `<pre><code><span class="keyword">public</span> <span class="keyword">int</span>[]? <span class="method">SubarraySum</span>(<span class="keyword">int</span>[] n, <span class="keyword">int</span> t) { ... }</code></pre>`,
+                     takeaways: [ { title: 'Time Complexity', value: 'O(n)' }, { title: 'Space Complexity', value: 'O(1)' }, { title: 'Core Idea', value: 'Expand & Contract' } ]
+                }
+            },
+            {
+                id: 'problem3', title: 'Two Sum on a Sorted Array', difficulty: 'Easy', difficultyColor: 'bg-green-100 text-green-800', tags: 'Two Pointers',
+                statement: 'Given a 1-indexed sorted array of integers, find two numbers that add up to a specific `target`.',
+                input: [2, 7, 11, 15], target: 9,
+                solution: {
+                    explanation: [`Since the array is sorted, we use two pointers, 'left' at the start and 'right' at the end.`, `If their sum is too small, we increment 'left'. If too large, we decrement 'right'. This efficiently narrows the search.` ],
+                    code: `<pre><code><span class="keyword">public</span> <span class="keyword">int</span>[] <span class="method">TwoSum</span>(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> t) { ... }</code></pre>`,
+                    takeaways: [ { title: 'Time Complexity', value: 'O(n)' }, { title: 'Space Complexity', value: 'O(1)' }, { title: 'Core Idea', value: 'Converging Pointers' } ]
+                }
+            },
+            {
+                id: 'problem4', title: 'Subarray Sums Divisible by K', difficulty: 'Hard', difficultyColor: 'bg-red-100 text-red-800', tags: 'Prefix Sum, Hashing',
+                statement: 'Given an array `nums` and an integer `k`, return the number of non-empty subarrays with a sum divisible by `k`.',
+                input: [4, 5, 0, -2, -3, 1], k: 5,
+                solution: {
+                    explanation: [`The key is that if (prefix[j] - prefix[i]) % k == 0, then prefix[j] % k == prefix[i] % k.`, `We use a hash map to store frequencies of prefix sum remainders. For each new remainder, if we've seen it 'c' times, we add 'c' to our count.`],
+                    code: `<pre><code><span class="keyword">public</span> <span class="keyword">int</span> <span class="method">DivByK</span>(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k) { ... }</code></pre>`,
+                    takeaways: [ { title: 'Time Complexity', value: 'O(n)' }, { title: 'Space Complexity', value: 'O(k)' }, { title: 'Core Idea', value: 'Remainder Frequencies' } ]
+                }
+            }
+        ];
+
+        const visualizationRenderers = {
+            problem1: (container, data) => {
+                container.innerHTML = `<div class="chart-container"><canvas></canvas></div><div class="text-center mt-4"><p class="text-lg">Current Window Sum: <span class="sum-display font-bold">...</span></p><button class="next-btn mt-2 bg-[--accent-secondary] text-black font-bold py-2 px-4 rounded hover:bg-[--border-color]">Next Step</button><button class="reset-btn mt-2 bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded hover:bg-gray-400">Reset</button></div>`;
+                const canvas = container.querySelector('canvas');
+                const sumEl = container.querySelector('.sum-display');
+                const nextBtn = container.querySelector('.next-btn');
+                const resetBtn = container.querySelector('.reset-btn');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d'); const k = data.k; let currentIndex = 0; let chart;
+                function initializeChart() { if (chart) chart.destroy(); chart = new Chart(ctx, { type: 'bar', data: { labels: data.input.map((_, i) => `[${i}]`), datasets: [{ label: 'Array Values', data: data.input, backgroundColor: 'rgba(166, 156, 138, 0.4)', borderColor: 'rgba(166, 156, 138, 1)', borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false }, tooltip: { enabled: false } } } }); }
+                function updateVisualization() { const windowEnd = currentIndex + k; if (windowEnd > data.input.length) return; chart.data.datasets[0].backgroundColor = data.input.map((_, i) => (i >= currentIndex && i < windowEnd) ? 'rgba(115, 104, 85, 0.8)' : 'rgba(166, 156, 138, 0.4)'); chart.update(); sumEl.textContent = data.input.slice(currentIndex, windowEnd).reduce((a, b) => a + b, 0); if (windowEnd >= data.input.length) nextBtn.disabled = true; }
+                nextBtn.addEventListener('click', () => { if (currentIndex + k < data.input.length) { currentIndex++; updateVisualization(); } });
+                resetBtn.addEventListener('click', () => { currentIndex = 0; nextBtn.disabled = false; initializeChart(); updateVisualization(); });
+                initializeChart(); updateVisualization();
+            },
+            problem2: (container, data) => {
+                container.innerHTML = `<div class="chart-container"><canvas></canvas></div><div class="text-center mt-4"><p class="text-lg">Left: <span class="left-ptr font-bold">0</span> | Right: <span class="right-ptr font-bold">0</span> | Sum: <span class="sum-display font-bold">...</span></p><p class="status-display text-md mt-1">Status: Initializing</p><button class="next-btn mt-2 bg-[--accent-secondary] text-black font-bold py-2 px-4 rounded hover:bg-[--border-color]">Next Step</button><button class="reset-btn mt-2 bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded hover:bg-gray-400">Reset</button></div>`;
+                const canvas = container.querySelector('canvas');
+                const leftEl = container.querySelector('.left-ptr');
+                const rightEl = container.querySelector('.right-ptr');
+                const sumEl = container.querySelector('.sum-display');
+                const statusEl = container.querySelector('.status-display');
+                const nextBtn = container.querySelector('.next-btn');
+                const resetBtn = container.querySelector('.reset-btn');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d'); let left = 0, right = 0, currentSum = 0, finished = false; let chart;
+                function initializeChart() { if (chart) chart.destroy(); chart = new Chart(ctx, { type: 'bar', data: { labels: data.input.map((_, i) => `[${i}]`), datasets: [{ label: 'Array Values', data: data.input, backgroundColor: 'rgba(166, 156, 138, 0.4)', borderColor: 'rgba(166, 156, 138, 1)', borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false }, tooltip: { enabled: false } } } }); }
+                function updateVisualization() { chart.data.datasets[0].backgroundColor = data.input.map((_, i) => (i >= left && i < right) ? 'rgba(115, 104, 85, 0.8)' : 'rgba(166, 156, 138, 0.4)'); chart.update(); leftEl.textContent = left; rightEl.textContent = right > 0 ? right - 1 : 0; sumEl.textContent = currentSum; }
+                function step() { if (finished || right > data.input.length) return; if (currentSum === data.target) { statusEl.textContent = `Target ${data.target} found! Window [${left}, ${right-1}].`; finished = true; nextBtn.disabled = true; return; } if (currentSum < data.target && right < data.input.length) { statusEl.textContent = `Sum ${currentSum} < ${data.target}. Expanding...`; currentSum += data.input[right]; right++; } else if (currentSum > data.target) { statusEl.textContent = `Sum ${currentSum} > ${data.target}. Shrinking...`; currentSum -= data.input[left]; left++; } else if (right >= data.input.length) { statusEl.textContent = `End of array. Target not found.`; finished = true; nextBtn.disabled = true; } updateVisualization(); if (currentSum === data.target) { statusEl.textContent = `Target ${data.target} found! Window [${left}, ${right-1}].`; finished = true; nextBtn.disabled = true; } }
+                nextBtn.addEventListener('click', step);
+                resetBtn.addEventListener('click', () => { left = 0; right = 0; currentSum = 0; finished = false; nextBtn.disabled = false; statusEl.textContent = 'Status: Initializing'; initializeChart(); updateVisualization(); });
+                initializeChart(); updateVisualization();
+            },
+            problem3: (container, data) => {
+                container.innerHTML = `<div class="nodes-container flex justify-center items-end p-8 space-x-4 min-h-[150px]"></div><div class="text-center mt-4"><p class="text-lg">Sum: <span class="sum-display font-bold">...</span> | Target: ${data.target}</p><p class="status-display text-md mt-1">Status: Initializing</p><button class="next-btn mt-2 bg-[--accent-secondary] text-black font-bold py-2 px-4 rounded hover:bg-[--border-color]">Next Step</button><button class="reset-btn mt-2 bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded hover:bg-gray-400">Reset</button></div>`;
+                const nodesContainer = container.querySelector('.nodes-container');
+                const sumEl = container.querySelector('.sum-display');
+                const statusEl = container.querySelector('.status-display');
+                const nextBtn = container.querySelector('.next-btn');
+                const resetBtn = container.querySelector('.reset-btn');
+                let left = 0; let right = data.input.length - 1;
+                function renderNodes() { nodesContainer.innerHTML = data.input.map((val, i) => `<div class="flex flex-col items-center"><div class="pointer-display text-2xl h-8 font-mono text-[--accent-primary-hover]" data-idx="${i}"></div><div class="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold ${i === left || i === right ? 'bg-[--accent-primary-hover] text-white' : 'bg-[--sidebar-bg] text-[--text-secondary]'}">${val}</div></div>`).join(''); if (left < right) { nodesContainer.querySelector(`.pointer-display[data-idx="${left}"]`).innerHTML = 'L'; nodesContainer.querySelector(`.pointer-display[data-idx="${right}"]`).innerHTML = 'R'; } }
+                function step() { if (left >= right) { statusEl.textContent = 'Pointers crossed. Target not found.'; nextBtn.disabled = true; return; } const sum = data.input[left] + data.input[right]; sumEl.textContent = `${data.input[left]} + ${data.input[right]} = ${sum}`; if (sum === data.target) { statusEl.textContent = `Found! Sum equals target.`; nextBtn.disabled = true; } else if (sum < data.target) { statusEl.textContent = `${sum} < ${data.target}. Move Left pointer right.`; left++; } else { statusEl.textContent = `${sum} > ${data.target}. Move Right pointer left.`; right--; } renderNodes(); }
+                nextBtn.addEventListener('click', step);
+                resetBtn.addEventListener('click', () => { left = 0; right = data.input.length - 1; statusEl.textContent = `Status: Initializing`; sumEl.textContent = '...'; nextBtn.disabled = false; renderNodes(); });
+                renderNodes();
+            },
+            problem4: (container, data) => {
+                container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="overflow-x-auto"><h5 class="font-bold text-center mb-2">Calculation Steps</h5><table class="w-full text-left border-collapse"><thead><tr><th class="border-b-2 p-2">Idx</th><th class="border-b-2 p-2">Num</th><th class="border-b-2 p-2">PrefixSum</th><th class="border-b-2 p-2">Rem</th></tr></thead><tbody class="steps-body"></tbody></table></div><div><h5 class="font-bold text-center mb-2">Remainder Frequencies</h5><table class="w-full text-left border-collapse"><thead><tr><th class="border-b-2 p-2">Rem</th><th class="border-b-2 p-2">Freq</th></tr></thead><tbody class="freq-body"></tbody></table></div></div><div class="text-center mt-6"><p class="text-xl">Total Count: <span class="count-display font-bold">0</span></p><p class="status-display text-md mt-1">Status: Initializing</p><button class="next-btn mt-2 bg-[--accent-secondary] text-black font-bold py-2 px-4 rounded hover:bg-[--border-color]">Next Step</button><button class="reset-btn mt-2 bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded hover:bg-gray-400">Reset</button></div>`;
+                const stepsBody = container.querySelector('.steps-body'), freqBody = container.querySelector('.freq-body'), countEl = container.querySelector('.count-display'), statusEl = container.querySelector('.status-display'), nextBtn = container.querySelector('.next-btn'), resetBtn = container.querySelector('.reset-btn');
+                let currentIndex = -1, count = 0, prefixSum = 0; let remainderFreq = { 0: 1 };
+                function updateFreqTable() { freqBody.innerHTML = ''; for (const [rem, freq] of Object.entries(remainderFreq)) { const row = freqBody.insertRow(); row.innerHTML = `<td class="border-b p-2">${rem}</td><td class="border-b p-2">${freq}</td>`; } }
+                function step() { if (currentIndex >= data.input.length - 1) { statusEl.textContent = 'Finished processing array.'; nextBtn.disabled = true; return; } currentIndex++; const num = data.input[currentIndex]; prefixSum += num; let remainder = prefixSum % data.k; if (remainder < 0) remainder += data.k; const row = stepsBody.insertRow(); Array.from(stepsBody.rows).forEach(r => r.classList.remove('bg-yellow-50')); row.classList.add('bg-yellow-50'); let statusText = ''; if (remainderFreq[remainder]) { statusText = `Rem ${remainder} seen before. Adding ${remainderFreq[remainder]} to count.`; count += remainderFreq[remainder]; remainderFreq[remainder]++; } else { statusText = `New rem ${remainder}. Freq is now 1.`; remainderFreq[remainder] = 1; } row.innerHTML = `<td class="border-b p-2">${currentIndex}</td><td class="border-b p-2">${num}</td><td class="border-b p-2">${prefixSum}</td><td class="border-b p-2">${remainder}</td>`; statusEl.textContent = `${statusText}`; countEl.textContent = count; updateFreqTable(); }
+                function reset() { currentIndex = -1; count = 0; prefixSum = 0; remainderFreq = { 0: 1 }; stepsBody.innerHTML = ''; countEl.textContent = '0'; statusEl.textContent = 'Status: Initializing'; nextBtn.disabled = false; updateFreqTable(); }
+                nextBtn.addEventListener('click', step); resetBtn.addEventListener('click', reset); reset();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const accordionContainer = document.getElementById('problems-accordion');
+            const mainContent = document.getElementById('main-content');
+            const resetBtn = document.getElementById('reset-btn');
+            const contentEl = document.getElementById('main-content');
+            let timerInterval;
+
+            problems.forEach(prob => {
+                const template = document.getElementById('problem-template').cloneNode(true);
+                template.id = prob.id;
+                template.classList.remove('hidden');
+                template.querySelector('.problem-title').textContent = prob.title;
+                const difficultyBadge = template.querySelector('.problem-difficulty-badge');
+                difficultyBadge.textContent = prob.difficulty;
+                difficultyBadge.className = prob.difficultyColor + ' ' + difficultyBadge.className;
+                template.querySelector('.problem-tags').textContent = prob.tags;
+                template.querySelector('.problem-statement').innerHTML = prob.statement;
+                let inputDisplay = `[${prob.input.join(', ')}]`;
+                if(prob.k) inputDisplay += `, k = ${prob.k}`;
+                if(prob.target) inputDisplay += `, target = ${prob.target}`;
+                template.querySelector('.problem-input-display').textContent = inputDisplay;
+                template.querySelector('.problem-explanation').innerHTML = prob.solution.explanation.map(p => `<p>${p}</p>`).join('');
+                template.querySelector('.problem-code').innerHTML = prob.solution.code;
+                template.querySelector('.problem-takeaways').innerHTML = prob.solution.takeaways.map(t => `<div class="bg-gray-50 p-3 rounded-md border border-gray-200"><h5 class="font-bold text-sm text-[--text-secondary]">${t.title}</h5><p class="text-lg font-semibold text-[--text-primary] mt-1">${t.value}</p></div>`).join('');
+                const visualizationContainer = template.querySelector('.problem-visualization-container');
+                const dataPayload = { input: prob.input, k: prob.k, target: prob.target };
+                visualizationRenderers[prob.id](visualizationContainer, dataPayload);
+                accordionContainer.appendChild(template);
+            });
+
+            accordionContainer.addEventListener('click', e => {
+                const header = e.target.closest('.accordion-header');
+                if (header) {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.accordion-icon');
+                    const isOpen = content.classList.contains('open');
+                    document.querySelectorAll('.solution-content.open').forEach(el => { el.classList.remove('open'); el.previousElementSibling.querySelector('.accordion-icon').classList.remove('rotate-45'); });
+                    if (!isOpen) { content.classList.add('open'); icon.classList.add('rotate-45'); }
+                    return;
+                }
+                const revealBtn = e.target.closest('.reveal-btn');
+                if (revealBtn) {
+                    revealBtn.nextElementSibling.classList.remove('hidden');
+                    revealBtn.style.display = 'none';
+                }
+            });
+            
+            function startMode(isContest) {
+                document.getElementById('overview').classList.add('hidden');
+                resetBtn.classList.remove('hidden');
+                document.querySelectorAll('.code-editor-container').forEach(c => c.classList.toggle('hidden', !isContest));
+                 mainContent.classList.toggle('contest-mode', isContest);
+
+                if (isContest) {
+                    document.getElementById('timer-display').classList.remove('hidden');
+                    let time = 20 * 60;
+                    timerInterval = setInterval(() => {
+                        time--;
+                        let minutes = Math.floor(time / 60);
+                        let seconds = time % 60;
+                        document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                        if (time <= 0) {
+                            clearInterval(timerInterval);
+                            alert("Time's up! Check the solutions.");
+                            mainContent.classList.remove('contest-mode');
+                        }
+                    }, 1000);
+                }
+            }
+
+            document.getElementById('contest-mode-btn').addEventListener('click', () => startMode(true));
+            document.getElementById('study-mode-btn').addEventListener('click', () => startMode(false));
+
+            resetBtn.addEventListener('click', () => {
+                document.getElementById('overview').classList.remove('hidden');
+                resetBtn.classList.add('hidden');
+                clearInterval(timerInterval);
+                timerInterval = null;
+                document.getElementById('timer-display').classList.add('hidden');
+                document.getElementById('timer').textContent = '20:00';
+                mainContent.classList.remove('contest-mode');
+                 document.querySelectorAll('.code-editor-container').forEach(c => c.classList.add('hidden'));
+                document.querySelectorAll('.solution-content.open').forEach(el => { el.classList.remove('open'); el.previousElementSibling.querySelector('.accordion-icon').classList.remove('rotate-45'); });
+                document.querySelectorAll('.solution-details').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.reveal-btn').forEach(btn => btn.style.display = 'block');
+                contentEl.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => { btn.classList.remove('border-[--accent-primary]', 'text-[--text-primary]'); btn.classList.add('border-transparent', 'text-gray-500'); });
+                    button.classList.add('border-[--accent-primary]', 'text-[--text-primary]'); button.classList.remove('border-transparent');
+                    tabContents.forEach(content => content.id === button.dataset.tab ? content.classList.remove('hidden') : content.classList.add('hidden'));
+                });
+            });
+
+            const progressBar = document.getElementById('progress-bar');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main > section');
+            function updateScroll() {
+                const scrollPosition = contentEl.scrollTop;
+                const totalHeight = contentEl.scrollHeight - contentEl.clientHeight;
+                const progress = totalHeight > 0 ? (scrollPosition / totalHeight) * 100 : 0;
+                progressBar.style.width = `${progress}%`;
+
+                let currentSectionId = '';
+                sections.forEach(section => {
+                    if (contentEl.scrollTop >= section.offsetTop - contentEl.offsetTop - 150) {
+                        currentSectionId = section.id;
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === `#${currentSectionId}`);
+                });
+            }
+            contentEl.addEventListener('scroll', updateScroll);
+            updateScroll();
+        });
+    </script>
+</body>
+</html>

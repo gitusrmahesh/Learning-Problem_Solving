@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intermediate Problem-Solving Curriculum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is structured around a weekly-themed navigation (tabs for Week 1-4). This approach was chosen to break the dense curriculum into digestible, focused segments, mirroring a student's weekly study plan. Users can easily navigate to a specific week's topics without overwhelming scrolling. Key interactions include tab-based content switching and hovering over a summary chart to see topic distribution. This user flow is intuitive and task-oriented, focusing on "what do I need to learn this week?". -->
+    <!-- Visualization & Content Choices: Report Info: Curriculum topic distribution -> Goal: Provide a high-level overview of the curriculum's focus areas -> Viz/Presentation Method: Donut Chart -> Interaction: Hover to see tooltips with topic names and relative weight -> Justification: A donut chart is ideal for showing part-to-whole relationships, allowing users to quickly grasp the main themes of the curriculum before diving into details. -> Library/Method: Chart.js (Canvas). The main content is organized into cards for scannability, with topics grouped by week. This enhances readability and logical flow. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .nav-btn {
+            transition: all 0.3s ease;
+        }
+        .nav-btn.active {
+            background-color: #A58258;
+            color: #FFFFFF;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .content-card {
+            background-color: #FFFFFF;
+            border: 1px solid #F0EBE3;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#A58258]">Intermediate Problem-Solving</h1>
+            <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">A structured 1-month curriculum to enhance your coding and analytical skills.</p>
+        </header>
+
+        <main>
+            <nav class="flex justify-center items-center space-x-2 md:space-x-4 mb-12 p-2 bg-[#F0EBE3] rounded-full shadow-inner w-full max-w-lg mx-auto">
+                <button data-week="1" class="nav-btn week-nav-btn active flex-1 text-center py-2 px-4 rounded-full font-semibold text-gray-700 hover:bg-white">Week 1</button>
+                <button data-week="2" class="nav-btn week-nav-btn flex-1 text-center py-2 px-4 rounded-full font-semibold text-gray-700 hover:bg-white">Week 2</button>
+                <button data-week="3" class="nav-btn week-nav-btn flex-1 text-center py-2 px-4 rounded-full font-semibold text-gray-700 hover:bg-white">Week 3</button>
+                <button data-week="4" class="nav-btn week-nav-btn flex-1 text-center py-2 px-4 rounded-full font-semibold text-gray-700 hover:bg-white">Week 4</button>
+            </nav>
+
+            <div id="curriculum-content">
+                <!-- Content will be injected by JavaScript -->
+            </div>
+            
+            <section id="summary-section" class="mt-16">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold text-[#A58258] mb-4">Curriculum Focus</h2>
+                        <p class="text-gray-600 mb-6">This curriculum is designed to provide a balanced foundation, with significant emphasis on array-based techniques which are fundamental to many complex problems. The donut chart visualizes the distribution of key topics across the month.</p>
+                        <div class="chart-container">
+                            <canvas id="focusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="space-y-8">
+                        <div class="content-card p-6 md:p-8">
+                            <h3 class="text-xl font-bold text-[#A58258] mb-3">🗓️ Weekly Practice Plan</h3>
+                            <p class="text-gray-600 mb-4">Follow this schedule each week to maximize your learning and retention. Consistency is key to building strong problem-solving habits.</p>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-start"><span class="font-bold w-24">Day 1–2:</span><span>Learn theory and study guided examples.</span></li>
+                                <li class="flex items-start"><span class="font-bold w-24">Day 3–5:</span><span>Solve 5–8 focused problems on the topic.</span></li>
+                                <li class="flex items-start"><span class="font-bold w-24">Day 6:</span><span>Engage in mixed problem practice.</span></li>
+                                <li class="flex items-start"><span class="font-bold w-24">Day 7:</span><span>Participate in a weekly timed contest.</span></li>
+                            </ul>
+                        </div>
+                        <div class="content-card p-6 md:p-8">
+                            <h3 class="text-xl font-bold text-[#A58258] mb-3">✅ Expected Outcome</h3>
+                             <p class="text-gray-600 mb-4">After successfully completing this one-month curriculum, you will have developed a solid foundation in essential data structures and algorithms, preparing you for more advanced topics.</p>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Strong grasp of complexity analysis.</li>
+                                <li>Comfort with arrays and strings.</li>
+                                <li>Familiarity with sorting and bit manipulation.</li>
+                                <li>Readiness for intermediate DSA topics.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const curriculumData = {
+                1: {
+                    title: "Foundations & Complexity",
+                    intro: "This foundational week focuses on understanding the core principles of problem-solving and how to measure the efficiency of your code. Mastering these concepts is crucial before tackling more complex data structures and algorithms.",
+                    topics: [
+                        { name: "Introduction to Problem Solving", points: ["Understanding problem statements", "Breaking problems into subproblems", "Dry runs, edge cases, and brute force thinking"] },
+                        { name: "Time and Space Complexity", points: ["Big-O, Big-Θ, Big-Ω notations", "Best, worst, and average case analysis", "Common complexities: O(1), O(log n), O(n), O(n log n), O(n²)", "Trade-offs between time & space"] }
+                    ]
+                },
+                2: {
+                    title: "Arrays & Techniques",
+                    intro: "Week 2 dives deep into arrays, one of the most fundamental data structures. You'll learn essential techniques for manipulating and analyzing array data efficiently, which are patterns that appear in a wide range of problems.",
+                    topics: [
+                        { name: "Introduction to Arrays", points: ["Static vs dynamic arrays", "Indexing, traversals, insertion, deletion"] },
+                        { name: "Array Techniques", points: ["Prefix sum, suffix sum", "Sliding window (fixed & variable)", "Two pointers (start-end technique)", "Kadane’s Algorithm (max subarray sum)"] },
+                        { name: "Memory Management", points: ["Stack vs Heap memory", "Memory allocation in arrays", "Pass-by-value vs pass-by-reference"] }
+                    ]
+                },
+                3: {
+                    title: "Sorting & Bit Manipulation",
+                    intro: "This week covers two important areas: sorting algorithms, which are critical for organizing data, and bit manipulation, a powerful tool for optimization and solving specific types of problems with high efficiency.",
+                    topics: [
+                        { name: "Sorting Basics", points: ["Bubble, Selection, Insertion sort (O(n²))", "Merge sort, Quick sort (O(n log n))", "Counting sort, Radix sort (non-comparison)", "Using inbuilt sorting functions"] },
+                        { name: "Bit Manipulation Basics", points: ["AND, OR, XOR, NOT, left/right shift", "Check even/odd, set/unset bits", "Counting set bits (Brian Kernighan’s Algorithm)", "Applications: Find unique element, Subset generation"] }
+                    ]
+                },
+                4: {
+                    title: "Strings & Mixed Problem Solving",
+                    intro: "The final week focuses on string manipulation and consolidates your learning. You will tackle common string-based problems and learn advanced pattern matching basics, preparing you for real-world coding challenges.",
+                    topics: [
+                        { name: "Problems on Strings", points: ["Char array vs string object", "Palindrome and Anagram checks", "String reversal, substring search", "Hashing with strings (frequency maps)"] },
+                        { name: "Advanced Pattern Matching", points: ["Basics of KMP (Knuth-Morris-Pratt)", "Basics of Rabin-Karp algorithm"] }
+                    ]
+                }
+            };
+
+            const contentContainer = document.getElementById('curriculum-content');
+            const navButtons = document.querySelectorAll('.week-nav-btn');
+
+            function renderContent(week) {
+                const data = curriculumData[week];
+                if (!data) return;
+
+                let topicsHtml = data.topics.map(topic => `
+                    <div class="content-card p-6">
+                        <h4 class="font-bold text-lg text-gray-800 mb-3">${topic.name}</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                            ${topic.points.map(point => `<li>${point}</li>`).join('')}
+                        </ul>
+                    </div>
+                `).join('');
+
+                contentContainer.innerHTML = `
+                    <section id="week-${week}" class="week-content">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-bold text-[#A58258]">${data.title}</h2>
+                            <p class="mt-2 text-gray-600 max-w-2xl mx-auto">${data.intro}</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${topicsHtml}
+                        </div>
+                    </section>
+                `;
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const week = button.dataset.week;
+                    
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    renderContent(week);
+                });
+            });
+
+            renderContent(1);
+
+            const ctx = document.getElementById('focusChart').getContext('2d');
+            const focusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Foundations', 'Arrays & Techniques', 'Sorting & Bits', 'Strings'],
+                    datasets: [{
+                        label: 'Curriculum Focus',
+                        data: [20, 40, 25, 15],
+                        backgroundColor: [
+                            '#D6C3AB',
+                            '#A58258',
+                            '#C3A98B',
+                            '#EAE0D5',
+                        ],
+                        borderColor: '#FDFBF8',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#4A4A4A',
+                                font: {
+                                    family: "'Inter', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        });
+    </script>
+</body>
+</html>

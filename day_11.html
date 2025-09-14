@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 11: Sliding Window (Variable Size)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The application is structured as an interactive educational module. It begins with a conceptual overview, followed by two distinct, interactive problem-solving sections. Each problem section includes a description, an interactive visualization where users can step through the algorithm, and a detailed C# code explanation. This thematic, step-by-step approach was chosen because it mirrors a typical learning process: understand the theory, then apply it to guided examples. The interactive element is crucial for building intuition about how the window expands and shrinks, which is the core of the technique. A final section provides further practice problems to solidify learning. -->
+    <!-- Visualization & Content Choices: Report Info: Explain variable-size sliding window. Goal: Teach the algorithm's mechanics. Viz/Method: Interactive bar chart (using Chart.js) with a colored overlay representing the window. Interaction: A "Next Step" button allows users to manually advance the algorithm, seeing the window pointers, current sum/char count, and result update in real-time. Justification: This manual, step-by-step interaction is more effective for learning than a passive animation, as it forces the user to think about why the window is changing. The bar chart provides a clear visual representation of the array/string being processed. The code is presented in styled blocks with a copy feature for ease of use. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #4a4a4a;
+        }
+        .code-block {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            position: relative;
+            overflow-x: auto;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #4a5568;
+            color: #e2e8f0;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #718096;
+        }
+        .tab {
+            transition: all 0.3s ease;
+        }
+        .tab-active {
+            border-color: #4f46e5;
+            color: #4f46e5;
+            background-color: #e0e7ff;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 200px;
+            max-height: 250px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 250px;
+            }
+        }
+
+        .window-overlay {
+            position: absolute;
+            background-color: rgba(79, 70, 229, 0.2);
+            border-left: 2px solid rgba(79, 70, 229, 0.8);
+            border-right: 2px solid rgba(79, 70, 229, 0.8);
+            top: 0;
+            height: 100%;
+            pointer-events: none;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .pointer-label {
+            position: absolute;
+            bottom: -25px;
+            transform: translateX(-50%);
+            background-color: rgba(79, 70, 229, 0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 py-8 md:py-12">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">30-Day Daily Roadmap</h1>
+            <p class="text-lg md:text-xl text-gray-600 mt-2">Day 11: Sliding Window (Variable Size)</p>
+        </header>
+
+        <main>
+            <!-- Navigation Tabs -->
+            <div class="mb-8 border-b border-gray-200">
+                <nav class="flex flex-wrap -mb-px" id="tabs-container">
+                    <button data-tab="intro" class="tab tab-active text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600">Introduction</button>
+                    <button data-tab="problem1" class="tab text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600">Problem 1: Smallest Subarray</button>
+                    <button data-tab="problem2" class="tab text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600">Problem 2: Longest Substring</button>
+                    <button data-tab="practice" class="tab text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600">Practice</button>
+                </nav>
+            </div>
+
+            <!-- Content Sections -->
+            <div id="tab-content">
+                <div id="intro-content" class="space-y-6">
+                    <h2 class="text-3xl font-bold text-gray-800">The Variable-Size Sliding Window Technique</h2>
+                    <p class="text-lg text-gray-700">The variable-size sliding window technique is a powerful approach for solving problems that involve finding a subarray or substring that satisfies a certain condition. Unlike the fixed-size window, the size of this window (the distance between the start and end pointers) changes dynamically as we iterate through the data.</p>
+                    <div class="grid md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-3">Core Idea</h3>
+                            <p class="text-gray-700">The general idea is to use two pointers, `start` and `end`, to define the current "window". We expand the window by moving the `end` pointer to the right. Once the window satisfies a certain condition, we try to shrink it from the left by moving the `start` pointer to the right, seeking a more optimal solution (e.g., a smaller subarray or a longer substring).</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-md border">
+                            <h4 class="text-xl font-semibold text-gray-700 mb-2">General Algorithm Template</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                                <li>Initialize `start = 0`, `end = 0`, and other necessary variables.</li>
+                                <li>Iterate with the `end` pointer from left to right to expand the window.</li>
+                                <li>Update state based on the element at `end`.</li>
+                                <li>Enter a `while` loop to shrink the window from the left as long as a condition is met.</li>
+                                <li>Inside the `while` loop:
+                                    <ul class="list-disc list-inside ml-4 mt-1">
+                                      <li>Update the answer (e.g., min length, max length).</li>
+                                      <li>Remove the effect of the element at `start`.</li>
+                                      <li>Increment `start`.</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="problem1-content" class="hidden space-y-6">
+                    <h2 class="text-3xl font-bold text-gray-800">Problem 1: Smallest Subarray with Sum ≥ Target</h2>
+                    <p class="text-lg text-gray-700">Given an array of positive integers and a positive integer `target`, find the length of the smallest contiguous subarray whose sum is greater than or equal to `target`. If there is no such subarray, return 0.</p>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-center text-gray-800 mb-4">Interactive Visualization</h3>
+                        <div class="flex flex-col md:flex-row gap-4 items-center justify-center mb-4">
+                            <div><label for="p1-array-input" class="font-medium">Array (comma-separated):</label> <input type="text" id="p1-array-input" value="2, 1, 5, 2, 3, 2" class="p-2 border rounded-md"></div>
+                            <div><label for="p1-target-input" class="font-medium">Target:</label> <input type="number" id="p1-target-input" value="7" class="p-2 border rounded-md w-20"></div>
+                            <button id="p1-start-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Start/Reset</button>
+                            <button id="p1-step-btn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition" disabled>Next Step</button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="p1-chart"></canvas>
+                             <div id="p1-window" class="window-overlay" style="display: none;">
+                                 <div id="p1-start-label" class="pointer-label"></div>
+                                 <div id="p1-end-label" class="pointer-label"></div>
+                             </div>
+                        </div>
+                        <div class="text-center mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-lg">
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>Start:</strong> <span id="p1-start-val">N/A</span></div>
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>End:</strong> <span id="p1-end-val">N/A</span></div>
+                            <div class="bg-indigo-100 p-3 rounded-md"><strong>Current Sum:</strong> <span id="p1-sum-val">N/A</span></div>
+                            <div class="bg-green-100 p-3 rounded-md"><strong>Min Length:</strong> <span id="p1-min-len-val">N/A</span></div>
+                        </div>
+                        <p id="p1-status" class="text-center text-lg mt-4 font-medium text-gray-700 h-6"></p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">C# Implementation & Explanation</h3>
+                        <p class="text-gray-700 mb-4">We iterate through the array with the `end` pointer, adding each element to `windowSum`. Once `windowSum` is at least `target`, we enter a `while` loop. Inside this loop, we record the current window's length if it's the smallest we've seen, then we shrink the window by subtracting the `start` element's value and incrementing `start`. We repeat this shrinking process until the `windowSum` is less than the `target` again, at which point we continue expanding with the `end` pointer.</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('p1-code')">Copy</button>
+                            <pre><code id="p1-code">public class Solution {
+    public int MinSubArrayLen(int target, int[] nums) {
+        if (nums == null || nums.Length == 0) {
+            return 0;
+        }
+
+        int minLength = int.MaxValue;
+        int windowSum = 0;
+        int windowStart = 0;
+
+        for (int windowEnd = 0; windowEnd < nums.Length; windowEnd++) {
+            windowSum += nums[windowEnd];
+
+            while (windowSum >= target) {
+                minLength = Math.Min(minLength, windowEnd - windowStart + 1);
+                windowSum -= nums[windowStart];
+                windowStart++;
+            }
+        }
+
+        return minLength == int.MaxValue ? 0 : minLength;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="problem2-content" class="hidden space-y-6">
+                     <h2 class="text-3xl font-bold text-gray-800">Problem 2: Longest Substring with K Unique Characters</h2>
+                    <p class="text-lg text-gray-700">Given a string, find the length of the longest substring that contains no more than `K` distinct characters.</p>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-center text-gray-800 mb-4">Interactive Visualization</h3>
+                         <div class="flex flex-col md:flex-row gap-4 items-center justify-center mb-4">
+                            <div><label for="p2-string-input" class="font-medium">String:</label> <input type="text" id="p2-string-input" value="araaci" class="p-2 border rounded-md"></div>
+                            <div><label for="p2-k-input" class="font-medium">K:</label> <input type="number" id="p2-k-input" value="2" class="p-2 border rounded-md w-20"></div>
+                            <button id="p2-start-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Start/Reset</button>
+                            <button id="p2-step-btn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition" disabled>Next Step</button>
+                        </div>
+                        <div class="chart-container">
+                             <canvas id="p2-chart"></canvas>
+                             <div id="p2-window" class="window-overlay" style="display: none;">
+                                <div id="p2-start-label" class="pointer-label"></div>
+                                <div id="p2-end-label" class="pointer-label"></div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-lg">
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>Start:</strong> <span id="p2-start-val">N/A</span></div>
+                            <div class="bg-gray-100 p-3 rounded-md"><strong>End:</strong> <span id="p2-end-val">N/A</span></div>
+                            <div class="bg-indigo-100 p-3 rounded-md"><strong>Unique Chars:</strong> <span id="p2-unique-val">N/A</span></div>
+                            <div class="bg-green-100 p-3 rounded-md"><strong>Max Length:</strong> <span id="p2-max-len-val">N/A</span></div>
+                        </div>
+                        <div id="p2-freq-map" class="text-center mt-4 font-mono"></div>
+                        <p id="p2-status" class="text-center text-lg mt-4 font-medium text-gray-700 h-6"></p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">C# Implementation & Explanation</h3>
+                        <p class="text-gray-700 mb-4">We use a dictionary (hash map) to keep track of the frequency of characters in the current window. We expand the window with `end`, adding characters to the map. If the number of unique characters in the map exceeds `K`, we enter a `while` loop to shrink the window from the left. In the loop, we decrement the count of the `start` character. If its count becomes zero, we remove it from the map. We continue shrinking until the map's size is back to `K`. At each valid step (map size ≤ K), we update our `maxLength`.</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('p2-code')">Copy</button>
+                            <pre><code id="p2-code">public class Solution {
+    public int LengthOfLongestSubstringKDistinct(string s, int k) {
+        if (string.IsNullOrEmpty(s) || k == 0) {
+            return 0;
+        }
+
+        int maxLength = 0;
+        int windowStart = 0;
+        Dictionary&lt;char, int&gt; charFrequency = new Dictionary&lt;char, int&gt;();
+
+        for (int windowEnd = 0; windowEnd < s.Length; windowEnd++) {
+            char rightChar = s[windowEnd];
+            if (!charFrequency.ContainsKey(rightChar)) {
+                charFrequency[rightChar] = 0;
+            }
+            charFrequency[rightChar]++;
+
+            while (charFrequency.Count > k) {
+                char leftChar = s[windowStart];
+                charFrequency[leftChar]--;
+                if (charFrequency[leftChar] == 0) {
+                    charFrequency.Remove(leftChar);
+                }
+                windowStart++;
+            }
+
+            maxLength = Math.Max(maxLength, windowEnd - windowStart + 1);
+        }
+
+        return maxLength;
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                 <div id="practice-content" class="hidden space-y-6">
+                    <h2 class="text-3xl font-bold text-gray-800">Practice Problems</h2>
+                    <p class="text-lg text-gray-700">The best way to master a technique is to practice. Try applying the variable-size sliding window pattern to these problems. They offer slight variations that will challenge and solidify your understanding.</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                            <h3 class="text-xl font-semibold text-indigo-600">LeetCode 904. Fruit Into Baskets</h3>
+                            <p class="mt-2 text-gray-600">This is essentially "Longest Substring with K=2 Unique Characters". A great starting point to reinforce the pattern.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                            <h3 class="text-xl font-semibold text-indigo-600">LeetCode 3. Longest Substring Without Repeating Characters</h3>
+                            <p class="mt-2 text-gray-600">Here, your condition for shrinking is finding a duplicate character within the window. The goal is to maximize length with all unique characters.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                             <h3 class="text-xl font-semibold text-indigo-600">LeetCode 76. Minimum Window Substring</h3>
+                            <p class="mt-2 text-gray-600">A more advanced version where you need to find the smallest window in one string that contains all characters of another string. You'll need two frequency maps for this.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                             <h3 class="text-xl font-semibold text-indigo-600">LeetCode 424. Longest Repeating Character Replacement</h3>
+                            <p class="mt-2 text-gray-600">This problem is tricky. The window's validity condition is `windowLength - maxFrequency <= k`. You shrink when this condition is violated.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const tabsContainer = document.getElementById('tabs-container');
+        const tabContent = document.getElementById('tab-content');
+
+        tabsContainer.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const tabName = e.target.getAttribute('data-tab');
+
+                // Update tabs
+                for (const child of tabsContainer.children) {
+                    child.classList.remove('tab-active');
+                }
+                e.target.classList.add('tab-active');
+
+                // Update content
+                for (const child of tabContent.children) {
+                    child.classList.add('hidden');
+                }
+                document.getElementById(`${tabName}-content`).classList.remove('hidden');
+            }
+        });
+
+        function copyCode(elementId) {
+            const codeEl = document.getElementById(elementId);
+            const text = codeEl.innerText;
+            
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = text;
+            document.body.appendChild(tempTextArea);
+            
+            tempTextArea.select();
+            try {
+                document.execCommand('copy');
+                const btn = codeEl.previousElementSibling;
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+            
+            document.body.removeChild(tempTextArea);
+        }
+
+        // --- Problem 1: Smallest Subarray ---
+        const p1State = {
+            chart: null,
+            data: [],
+            target: 0,
+            start: 0,
+            end: 0,
+            sum: 0,
+            minLength: Infinity,
+            isFinished: false,
+        };
+
+        const p1ChartCanvas = document.getElementById('p1-chart').getContext('2d');
+        const p1ArrayInput = document.getElementById('p1-array-input');
+        const p1TargetInput = document.getElementById('p1-target-input');
+        const p1StartBtn = document.getElementById('p1-start-btn');
+        const p1StepBtn = document.getElementById('p1-step-btn');
+        const p1WindowEl = document.getElementById('p1-window');
+        const p1StartLabel = document.getElementById('p1-start-label');
+        const p1EndLabel = document.getElementById('p1-end-label');
+
+        function setupP1() {
+            p1State.data = p1ArrayInput.value.split(',').map(n => parseInt(n.trim(), 10)).filter(n => !isNaN(n));
+            p1State.target = parseInt(p1TargetInput.value, 10);
+            p1State.start = 0;
+            p1State.end = 0;
+            p1State.sum = 0;
+            p1State.minLength = Infinity;
+            p1State.isFinished = false;
+
+            if (p1State.chart) p1State.chart.destroy();
+
+            p1State.chart = new Chart(p1ChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: p1State.data.map(String),
+                    datasets: [{
+                        label: 'Array Values',
+                        data: p1State.data,
+                        backgroundColor: 'rgba(129, 140, 248, 0.5)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+
+            p1StepBtn.disabled = false;
+            p1WindowEl.style.display = 'block';
+            updateP1UI();
+            document.getElementById('p1-status').textContent = 'Ready to start. Press "Next Step".';
+        }
+        
+        function updateP1Window() {
+            if (!p1State.chart || p1State.isFinished) {
+                 p1WindowEl.style.display = 'none';
+                 return;
+            };
+            
+            const chartArea = p1State.chart.chartArea;
+            if (!chartArea) return;
+
+            const meta = p1State.chart.getDatasetMeta(0);
+            if (p1State.start >= meta.data.length || p1State.end > meta.data.length) return;
+            
+            const startX = meta.data[p1State.start].x - meta.data[p1State.start].width / 2;
+            const endX = (p1State.end > p1State.start) 
+                ? meta.data[p1State.end - 1].x + meta.data[p1State.end - 1].width / 2
+                : startX;
+            
+            p1WindowEl.style.left = `${startX}px`;
+            p1WindowEl.style.width = `${endX - startX}px`;
+            p1WindowEl.style.top = `${chartArea.top}px`;
+            p1WindowEl.style.height = `${chartArea.height}px`;
+
+            p1StartLabel.textContent = `S:${p1State.start}`;
+            p1StartLabel.style.left = `0%`;
+            p1EndLabel.textContent = `E:${p1State.end-1}`;
+            p1EndLabel.style.left = `100%`;
+        }
+
+        function updateP1UI() {
+            document.getElementById('p1-start-val').textContent = p1State.start;
+            document.getElementById('p1-end-val').textContent = p1State.end -1 < 0 ? 'N/A' : p1State.end -1;
+            document.getElementById('p1-sum-val').textContent = p1State.sum;
+            document.getElementById('p1-min-len-val').textContent = p1State.minLength === Infinity ? '∞' : p1State.minLength;
+            setTimeout(updateP1Window, 50); 
+        }
+
+        function stepP1() {
+            const statusEl = document.getElementById('p1-status');
+            if (p1State.end < p1State.data.length) {
+                 if (p1State.sum < p1State.target) {
+                    statusEl.textContent = `Expanding window. Adding nums[${p1State.end}] (${p1State.data[p1State.end]}) to sum.`;
+                    p1State.sum += p1State.data[p1State.end];
+                    p1State.end++;
+                 } else {
+                    statusEl.textContent = `Sum >= Target. Shrinking window. Found length ${p1State.end - p1State.start}. Removing nums[${p1State.start}].`;
+                    p1State.minLength = Math.min(p1State.minLength, p1State.end - p1State.start);
+                    p1State.sum -= p1State.data[p1State.start];
+                    p1State.start++;
+                 }
+            } else if (p1State.sum >= p1State.target) {
+                statusEl.textContent = `End of array. Shrinking window. Found length ${p1State.end - p1State.start}.`;
+                p1State.minLength = Math.min(p1State.minLength, p1State.end - p1State.start);
+                p1State.sum -= p1State.data[p1State.start];
+                p1State.start++;
+            } else {
+                 statusEl.textContent = `Algorithm finished. Final min length: ${p1State.minLength === Infinity ? 0 : p1State.minLength}.`;
+                 p1State.isFinished = true;
+                 p1StepBtn.disabled = true;
+            }
+            updateP1UI();
+        }
+        
+        p1StartBtn.addEventListener('click', setupP1);
+        p1StepBtn.addEventListener('click', stepP1);
+
+        // --- Problem 2: Longest Substring ---
+        const p2State = {
+            chart: null,
+            text: "",
+            k: 0,
+            start: 0,
+            end: 0,
+            maxLength: 0,
+            freqMap: new Map(),
+            isFinished: false,
+        };
+
+        const p2ChartCanvas = document.getElementById('p2-chart').getContext('2d');
+        const p2StringInput = document.getElementById('p2-string-input');
+        const p2KInput = document.getElementById('p2-k-input');
+        const p2StartBtn = document.getElementById('p2-start-btn');
+        const p2StepBtn = document.getElementById('p2-step-btn');
+        const p2WindowEl = document.getElementById('p2-window');
+        const p2StartLabel = document.getElementById('p2-start-label');
+        const p2EndLabel = document.getElementById('p2-end-label');
+
+        function setupP2() {
+            p2State.text = p2StringInput.value;
+            p2State.k = parseInt(p2KInput.value, 10);
+            p2State.start = 0;
+            p2State.end = 0;
+            p2State.maxLength = 0;
+            p2State.freqMap.clear();
+            p2State.isFinished = false;
+
+            if (p2State.chart) p2State.chart.destroy();
+
+            const charCodes = p2State.text.split('').map(c => c.charCodeAt(0));
+
+            p2State.chart = new Chart(p2ChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: p2State.text.split(''),
+                    datasets: [{
+                        label: 'Character ASCII Values',
+                        data: charCodes,
+                        backgroundColor: 'rgba(129, 140, 248, 0.5)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: false, ticks: { callback: (val) => String.fromCharCode(val) } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                }
+            });
+
+            p2StepBtn.disabled = false;
+            p2WindowEl.style.display = 'block';
+            updateP2UI();
+            document.getElementById('p2-status').textContent = 'Ready to start. Press "Next Step".';
+        }
+
+        function updateP2Window() {
+             if (!p2State.chart || p2State.isFinished) {
+                 p2WindowEl.style.display = 'none';
+                 return;
+            };
+            const chartArea = p2State.chart.chartArea;
+            if (!chartArea) return;
+            const meta = p2State.chart.getDatasetMeta(0);
+            if (p2State.start >= meta.data.length || p2State.end > meta.data.length) return;
+            const startX = meta.data[p2State.start].x - meta.data[p2State.start].width / 2;
+            const endX = (p2State.end > p2State.start) 
+                ? meta.data[p2State.end-1].x + meta.data[p2State.end - 1].width / 2
+                : startX;
+            
+            p2WindowEl.style.left = `${startX}px`;
+            p2WindowEl.style.width = `${endX - startX}px`;
+            p2WindowEl.style.top = `${chartArea.top}px`;
+            p2WindowEl.style.height = `${chartArea.height}px`;
+
+            p2StartLabel.textContent = `S:${p2State.start}`;
+            p2StartLabel.style.left = `0%`;
+            p2EndLabel.textContent = `E:${p2State.end-1}`;
+            p2EndLabel.style.left = `100%`;
+        }
+
+        function updateP2UI() {
+            document.getElementById('p2-start-val').textContent = p2State.start;
+            document.getElementById('p2-end-val').textContent = p2State.end - 1 < 0 ? 'N/A' : p2State.end - 1;
+            document.getElementById('p2-unique-val').textContent = p2State.freqMap.size;
+            document.getElementById('p2-max-len-val').textContent = p2State.maxLength;
+            
+            const freqText = Array.from(p2State.freqMap.entries()).map(([k, v]) => `${k}: ${v}`).join(' | ');
+            document.getElementById('p2-freq-map').textContent = freqText;
+
+            setTimeout(updateP2Window, 50);
+        }
+
+        function stepP2() {
+            const statusEl = document.getElementById('p2-status');
+            if (p2State.end >= p2State.text.length) {
+                statusEl.textContent = `Algorithm finished. Final max length: ${p2State.maxLength}.`;
+                p2State.isFinished = true;
+                p2StepBtn.disabled = true;
+                updateP2UI();
+                return;
+            }
+
+            if (p2State.freqMap.size <= p2State.k) {
+                const rightChar = p2State.text[p2State.end];
+                statusEl.textContent = `Expanding window. Adding '${rightChar}'.`;
+                p2State.freqMap.set(rightChar, (p2State.freqMap.get(rightChar) || 0) + 1);
+                
+                if (p2State.freqMap.size <= p2State.k) {
+                    p2State.maxLength = Math.max(p2State.maxLength, p2State.end - p2State.start + 1);
+                }
+                p2State.end++;
+            }
+
+            if(p2State.freqMap.size > p2State.k) {
+                const leftChar = p2State.text[p2State.start];
+                statusEl.textContent = `Unique count > K. Shrinking window. Removing '${leftChar}'.`;
+                p2State.freqMap.set(leftChar, p2State.freqMap.get(leftChar) - 1);
+                if (p2State.freqMap.get(leftChar) === 0) {
+                    p2State.freqMap.delete(leftChar);
+                }
+                p2State.start++;
+            }
+            updateP2UI();
+        }
+        
+        p2StartBtn.addEventListener('click', setupP2);
+        p2StepBtn.addEventListener('click', stepP2);
+    </script>
+</body>
+</html>

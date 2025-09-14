@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 12: Two Pointer Technique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: A single-page, tab-based interactive tutorial. The structure flows from a high-level concept explanation to three distinct, interactive examples (Pair Sum, Triplet Sum, Remove Duplicates), each with a visualizer and corresponding C# code. This tabbed, example-driven structure is chosen to break down a complex algorithm into manageable, explorable parts, facilitating learning by doing. The user can focus on one problem at a time, see the algorithm in action, and then view the implementation, which is the most effective way to teach a programming technique. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Two Pointer Technique Explanation -> Goal: Inform -> Viz: Text + HTML/CSS diagram of pointers -> Interaction: None -> Justification: Provides foundational knowledge before interaction. A simple visual aids comprehension.
+        - Report Info: Pair Sum Problem -> Goal: Teach -> Viz: Interactive HTML array visualization with animated pointers and a step-by-step text log -> Interaction: User can run the simulation -> Justification: Actively demonstrates the core two-pointer logic of converging from opposite ends. The log connects the visual movement to the decision-making process.
+        - Report Info: Triplet Sum Problem -> Goal: Teach -> Viz: Similar interactive visualization, but with one 'fixed' pointer and two moving pointers -> Interaction: User runs simulation -> Justification: Shows how the base technique can be extended to solve more complex problems (N-sum).
+        - Report Info: Remove Duplicates Problem -> Goal: Teach -> Viz: Interactive visualization showing in-place array modification with slow/fast runner pointers -> Interaction: User runs simulation -> Justification: Demonstrates a different pattern of the two-pointer technique where pointers move in the same direction but at different speeds.
+        - Report Info: C# Code -> Goal: Reference -> Viz: Static code blocks -> Interaction: None -> Justification: Provides the concrete implementation for the user to study and use.
+        - Library/Method: Vanilla JavaScript for all logic and DOM manipulation. Tailwind CSS for all styling.
+     -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        .code-block {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .tab-btn {
+            transition: all 0.3s ease-in-out;
+        }
+        .tab-btn.active {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .array-container {
+            display: flex;
+            gap: 4px;
+            position: relative;
+            min-height: 120px;
+            padding-top: 50px;
+            justify-content: center;
+        }
+        .array-cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #9ca3af;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            background-color: #f3f4f6;
+            position: relative;
+        }
+        .pointer {
+            position: absolute;
+            top: 0px;
+            width: 40px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            transition: left 0.5s ease-in-out;
+            padding: 2px;
+            border-radius: 0.25rem;
+        }
+        .pointer-left { background-color: #60a5fa; color: white; }
+        .pointer-right { background-color: #f97316; color: white; }
+        .pointer-fixed { background-color: #16a34a; color: white; }
+        .log-area {
+            height: 150px;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-family: monospace;
+            overflow-y: auto;
+        }
+        .gemini-explanation {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .gemini-explanation h5 {
+            font-weight: 600;
+            color: #0c4a6e;
+            margin-bottom: 0.5rem;
+        }
+        .gemini-explanation p, .gemini-explanation ul, .gemini-explanation li {
+             color: #0369a1;
+        }
+        .gemini-explanation ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+         .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #FFF;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <div class="container mx-auto p-4 sm:p-6 md:p-8">
+
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-900">Day 12: The Two Pointer Technique</h1>
+            <p class="text-lg text-gray-600 mt-2">An Interactive Guide to Solving Array Problems Efficiently in C#</p>
+        </header>
+
+        <main>
+            <section id="intro" class="mb-12 bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-900">What is the Two Pointer Technique?</h2>
+                <p class="mb-4 text-gray-700">The Two Pointer technique is an extremely common and efficient method for solving problems involving sorted arrays or linked lists. It involves using two pointers to iterate through the data structure, moving them based on certain conditions to find a solution. This approach can often reduce the time complexity from a brute-force O(n²) to a much more optimal O(n).</p>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-800 mb-2">The Core Idea</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                        <div class="flex-1">
+                            <p class="text-blue-700">Instead of using nested loops, we initialize two pointers, often at opposite ends of a sorted array. We then move them towards each other or in the same direction, narrowing down the search space with each step until we find the solution or the pointers meet/cross.</p>
+                        </div>
+                        <div class="flex-1 w-full max-w-sm">
+                            <div class="array-container pt-12 pb-4">
+                                <div class="array-cell">2</div>
+                                <div class="array-cell">4</div>
+                                <div class="array-cell">6</div>
+                                <div class="array-cell">8</div>
+                                <div class="array-cell">10</div>
+                                <div class="pointer pointer-left" style="left: calc(50% - 2.5*44px);">&#9660; Left</div>
+                                <div class="pointer pointer-right" style="left: calc(50% + 1.5*44px);">&#9660; Right</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="problems" class="bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-900 text-center">Interactive Problem Examples</h2>
+
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="-mb-px flex justify-center space-x-2 sm:space-x-4 md:space-x-8" aria-label="Tabs">
+                        <button class="tab-btn active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="pair-sum">Pair Sum</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 border-transparent" data-tab="triplet-sum">Triplet Sum</button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 border-transparent" data-tab="remove-duplicates">Remove Duplicates</button>
+                    </nav>
+                </div>
+
+                <div id="tab-content">
+                    <!-- Pair Sum Content -->
+                    <div id="pair-sum" class="tab-panel">
+                        <h3 class="text-xl font-medium mb-2">Problem: Find a Pair with a Given Sum</h3>
+                        <p class="mb-4 text-gray-600">Given a sorted array of integers `nums` and an integer `target`, return `true` if there are two numbers in the array that add up to `target`, otherwise return `false`.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-4">Interactive Visualizer</h4>
+                                <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
+                                    <div>
+                                        <label for="pair-sum-array" class="block text-sm font-medium text-gray-700">Sorted Array (comma-separated)</label>
+                                        <input type="text" id="pair-sum-array" value="2, 4, 5, 7, 8, 11, 15" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label for="pair-sum-target" class="block text-sm font-medium text-gray-700">Target Sum</label>
+                                        <input type="number" id="pair-sum-target" value="13" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    </div>
+                                    <button id="run-pair-sum" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">Run Simulation</button>
+                                </div>
+                                <div id="pair-sum-viz-container" class="array-container mt-4"></div>
+                                <div class="mt-4">
+                                    <h5 class="font-semibold text-sm mb-1">Log:</h5>
+                                    <div id="pair-sum-log" class="log-area"></div>
+                                </div>
+                                <div id="pair-sum-result" class="mt-4 font-bold text-center"></div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-4">C# Solution</h4>
+                                <div class="code-block" id="code-pair-sum">public bool HasPairSum(int[] nums, int target)
+{
+    if (nums == null || nums.Length < 2)
+    {
+        return false;
+    }
+
+    int left = 0;
+    int right = nums.Length - 1;
+
+    while (left < right)
+    {
+        int currentSum = nums[left] + nums[right];
+
+        if (currentSum == target)
+        {
+            return true;
+        }
+        else if (currentSum < target)
+        {
+            left++;
+        }
+        else // currentSum > target
+        {
+            right--;
+        }
+    }
+
+    return false;
+}</div>
+                                <button data-code-id="code-pair-sum" class="gemini-explain-btn mt-4 w-full flex items-center justify-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
+                                    <span>✨ Explain Code with Gemini</span>
+                                </button>
+                                <div id="explanation-code-pair-sum" class="gemini-explanation hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Triplet Sum Content -->
+                    <div id="triplet-sum" class="tab-panel hidden">
+                         <h3 class="text-xl font-medium mb-2">Problem: Find a Triplet with a Given Sum</h3>
+                        <p class="mb-4 text-gray-600">Given a sorted array of integers `nums` and an integer `target`, return `true` if there are three numbers in the array that add up to `target`, otherwise return `false`.</p>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                             <div>
+                                <h4 class="font-semibold mb-4">Interactive Visualizer</h4>
+                                <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
+                                    <div>
+                                        <label for="triplet-sum-array" class="block text-sm font-medium text-gray-700">Sorted Array (comma-separated)</label>
+                                        <input type="text" id="triplet-sum-array" value="-1, 0, 1, 2, -1, -4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label for="triplet-sum-target" class="block text-sm font-medium text-gray-700">Target Sum</label>
+                                        <input type="number" id="triplet-sum-target" value="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    </div>
+                                    <button id="run-triplet-sum" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">Run Simulation</button>
+                                </div>
+                                <div id="triplet-sum-viz-container" class="array-container mt-4"></div>
+                                <div class="mt-4">
+                                    <h5 class="font-semibold text-sm mb-1">Log:</h5>
+                                    <div id="triplet-sum-log" class="log-area"></div>
+                                </div>
+                                <div id="triplet-sum-result" class="mt-4 font-bold text-center"></div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-4">C# Solution</h4>
+                                <div class="code-block" id="code-triplet-sum">public bool HasTripletSum(int[] nums, int target)
+{
+    if (nums == null || nums.Length < 3)
+    {
+        return false;
+    }
+    
+    Array.Sort(nums);
+
+    for (int i = 0; i < nums.Length - 2; i++)
+    {
+        int left = i + 1;
+        int right = nums.Length - 1;
+        int newTarget = target - nums[i];
+
+        while (left < right)
+        {
+            int currentSum = nums[left] + nums[right];
+
+            if (currentSum == newTarget)
+            {
+                return true;
+            }
+            else if (currentSum < newTarget)
+            {
+                left++;
+            }
+            else
+            {
+                right--;
+            }
+        }
+    }
+
+    return false;
+}</div>
+                                <button data-code-id="code-triplet-sum" class="gemini-explain-btn mt-4 w-full flex items-center justify-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
+                                    <span>✨ Explain Code with Gemini</span>
+                                </button>
+                                <div id="explanation-code-triplet-sum" class="gemini-explanation hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Remove Duplicates Content -->
+                    <div id="remove-duplicates" class="tab-panel hidden">
+                         <h3 class="text-xl font-medium mb-2">Problem: Remove Duplicates from Sorted Array</h3>
+                        <p class="mb-4 text-gray-600">Given a sorted array `nums`, remove the duplicates in-place such that each unique element appears only once. Return the new length of the array.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-4">Interactive Visualizer</h4>
+                                <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
+                                    <div>
+                                        <label for="duplicates-array" class="block text-sm font-medium text-gray-700">Sorted Array (comma-separated)</label>
+                                        <input type="text" id="duplicates-array" value="0, 0, 1, 1, 1, 2, 2, 3, 3, 4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                    </div>
+                                    <button id="run-duplicates" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">Run Simulation</button>
+                                </div>
+                                <div id="duplicates-viz-container" class="array-container mt-4"></div>
+                                 <div class="mt-4">
+                                    <h5 class="font-semibold text-sm mb-1">Log:</h5>
+                                    <div id="duplicates-log" class="log-area"></div>
+                                </div>
+                                <div id="duplicates-result" class="mt-4 font-bold text-center"></div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-4">C# Solution</h4>
+                                <div class="code-block" id="code-remove-duplicates">public int RemoveDuplicates(int[] nums)
+{
+    if (nums.Length == 0)
+    {
+        return 0;
+    }
+
+    // 'i' is the slow-runner pointer
+    int i = 0; 
+
+    // 'j' is the fast-runner pointer
+    for (int j = 1; j < nums.Length; j++)
+    {
+        if (nums[j] != nums[i])
+        {
+            i++;
+            nums[i] = nums[j];
+        }
+    }
+    
+    // The new length is i + 1
+    return i + 1;
+}</div>
+                                <button data-code-id="code-remove-duplicates" class="gemini-explain-btn mt-4 w-full flex items-center justify-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
+                                    <span>✨ Explain Code with Gemini</span>
+                                </button>
+                                <div id="explanation-code-remove-duplicates" class="gemini-explanation hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="gemini-practice" class="mt-12 bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-900 text-center">Practice with Gemini</h2>
+                <p class="text-center text-gray-600 mb-6">Ready for a new challenge? Let Gemini generate a unique practice problem for you.</p>
+                <div class="max-w-2xl mx-auto">
+                    <button id="generate-problem-btn" class="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-bold py-3 px-4 rounded-md hover:bg-green-700 transition-colors">
+                        <span>✨ Generate a New Problem</span>
+                    </button>
+                    <div id="gemini-problem-container" class="gemini-explanation hidden mt-6"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- Existing Tab and Simulation Logic ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(item => {
+                    item.classList.remove('active');
+                    item.classList.add('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'border-transparent');
+                });
+                tab.classList.add('active');
+                tab.classList.remove('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'border-transparent');
+
+                const target = tab.getAttribute('data-tab');
+                tabPanels.forEach(panel => {
+                    if (panel.id === target) {
+                        panel.classList.remove('hidden');
+                    } else {
+                        panel.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        function parseArrayInput(input) {
+            return input.split(',').map(s => s.trim()).filter(s => s !== '').map(Number);
+        }
+
+        const POINTER_WIDTH = 40;
+        const POINTER_GAP = 4;
+        const CELL_WIDTH = POINTER_WIDTH + POINTER_GAP;
+        
+        function getPointerPositionForId(index, total, id) {
+            const container = document.getElementById(id);
+            if (!container) return 0;
+            const containerWidth = total * CELL_WIDTH - POINTER_GAP;
+            const offset = (container.clientWidth - containerWidth) / 2;
+            return offset + (index * CELL_WIDTH);
+        }
+
+        function createVisualArray(containerId, array, pointers = {}) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            array.forEach((val, i) => {
+                const cell = document.createElement('div');
+                cell.className = 'array-cell';
+                cell.textContent = val;
+                cell.id = `${containerId}-cell-${i}`;
+                container.appendChild(cell);
+            });
+            
+            Object.keys(pointers).forEach(key => {
+                const pointerInfo = pointers[key];
+                const pointerEl = document.createElement('div');
+                pointerEl.className = `pointer ${pointerInfo.class}`;
+                pointerEl.id = `${containerId}-${key}-pointer`;
+                pointerEl.textContent = pointerInfo.name;
+                const pos = getPointerPositionForId(pointerInfo.index, array.length, containerId);
+                pointerEl.style.left = `${pos}px`;
+                container.appendChild(pointerEl);
+            });
+        }
+        
+        function updatePointer(containerId, pointerKey, newIndex, total) {
+            const pointerEl = document.getElementById(`${containerId}-${pointerKey}-pointer`);
+            if(pointerEl) {
+                const pos = getPointerPositionForId(newIndex, total, containerId);
+                pointerEl.style.left = `${pos}px`;
+            }
+        }
+
+        function appendLog(logId, message) {
+            const logArea = document.getElementById(logId);
+            logArea.innerHTML += `${message}<br>`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function setResult(resultId, message, isSuccess) {
+            const resultArea = document.getElementById(resultId);
+            resultArea.textContent = message;
+            resultArea.style.color = isSuccess ? '#16a34a' : '#dc2626';
+        }
+
+        async function runPairSumSimulation() {
+            const array = parseArrayInput(document.getElementById('pair-sum-array').value);
+            const target = parseInt(document.getElementById('pair-sum-target').value);
+            const containerId = 'pair-sum-viz-container';
+            const logId = 'pair-sum-log';
+            const resultId = 'pair-sum-result';
+            
+            document.getElementById(logId).innerHTML = '';
+            document.getElementById(resultId).innerHTML = '';
+
+            let left = 0;
+            let right = array.length - 1;
+
+            createVisualArray(containerId, array, {
+                left: { index: left, name: 'L', class: 'pointer-left'},
+                right: { index: right, name: 'R', class: 'pointer-right'}
+            });
+            await sleep(500);
+
+            while (left < right) {
+                appendLog(logId, `Pointers: L=${left} (val=${array[left]}), R=${right} (val=${array[right]})`);
+                const currentSum = array[left] + array[right];
+                appendLog(logId, `Sum: ${array[left]} + ${array[right]} = ${currentSum}`);
+
+                if (currentSum === target) {
+                    appendLog(logId, `Sum (${currentSum}) == Target (${target}). Pair found!`);
+                    setResult(resultId, `Success: Pair found (${array[left]}, ${array[right]})`, true);
+                    document.getElementById(`${containerId}-cell-${left}`).style.backgroundColor = '#86efac';
+                    document.getElementById(`${containerId}-cell-${right}`).style.backgroundColor = '#86efac';
+                    return;
+                } else if (currentSum < target) {
+                    appendLog(logId, `Sum (${currentSum}) < Target (${target}). Moving Left pointer right.`);
+                    left++;
+                    updatePointer(containerId, 'left', left, array.length);
+                } else {
+                    appendLog(logId, `Sum (${currentSum}) > Target (${target}). Moving Right pointer left.`);
+                    right--;
+                    updatePointer(containerId, 'right', right, array.length);
+                }
+                await sleep(1500);
+            }
+            appendLog(logId, `Pointers crossed (L=${left}, R=${right}). No pair found.`);
+            setResult(resultId, 'Failure: No pair sums to the target.', false);
+        }
+
+        async function runTripletSumSimulation() {
+            let array = parseArrayInput(document.getElementById('triplet-sum-array').value);
+            array.sort((a, b) => a - b);
+            const target = parseInt(document.getElementById('triplet-sum-target').value);
+            const containerId = 'triplet-sum-viz-container';
+            const logId = 'triplet-sum-log';
+            const resultId = 'triplet-sum-result';
+            
+            document.getElementById(logId).innerHTML = '';
+            document.getElementById(resultId).innerHTML = '';
+            appendLog(logId, `Original array sorted: [${array.join(', ')}]`);
+
+            for(let i = 0; i < array.length - 2; i++) {
+                appendLog(logId, `Fixing first element at index ${i} (value=${array[i]})`);
+                let left = i + 1;
+                let right = array.length - 1;
+                
+                createVisualArray(containerId, array, {
+                    fixed: { index: i, name: 'i', class: 'pointer-fixed' },
+                    left: { index: left, name: 'L', class: 'pointer-left' },
+                    right: { index: right, name: 'R', class: 'pointer-right' }
+                });
+                await sleep(1000);
+
+                let newTarget = target - array[i];
+                appendLog(logId, `New target for pair: ${target} - ${array[i]} = ${newTarget}`);
+                
+                while(left < right) {
+                    appendLog(logId, `  - Pointers: L=${left}(${array[left]}), R=${right}(${array[right]})`);
+                    let currentSum = array[left] + array[right];
+                    appendLog(logId, `  - Pair Sum: ${array[left]} + ${array[right]} = ${currentSum}`);
+
+                    if (currentSum === newTarget) {
+                        appendLog(logId, `Sum (${currentSum}) == New Target (${newTarget}). Triplet found!`);
+                        setResult(resultId, `Success: Triplet found (${array[i]}, ${array[left]}, ${array[right]})`, true);
+                        document.getElementById(`${containerId}-cell-${i}`).style.backgroundColor = '#86efac';
+                        document.getElementById(`${containerId}-cell-${left}`).style.backgroundColor = '#86efac';
+                        document.getElementById(`${containerId}-cell-${right}`).style.backgroundColor = '#86efac';
+                        return;
+                    } else if (currentSum < newTarget) {
+                        appendLog(logId, `  - Sum (${currentSum}) < New Target (${newTarget}). Moving L right.`);
+                        left++;
+                        updatePointer(containerId, 'left', left, array.length);
+                    } else {
+                        appendLog(logId, `  - Sum (${currentSum}) > New Target (${newTarget}). Moving R left.`);
+                        right--;
+                        updatePointer(containerId, 'right', right, array.length);
+                    }
+                    await sleep(1500);
+                }
+            }
+            appendLog(logId, 'Finished iterating. No triplet found.');
+            setResult(resultId, 'Failure: No triplet sums to the target.', false);
+        }
+
+        async function runDuplicatesSimulation() {
+            const array = parseArrayInput(document.getElementById('duplicates-array').value);
+            const containerId = 'duplicates-viz-container';
+            const logId = 'duplicates-log';
+            const resultId = 'duplicates-result';
+
+            document.getElementById(logId).innerHTML = '';
+            document.getElementById(resultId).innerHTML = '';
+            
+            if (array.length === 0) {
+                 setResult(resultId, 'Result: New length is 0. Array: []', true);
+                 return;
+            }
+
+            let i = 0; 
+            
+            createVisualArray(containerId, array, {
+                left: { index: i, name: 'i (slow)', class: 'pointer-left' },
+                right: { index: 1, name: 'j (fast)', class: 'pointer-right' }
+            });
+
+            appendLog(logId, `Start: i at index ${i}, j at index 1.`);
+            await sleep(1000);
+
+            for (let j = 1; j < array.length; j++) {
+                updatePointer(containerId, 'right', j, array.length);
+                appendLog(logId, `j is at index ${j} (val=${array[j]}), i is at ${i} (val=${array[i]})`);
+                await sleep(1500);
+
+                if (array[j] != array[i]) {
+                    appendLog(logId, `nums[j] != nums[i]. Unique element found.`);
+                    i++;
+                    appendLog(logId, `Increment i to ${i}. Update nums[${i}] = ${array[j]}.`);
+                    array[i] = array[j];
+                    updatePointer(containerId, 'left', i, array.length);
+                    
+                    document.getElementById(`${containerId}-cell-${i}`).textContent = array[i];
+                    document.getElementById(`${containerId}-cell-${i}`).style.backgroundColor = '#dbeafe';
+
+                    await sleep(1500);
+                } else {
+                    appendLog(logId, `nums[j] == nums[i]. Duplicate found. Continue j.`);
+                }
+            }
+
+            const newLength = i + 1;
+            appendLog(logId, `Finished. The new length is i + 1 = ${newLength}`);
+            setResult(resultId, `Result: New length is ${newLength}. Array: [${array.slice(0, newLength).join(', ')}]`, true);
+             for(let k=0; k < newLength; k++){
+                document.getElementById(`${containerId}-cell-${k}`).style.backgroundColor = '#86efac';
+            }
+            for(let k=newLength; k < array.length; k++){
+                 document.getElementById(`${containerId}-cell-${k}`).style.opacity = '0.4';
+            }
+        }
+
+        document.getElementById('run-pair-sum').addEventListener('click', runPairSumSimulation);
+        document.getElementById('run-triplet-sum').addEventListener('click', runTripletSumSimulation);
+        document.getElementById('run-duplicates').addEventListener('click', runDuplicatesSimulation);
+
+        document.addEventListener('DOMContentLoaded', () => {
+             createVisualArray('pair-sum-viz-container', parseArrayInput(document.getElementById('pair-sum-array').value));
+             let tripletArr = parseArrayInput(document.getElementById('triplet-sum-array').value).sort((a,b)=> a-b);
+             createVisualArray('triplet-sum-viz-container', tripletArr);
+             createVisualArray('duplicates-viz-container', parseArrayInput(document.getElementById('duplicates-array').value));
+        });
+
+        // --- NEW Gemini API Logic ---
+
+        const apiKey = ""; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        async function callGemini(userQuery, systemPrompt, retries = 3, delay = 1000) {
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    if (response.status === 429 && retries > 0) {
+                        await sleep(delay);
+                        return callGemini(userQuery, systemPrompt, retries - 1, delay * 2);
+                    }
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    return candidate.content.parts[0].text;
+                } else {
+                    throw new Error("Invalid response structure from API.");
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                if (retries > 0) {
+                    await sleep(delay);
+                    return callGemini(userQuery, systemPrompt, retries - 1, delay * 2);
+                }
+                return "Sorry, I couldn't get a response. Please try again later.";
+            }
+        }
+        
+        function simpleMarkdownToHtml(text) {
+             return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code class="bg-gray-200 text-gray-800 rounded px-1 py-0.5">$1</code>')
+                .replace(/^(#+)\s*(.*)/gm, (match, hashes, content) => `<h${hashes.length + 2}>${content}</h${hashes.length + 2}>`)
+                .replace(/\n\s*-\s/g, '</li><li>')
+                .replace(/<li>/, '<ul><li>') + '</li></ul>'
+                .replace(/<\/li><\/ul>/, '</ul>')
+                .replace(/\n/g, '<br>');
+        }
+        
+        function setButtonLoading(button, isLoading) {
+            const originalText = button.querySelector('span').textContent;
+            if (isLoading) {
+                button.disabled = true;
+                button.innerHTML = `<span class="loader"></span> <span>Generating...</span>`;
+            } else {
+                button.disabled = false;
+                button.innerHTML = `<span>${originalText}</span>`;
+            }
+        }
+
+
+        document.querySelectorAll('.gemini-explain-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const codeId = button.dataset.codeId;
+                const code = document.getElementById(codeId).innerText;
+                const explanationContainer = document.getElementById(`explanation-${codeId}`);
+                
+                setButtonLoading(button, true);
+                explanationContainer.classList.remove('hidden');
+                explanationContainer.innerHTML = '<h5>✨ Gemini is thinking...</h5>';
+
+                const systemPrompt = "You are an expert C# programming tutor. Explain the following code snippet line-by-line in simple, easy-to-understand language. Focus on the logic of the two-pointer technique being used. Use markdown for formatting.";
+                const explanation = await callGemini(code, systemPrompt);
+                
+                explanationContainer.innerHTML = `<h5>✨ Gemini's Explanation</h5>${simpleMarkdownToHtml(explanation)}`;
+                setButtonLoading(button, false);
+            });
+        });
+
+        const generateProblemBtn = document.getElementById('generate-problem-btn');
+        const problemContainer = document.getElementById('gemini-problem-container');
+
+        generateProblemBtn.addEventListener('click', async () => {
+            setButtonLoading(generateProblemBtn, true);
+            problemContainer.classList.remove('hidden');
+            problemContainer.innerHTML = '<h5>✨ Gemini is creating a problem for you...</h5>';
+
+            const systemPrompt = "You are a computer science professor creating practice problems. Generate a new, unique programming problem that can be solved efficiently using the two-pointer technique. The problem should be suitable for someone at an intermediate level. Provide a clear problem description, one or two examples with input and expected output, and any constraints. Do not provide the solution code. Use markdown for formatting.";
+            const problemText = await callGemini("Generate a problem.", systemPrompt);
+
+            problemContainer.innerHTML = `<h5>✨ New Practice Problem</h5>${simpleMarkdownToHtml(problemText)}`;
+            setButtonLoading(generateProblemBtn, false);
+        });
+
+    </script>
+</body>
+</html>
+
