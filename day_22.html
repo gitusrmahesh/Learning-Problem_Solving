@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 22: C# String Basics - Palindromes & Reversal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate & Sky Blue -->
+    <!-- Application Structure Plan: A tabbed interface is chosen to cleanly separate distinct user tasks: learning foundational concepts, hands-on experimentation, applying knowledge through practice problems, and analyzing advanced topics like performance. This structure guides the user through a logical learning progression (Learn -> Try -> Apply -> Analyze), making complex information digestible and interactive. Tabs include 'Concepts', 'Interactive Playground', 'Practice Problems', and 'Performance Comparison'. -->
+    <!-- Visualization & Content Choices: Report Info: C# string reversal methods -> Goal: Compare performance -> Viz/Presentation: Bar Chart -> Interaction: 'Run Benchmark' button populates chart -> Justification: A bar chart is the most intuitive way to compare discrete performance metrics (execution time) for different algorithms. -> Library/Method: Chart.js/Canvas. Report Info: Palindrome/Reverse concepts -> Goal: Teach -> Viz/Presentation: Styled code blocks -> Interaction: None -> Justification: Static, well-formatted code is best for explaining algorithms. Report Info: Practice problems -> Goal: Test knowledge -> Viz/Presentation: Interactive input/output cards -> Interaction: User input triggers JS-based solution -> Justification: Simulates a coding challenge environment for active learning. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .tab-button.active {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            font-size: 0.875rem;
+        }
+        .code-block .keyword { color: #93c5fd; }
+        .code-block .type { color: #818cf8; }
+        .code-block .string { color: #a5f3fc; }
+        .code-block .comment { color: #64748b; }
+        .code-block .method { color: #facc15; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-slate-900">30-Day Problem Solving Roadmap</h1>
+            <p class="text-lg text-slate-600 mt-2">Week 4, Day 22: String Basics in C#</p>
+        </header>
+
+        <main>
+            <div class="border-b border-slate-200 mb-6">
+                <nav class="-mb-px flex space-x-4 justify-center" aria-label="Tabs">
+                    <button id="tab-concepts" class="tab-button active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                        Core Concepts
+                    </button>
+                    <button id="tab-playground" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                        Interactive Playground
+                    </button>
+                    <button id="tab-problems" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                        Practice Problems
+                    </button>
+                     <button id="tab-performance" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-slate-500 hover:text-slate-700 hover:border-slate-300">
+                        Performance Comparison
+                    </button>
+                </nav>
+            </div>
+
+            <div id="content-concepts" class="tab-content">
+                 <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <p class="mb-6 text-slate-600">This section covers the fundamental C# concepts for string manipulation, focusing on reversal and palindrome detection. Understanding these techniques is crucial for solving a wide range of string-based problems. We'll explore several common methods and discuss their underlying mechanics.</p>
+                    
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-2xl font-semibold mb-3">1. Understanding String Immutability in C#</h2>
+                            <p class="text-slate-600 mb-4">A core concept in C# is that <code class="bg-slate-100 p-1 rounded text-sm">string</code> objects are immutable. This means that once a string is created, its value cannot be changed. Any method that appears to modify a string, like reversing it, actually creates and returns a new string object. This has important performance implications, especially when dealing with many modifications in a loop.</p>
+                        </div>
+                        
+                        <div>
+                            <h2 class="text-2xl font-semibold mb-3">2. Reversing a String</h2>
+                            <p class="text-slate-600 mb-4">There are multiple ways to reverse a string in C#. Let's look at three popular approaches.</p>
+
+                            <h3 class="text-xl font-medium mb-2">Method A: Using <code class="bg-slate-100 p-1 rounded text-sm">Array.Reverse()</code></h3>
+                            <p class="text-slate-600 mb-4">This is often the most readable and straightforward method. You convert the string to a character array, reverse the array in-place, and then create a new string from the reversed array.</p>
+                            <pre class="code-block"><code class="language-csharp"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">string</span> <span class="method">ReverseStringWithArray</span>(<span class="type">string</span> text)
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(text)) <span class="keyword">return</span> text;
+
+    <span class="type">char</span>[] charArray = text.ToCharArray();
+    Array.Reverse(charArray);
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">string</span>(charArray);
+}</code></pre>
+
+                            <h3 class="text-xl font-medium mb-2 mt-6">Method B: Using a Loop</h3>
+                            <p class="text-slate-600 mb-4">This approach builds the reversed string character by character, iterating from the end of the original string to the beginning. This method avoids creating an intermediate character array but can be less efficient due to repeated string concatenations (which create new string objects in each iteration).</p>
+                             <pre class="code-block"><code class="language-csharp"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">string</span> <span class="method">ReverseStringWithLoop</span>(<span class="type">string</span> text)
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(text)) <span class="keyword">return</span> text;
+    
+    <span class="comment">// Using StringBuilder is much more efficient than string concatenation</span>
+    <span class="type">StringBuilder</span> reversedString = <span class="keyword">new</span> <span class="type">StringBuilder</span>();
+    <span class="keyword">for</span> (<span class="type">int</span> i = text.Length - 1; i >= 0; i--)
+    {
+        reversedString.Append(text[i]);
+    }
+    <span class="keyword">return</span> reversedString.ToString();
+}</code></pre>
+                        </div>
+                        
+                        <div>
+                            <h2 class="text-2xl font-semibold mb-3">3. Checking for a Palindrome</h2>
+                            <p class="text-slate-600 mb-4">A palindrome is a word, phrase, or sequence that reads the same backward as forward (e.g., "madam", "level"). The easiest way to check for a palindrome is to reverse the string and see if it equals the original. It's important to handle casing and non-alphanumeric characters based on the problem's requirements.</p>
+                            
+                            <h3 class="text-xl font-medium mb-2">Simple Palindrome Check</h3>
+                            <p class="text-slate-600 mb-4">This version compares a string with its reversed version. For a robust check, you should typically convert the string to a common case (e.g., lowercase).</p>
+                             <pre class="code-block"><code class="language-csharp"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">bool</span> <span class="method">IsPalindromeSimple</span>(<span class="type">string</span> text)
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(text)) <span class="keyword">return</span> <span class="keyword">true</span>;
+    
+    <span class="type">string</span> normalized = text.ToLower();
+    <span class="type">string</span> reversed = <span class="method">ReverseStringWithArray</span>(normalized); <span class="comment">// Re-using our reverse method</span>
+    
+    <span class="keyword">return</span> normalized == reversed;
+}</code></pre>
+                            
+                            <h3 class="text-xl font-medium mb-2 mt-6">Optimized Two-Pointer Approach</h3>
+                            <p class="text-slate-600 mb-4">A more memory-efficient method is to use two pointers. One starts at the beginning of the string and one at the end. You compare the characters at both pointers, moving them towards the center. If you find a mismatch, it's not a palindrome. This avoids creating a new reversed string.</p>
+                             <pre class="code-block"><code class="language-csharp"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">bool</span> <span class="method">IsPalindromeTwoPointers</span>(<span class="type">string</span> text)
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(text)) <span class="keyword">return</span> <span class="keyword">true</span>;
+    
+    <span class="type">string</span> normalized = text.ToLower();
+    <span class="type">int</span> left = 0;
+    <span class="type">int</span> right = normalized.Length - 1;
+    
+    <span class="keyword">while</span> (left < right)
+    {
+        <span class="keyword">if</span> (normalized[left] != normalized[right])
+        {
+            <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+        left++;
+        right--;
+    }
+    
+    <span class="keyword">return</span> <span class="keyword">true</span>;
+}</code></pre>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+
+            <div id="content-playground" class="tab-content hidden">
+                 <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <p class="mb-6 text-slate-600">Experiment with the concepts you've just learned. Enter any string below to see it reversed and check if it's a palindrome in real-time. This interactive tool helps solidify your understanding by providing immediate feedback.</p>
+                     <div class="space-y-4">
+                        <div>
+                            <label for="playground-input" class="block text-sm font-medium text-slate-700">Enter a string:</label>
+                            <input type="text" id="playground-input" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="e.g., A man a plan a canal Panama">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-lg">
+                                <h3 class="text-lg font-medium text-slate-800">Reversed String</h3>
+                                <p id="reversed-output" class="mt-2 text-slate-600 h-12 font-mono break-all">&nbsp;</p>
+                            </div>
+                             <div class="bg-slate-50 p-4 rounded-lg">
+                                <h3 class="text-lg font-medium text-slate-800">Is it a Palindrome?</h3>
+                                <p id="palindrome-output" class="mt-2 text-slate-600 h-12 text-2xl font-bold flex items-center">&nbsp;</p>
+                            </div>
+                        </div>
+                     </div>
+                 </div>
+            </div>
+
+            <div id="content-problems" class="tab-content hidden">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                     <p class="mb-6 text-slate-600">Apply your knowledge by solving these practice problems. Each problem focuses on a specific aspect of string reversal or palindrome checking. Type your input, click "Get Result," and see if your logic holds up. The solutions use the efficient methods discussed in the concepts section.</p>
+                     <div class="space-y-6">
+                        
+                        <div class="border border-slate-200 p-4 rounded-lg">
+                            <h3 class="font-semibold text-lg">Problem 1: Simple String Reversal</h3>
+                            <p class="text-sm text-slate-600 mt-1">Given a string <code class="bg-slate-100 p-1 rounded text-xs">s</code>, return the reversed string.</p>
+                            <div class="mt-3 flex flex-col sm:flex-row gap-2">
+                                <input type="text" id="problem1-input" class="flex-grow block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Input: hello">
+                                <button onclick="solveProblem(1)" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition">Get Result</button>
+                            </div>
+                            <div class="mt-2 bg-slate-50 p-3 rounded-md min-h-[40px]">
+                                <span class="text-sm font-medium">Output:</span>
+                                <span id="problem1-output" class="font-mono text-slate-700"></span>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-200 p-4 rounded-lg">
+                            <h3 class="font-semibold text-lg">Problem 2: Valid Palindrome</h3>
+                            <p class="text-sm text-slate-600 mt-1">Given a string <code class="bg-slate-100 p-1 rounded text-xs">s</code>, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.</p>
+                            <div class="mt-3 flex flex-col sm:flex-row gap-2">
+                                <input type="text" id="problem2-input" class="flex-grow block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Input: race a car">
+                                <button onclick="solveProblem(2)" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition">Get Result</button>
+                            </div>
+                            <div class="mt-2 bg-slate-50 p-3 rounded-md min-h-[40px]">
+                                <span class="text-sm font-medium">Output:</span>
+                                <span id="problem2-output" class="font-mono text-slate-700"></span>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-200 p-4 rounded-lg">
+                            <h3 class="font-semibold text-lg">Problem 3: Reverse Words in a String</h3>
+                            <p class="text-sm text-slate-600 mt-1">Given a string <code class="bg-slate-100 p-1 rounded text-xs">s</code>, reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.</p>
+                            <div class="mt-3 flex flex-col sm:flex-row gap-2">
+                                <input type="text" id="problem3-input" class="flex-grow block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Input: Let's take LeetCode contest">
+                                <button onclick="solveProblem(3)" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition">Get Result</button>
+                            </div>
+                            <div class="mt-2 bg-slate-50 p-3 rounded-md min-h-[40px]">
+                                <span class="text-sm font-medium">Output:</span>
+                                <span id="problem3-output" class="font-mono text-slate-700"></span>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-200 p-4 rounded-lg">
+                            <h3 class="font-semibold text-lg">Problem 4: Palindromic Substrings</h3>
+                            <p class="text-sm text-slate-600 mt-1">Given a string <code class="bg-slate-100 p-1 rounded text-xs">s</code>, return the number of palindromic substrings in it. Substrings with different start or end indexes are counted as different substrings even if they consist of the same characters.</p>
+                            <div class="mt-3 flex flex-col sm:flex-row gap-2">
+                                <input type="text" id="problem4-input" class="flex-grow block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Input: aaa">
+                                <button onclick="solveProblem(4)" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition">Get Result</button>
+                            </div>
+                            <div class="mt-2 bg-slate-50 p-3 rounded-md min-h-[40px]">
+                                <span class="text-sm font-medium">Output:</span>
+                                <span id="problem4-output" class="font-mono text-slate-700"></span>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+            
+            <div id="content-performance" class="tab-content hidden">
+                 <div class="bg-white p-6 rounded-lg shadow-sm">
+                     <p class="mb-6 text-slate-600">Not all reversal methods are created equal. This section visualizes the performance difference between the string reversal techniques discussed. Click the button below to run a benchmark on a long string and see which method is the most performant. The chart shows the time taken in milliseconds (lower is better).</p>
+                    <div class="text-center mb-6">
+                        <button id="run-benchmark" class="bg-indigo-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-indigo-700 transition">Run Benchmark</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                 </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const tabs = [
+            { id: 'concepts', button: document.getElementById('tab-concepts'), content: document.getElementById('content-concepts') },
+            { id: 'playground', button: document.getElementById('tab-playground'), content: document.getElementById('content-playground') },
+            { id: 'problems', button: document.getElementById('tab-problems'), content: document.getElementById('content-problems') },
+            { id: 'performance', button: document.getElementById('tab-performance'), content: document.getElementById('content-performance') }
+        ];
+
+        tabs.forEach(tab => {
+            tab.button.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.button.classList.remove('active');
+                    t.content.classList.add('hidden');
+                });
+                tab.button.classList.add('active');
+                tab.content.classList.remove('hidden');
+            });
+        });
+        
+        const playgroundInput = document.getElementById('playground-input');
+        const reversedOutput = document.getElementById('reversed-output');
+        const palindromeOutput = document.getElementById('palindrome-output');
+
+        const reverseStringWithArray = (str) => {
+            if (!str) return '';
+            return str.split('').reverse().join('');
+        };
+        
+        const isPalindrome = (str) => {
+            if (!str) return true;
+            const sanitized = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const reversed = reverseStringWithArray(sanitized);
+            return sanitized === reversed;
+        };
+
+        playgroundInput.addEventListener('input', (e) => {
+            const inputValue = e.target.value;
+            reversedOutput.textContent = reverseStringWithArray(inputValue);
+            
+            if (inputValue.length === 0) {
+                palindromeOutput.innerHTML = '&nbsp;';
+                return;
+            }
+
+            if (isPalindrome(inputValue)) {
+                palindromeOutput.textContent = 'Yes 👍';
+                palindromeOutput.className = 'mt-2 text-green-600 h-12 text-2xl font-bold flex items-center';
+            } else {
+                palindromeOutput.textContent = 'No 👎';
+                palindromeOutput.className = 'mt-2 text-red-600 h-12 text-2xl font-bold flex items-center';
+            }
+        });
+
+        function solveProblem(problemNumber) {
+            switch(problemNumber) {
+                case 1: {
+                    const input = document.getElementById('problem1-input').value;
+                    document.getElementById('problem1-output').textContent = reverseStringWithArray(input);
+                    break;
+                }
+                case 2: {
+                    const input = document.getElementById('problem2-input').value;
+                    const result = isPalindrome(input);
+                    document.getElementById('problem2-output').textContent = result.toString();
+                    break;
+                }
+                case 3: {
+                    const input = document.getElementById('problem3-input').value;
+                    const result = input.split(' ').map(word => reverseStringWithArray(word)).join(' ');
+                    document.getElementById('problem3-output').textContent = result;
+                    break;
+                }
+                case 4: {
+                    const input = document.getElementById('problem4-input').value;
+                    if (!input) {
+                        document.getElementById('problem4-output').textContent = "0";
+                        return;
+                    }
+                    let count = 0;
+                    for (let i = 0; i < input.length; i++) {
+                        // Odd length palindromes
+                        let l = i, r = i;
+                        while (l >= 0 && r < input.length && input[l] === input[r]) {
+                            count++;
+                            l--;
+                            r++;
+                        }
+                        // Even length palindromes
+                        l = i, r = i + 1;
+                         while (l >= 0 && r < input.length && input[l] === input[r]) {
+                            count++;
+                            l--;
+                            r++;
+                        }
+                    }
+                    document.getElementById('problem4-output').textContent = count.toString();
+                    break;
+                }
+            }
+        }
+
+        let perfChart;
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        
+        function createChart(data = []) {
+            if (perfChart) {
+                perfChart.destroy();
+            }
+            perfChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Array.Reverse', 'For Loop (StringBuilder equivalent)'],
+                    datasets: [{
+                        label: 'Execution Time (ms)',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.5)',
+                            'rgba(239, 68, 68, 0.5)',
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(239, 68, 68, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Time (milliseconds)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'String Reversal Performance Benchmark'
+                        }
+                    }
+                }
+            });
+        }
+        
+        createChart();
+
+        document.getElementById('run-benchmark').addEventListener('click', () => {
+            const longString = 'a'.repeat(500000);
+            const iterations = 100;
+            let time1 = 0, time2 = 0;
+
+            let start = performance.now();
+            for(let i=0; i<iterations; i++) {
+                longString.split('').reverse().join('');
+            }
+            time1 = performance.now() - start;
+            
+            start = performance.now();
+            for(let i=0; i<iterations; i++) {
+                let reversed = [];
+                for (let j = longString.length - 1; j >= 0; j--) {
+                    reversed.push(longString[j]);
+                }
+                reversed.join('');
+            }
+            time2 = performance.now() - start;
+            
+            createChart([time1, time2]);
+        });
+    </script>
+</body>
+</html>

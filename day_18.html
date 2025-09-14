@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# Bit Manipulation Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Soothing Neutrals -->
+    <!-- Application Structure Plan: The application is structured as an interactive educational tool, not a data report. It's divided into three logical sections for optimal learning flow: 1) A 'Bitwise Operator Playground' to interactively explore fundamental operators (AND, OR, XOR, NOT). 2) A 'Common Bit Operations' section to demonstrate practical tasks like checking, setting, and unsetting bits. 3) A 'Practice Problems' section for self-assessment. This task-oriented, hands-on structure was chosen because bit manipulation is a concept best learned by doing and visualizing. Users can experiment with inputs and see real-time results, which is more effective than reading static text. -->
+    <!-- Visualization & Content Choices: Report Info: Bitwise operators and common operations. -> Goal: Teach and allow experimentation. -> Viz/Presentation Method: Interactive modules built with HTML form elements and dynamically updated text blocks (styled as code) to visualize binary numbers and results. -> Interaction: User enters numbers/bit positions, and JavaScript immediately calculates and displays the outcome, including a step-by-step explanation. This direct feedback loop reinforces learning. -> Justification: This approach demystifies abstract bitwise logic by making it tangible and visual without the need for complex charting libraries. -> Library/Method: Vanilla JavaScript for logic, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            background-color: #F8F7F4;
+            color: #4A4A4A;
+            font-family: 'Inter', sans-serif;
+        }
+        .interactive-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .interactive-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+        .binary-vis {
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 2px;
+            padding: 0.5rem 1rem;
+            background-color: #F3F4F6;
+            border-radius: 0.375rem;
+            display: inline-block;
+            border: 1px solid #E5E7EB;
+        }
+        .bit-1 { color: #2563EB; font-weight: bold; }
+        .bit-0 { color: #9CA3AF; }
+        .operator-symbol {
+            color: #EF4444;
+            font-weight: bold;
+            font-size: 1.25rem;
+            padding: 0 1rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-primary {
+            background-color: #3B82F6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563EB;
+        }
+        .btn-secondary {
+            background-color: #E5E7EB;
+            color: #4B5563;
+        }
+        .btn-secondary:hover {
+            background-color: #D1D5DB;
+        }
+        input[type=number] {
+            border: 1px solid #D1D5DB;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="antialiased">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800">30-Day Roadmap: Bit Manipulation in C#</h1>
+            <p class="mt-2 text-lg text-gray-600">Day 18: An Interactive Guide to Bitwise Basics</p>
+        </header>
+
+        <main class="space-y-12">
+            
+            <section id="operators-playground">
+                <h2 class="text-2xl font-bold text-gray-700 mb-6 text-center">Bitwise Operator Playground</h2>
+                <div class="max-w-5xl mx-auto text-center mb-6">
+                    <p class="text-gray-600">
+                        This section provides a hands-on way to understand the core bitwise operators. Enter numbers (0-255) into the fields below to see how each operator works at the binary level. The visualizations and results will update in real-time as you type, helping you build an intuition for these fundamental building blocks.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    
+                    <!-- AND Operator -->
+                    <div class="interactive-card">
+                        <h3 class="text-xl font-bold mb-4 text-center">AND (&amp;) Operator</h3>
+                        <p class="text-sm text-gray-600 mb-4 text-center">Result bit is 1 only if both input bits are 1.</p>
+                        <div class="flex items-center justify-around mb-4 space-x-2">
+                            <div class="w-1/3">
+                                <label for="and-a" class="block text-sm font-medium mb-1 text-center">Number A</label>
+                                <input type="number" id="and-a" value="85" min="0" max="255">
+                            </div>
+                            <span class="operator-symbol">&amp;</span>
+                            <div class="w-1/3">
+                                <label for="and-b" class="block text-sm font-medium mb-1 text-center">Number B</label>
+                                <input type="number" id="and-b" value="170" min="0" max="255">
+                            </div>
+                        </div>
+                        <div class="text-center space-y-2">
+                            <div id="and-a-bin" class="binary-vis"></div>
+                            <div class="flex items-center justify-center">
+                                <span class="operator-symbol text-sm">&amp;</span>
+                                <div id="and-b-bin" class="binary-vis"></div>
+                            </div>
+                            <hr class="my-2 border-gray-300">
+                            <div id="and-result-bin" class="binary-vis"></div>
+                            <p class="font-bold text-lg">Result: <span id="and-result-dec"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- OR Operator -->
+                    <div class="interactive-card">
+                        <h3 class="text-xl font-bold mb-4 text-center">OR (|) Operator</h3>
+                        <p class="text-sm text-gray-600 mb-4 text-center">Result bit is 1 if at least one of the input bits is 1.</p>
+                        <div class="flex items-center justify-around mb-4 space-x-2">
+                            <div class="w-1/3">
+                                <label for="or-a" class="block text-sm font-medium mb-1 text-center">Number A</label>
+                                <input type="number" id="or-a" value="85" min="0" max="255">
+                            </div>
+                            <span class="operator-symbol">|</span>
+                            <div class="w-1/3">
+                                <label for="or-b" class="block text-sm font-medium mb-1 text-center">Number B</label>
+                                <input type="number" id="or-b" value="170" min="0" max="255">
+                            </div>
+                        </div>
+                        <div class="text-center space-y-2">
+                            <div id="or-a-bin" class="binary-vis"></div>
+                            <div class="flex items-center justify-center">
+                                <span class="operator-symbol text-sm">|</span>
+                                <div id="or-b-bin" class="binary-vis"></div>
+                            </div>
+                            <hr class="my-2 border-gray-300">
+                            <div id="or-result-bin" class="binary-vis"></div>
+                            <p class="font-bold text-lg">Result: <span id="or-result-dec"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- XOR Operator -->
+                    <div class="interactive-card">
+                        <h3 class="text-xl font-bold mb-4 text-center">XOR (^) Operator</h3>
+                        <p class="text-sm text-gray-600 mb-4 text-center">Result bit is 1 only if the input bits are different.</p>
+                        <div class="flex items-center justify-around mb-4 space-x-2">
+                            <div class="w-1/3">
+                                <label for="xor-a" class="block text-sm font-medium mb-1 text-center">Number A</label>
+                                <input type="number" id="xor-a" value="85" min="0" max="255">
+                            </div>
+                            <span class="operator-symbol">^</span>
+                            <div class="w-1/3">
+                                <label for="xor-b" class="block text-sm font-medium mb-1 text-center">Number B</label>
+                                <input type="number" id="xor-b" value="170" min="0" max="255">
+                            </div>
+                        </div>
+                        <div class="text-center space-y-2">
+                            <div id="xor-a-bin" class="binary-vis"></div>
+                            <div class="flex items-center justify-center">
+                                <span class="operator-symbol text-sm">^</span>
+                                <div id="xor-b-bin" class="binary-vis"></div>
+                            </div>
+                            <hr class="my-2 border-gray-300">
+                            <div id="xor-result-bin" class="binary-vis"></div>
+                            <p class="font-bold text-lg">Result: <span id="xor-result-dec"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- NOT Operator -->
+                    <div class="interactive-card">
+                        <h3 class="text-xl font-bold mb-4 text-center">NOT (~) Operator</h3>
+                        <p class="text-sm text-gray-600 mb-4 text-center">Flips every bit (0 becomes 1, 1 becomes 0).</p>
+                        <div class="flex items-center justify-around mb-4 space-x-2">
+                            <div class="w-1/3 mx-auto">
+                                <label for="not-a" class="block text-sm font-medium mb-1 text-center">Number</label>
+                                <input type="number" id="not-a" value="85" min="0" max="255">
+                            </div>
+                        </div>
+                        <div class="text-center space-y-2">
+                            <div class="flex items-center justify-center">
+                                <span class="operator-symbol text-sm">~</span>
+                                <div id="not-a-bin" class="binary-vis"></div>
+                            </div>
+                            <hr class="my-2 border-gray-300">
+                            <div id="not-result-bin" class="binary-vis"></div>
+                            <p class="font-bold text-lg">Result (as byte): <span id="not-result-dec"></span></p>
+                            <p class="text-xs text-gray-500 mt-2">Note: In C#, ~ on integers can be complex due to two's complement. This shows the result for an unsigned 8-bit byte.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="common-operations">
+                <h2 class="text-2xl font-bold text-gray-700 mb-6 text-center">Common Bit Operations</h2>
+                 <div class="max-w-5xl mx-auto text-center mb-6">
+                    <p class="text-gray-600">
+                        Now that you've seen the basic operators, let's explore how they are used for common tasks. This section demonstrates how to isolate, change, and read individual bits within a number. This is where bit manipulation becomes a powerful tool for efficient programming. Use the controls to see the concepts of masking and bit manipulation in action.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Check a Bit -->
+                    <div class="interactive-card text-center">
+                        <h3 class="text-lg font-bold mb-2">Check if a Bit is Set</h3>
+                        <p class="text-sm text-gray-600 mb-4">Is the <input type="number" id="check-pos" value="2" min="0" max="7" class="w-12 inline mx-1 p-1 text-center rounded"> bit of <input type="number" id="check-num" value="85" min="0" max="255" class="w-20 inline mx-1 p-1 text-center rounded"> set?</p>
+                        <div class="space-y-2">
+                            <p class="text-xs text-gray-500">Number</p>
+                            <div id="check-num-bin" class="binary-vis"></div>
+                            <p class="text-xs text-gray-500">Mask (1 &lt;&lt; pos)</p>
+                            <div id="check-mask-bin" class="binary-vis"></div>
+                            <p class="text-xs text-gray-500">Result (Number &amp; Mask)</p>
+                            <div id="check-result-bin" class="binary-vis"></div>
+                        </div>
+                        <p class="font-bold text-lg mt-4">The bit is: <span id="check-result-bool" class="px-2 py-1 rounded"></span></p>
+                    </div>
+
+                    <!-- Set a Bit -->
+                    <div class="interactive-card text-center">
+                        <h3 class="text-lg font-bold mb-2">Set a Bit (to 1)</h3>
+                        <p class="text-sm text-gray-600 mb-4">Set the <input type="number" id="set-pos" value="3" min="0" max="7" class="w-12 inline mx-1 p-1 text-center rounded"> bit of <input type="number" id="set-num" value="85" min="0" max="255" class="w-20 inline mx-1 p-1 text-center rounded">.</p>
+                        <div class="space-y-2">
+                            <p class="text-xs text-gray-500">Original Number</p>
+                            <div id="set-num-bin" class="binary-vis"></div>
+                            <p class="text-xs text-gray-500">Mask (1 &lt;&lt; pos)</p>
+                            <div id="set-mask-bin" class="binary-vis"></div>
+                            <p class="text-xs text-gray-500">Result (Number | Mask)</p>
+                            <div id="set-result-bin" class="binary-vis"></div>
+                        </div>
+                        <p class="font-bold text-lg mt-4">New Number: <span id="set-result-dec"></span></p>
+                    </div>
+
+                    <!-- Unset a Bit -->
+                    <div class="interactive-card text-center">
+                        <h3 class="text-lg font-bold mb-2">Unset a Bit (to 0)</h3>
+                        <p class="text-sm text-gray-600 mb-4">Unset the <input type="number" id="unset-pos" value="6" min="0" max="7" class="w-12 inline mx-1 p-1 text-center rounded"> bit of <input type="number" id="unset-num" value="85" min="0" max="255" class="w-20 inline mx-1 p-1 text-center rounded">.</p>
+                        <div class="space-y-2">
+                            <p class="text-xs text-gray-500">Original Number</p>
+                            <div id="unset-num-bin" class="binary-vis"></div>
+                            <p class="text-xs text-gray-500">Mask (~(1 &lt;&lt; pos))</p>
+                            <div id="unset-mask-bin" class="binary-vis"></div>
+                            <p class="text-xs text-gray-500">Result (Number &amp; Mask)</p>
+                            <div id="unset-result-bin" class="binary-vis"></div>
+                        </div>
+                        <p class="font-bold text-lg mt-4">New Number: <span id="unset-result-dec"></span></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="practice-problems">
+                <h2 class="text-2xl font-bold text-gray-700 mb-6 text-center">Practice Problems</h2>
+                 <div class="max-w-5xl mx-auto text-center mb-6">
+                    <p class="text-gray-600">
+                        The final step is to apply what you've learned. The following problems are classic examples that can be solved efficiently using bit manipulation. Try to solve them on your own first, then click to reveal the C# solution and explanation. This will help solidify your understanding and prepare you for real-world interview questions.
+                    </p>
+                </div>
+                <div class="space-y-4 max-w-4xl mx-auto">
+                    <div class="interactive-card">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold">1. Check if a number is even or odd.</h4>
+                            <button class="btn btn-secondary toggle-solution">Show Solution</button>
+                        </div>
+                        <div class="solution hidden mt-4 pt-4 border-t border-gray-200">
+                            <p class="mb-2"><strong>Concept:</strong> An even number always has its least significant bit (LSB) as 0. An odd number always has it as 1. We can check this using the AND operator with a mask of 1.</p>
+                            <pre class="bg-gray-100 p-3 rounded text-sm overflow-x-auto"><code>public bool IsEven(int number) {
+    return (number & 1) == 0;
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="interactive-card">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold">2. Check if a number is a power of 2.</h4>
+                            <button class="btn btn-secondary toggle-solution">Show Solution</button>
+                        </div>
+                        <div class="solution hidden mt-4 pt-4 border-t border-gray-200">
+                            <p class="mb-2"><strong>Concept:</strong> A positive number that is a power of 2 has only one bit set to 1 (e.g., 8 is 1000). If you subtract 1 from it, you get all bits set to 1 up to that position (e.g., 7 is 0111). ANDing these two numbers (n & (n-1)) will result in 0 if and only if n is a power of 2.</p>
+                            <pre class="bg-gray-100 p-3 rounded text-sm overflow-x-auto"><code>public bool IsPowerOfTwo(int n) {
+    return n > 0 && (n & (n - 1)) == 0;
+}</code></pre>
+                        </div>
+                    </div>
+                     <div class="interactive-card">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold">3. Count the number of set bits (1s).</h4>
+                            <button class="btn btn-secondary toggle-solution">Show Solution</button>
+                        </div>
+                        <div class="solution hidden mt-4 pt-4 border-t border-gray-200">
+                            <p class="mb-2"><strong>Concept:</strong> A clever trick is to repeatedly use the expression `n & (n - 1)`. This operation unsets the rightmost set bit. We can count how many times we can do this until the number becomes 0.</p>
+                            <pre class="bg-gray-100 p-3 rounded text-sm overflow-x-auto"><code>public int CountSetBits(int n) {
+    int count = 0;
+    while (n > 0) {
+        n &= (n - 1); // Unset the rightmost set bit
+        count++;
+    }
+    return count;
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function toBinary(num) {
+            return num.toString(2).padStart(8, '0');
+        }
+
+        function renderBinary(binaryString) {
+            return binaryString.split('').map(bit => `<span class="bit-${bit}">${bit}</span>`).join('');
+        }
+
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, parseInt(value, 10) || 0));
+        }
+
+        // --- Operator Logic ---
+        function updateOperator(op) {
+            const aEl = document.getElementById(`${op}-a`);
+            const bEl = document.getElementById(`${op}-b`);
+            const aBinEl = document.getElementById(`${op}-a-bin`);
+            const bBinEl = document.getElementById(`${op}-b-bin`);
+            const resultBinEl = document.getElementById(`${op}-result-bin`);
+            const resultDecEl = document.getElementById(`${op}-result-dec`);
+
+            const a = clamp(aEl.value, 0, 255);
+            
+            if (op === 'not') {
+                const result = ~a & 255;
+                aBinEl.innerHTML = renderBinary(toBinary(a));
+                resultBinEl.innerHTML = renderBinary(toBinary(result));
+                resultDecEl.textContent = result;
+                return;
+            }
+
+            const b = clamp(bEl.value, 0, 255);
+            let result;
+
+            switch (op) {
+                case 'and': result = a & b; break;
+                case 'or':  result = a | b; break;
+                case 'xor': result = a ^ b; break;
+            }
+            
+            aBinEl.innerHTML = renderBinary(toBinary(a));
+            bBinEl.innerHTML = renderBinary(toBinary(b));
+            resultBinEl.innerHTML = renderBinary(toBinary(result));
+            resultDecEl.textContent = result;
+        }
+        
+        // --- Manipulation Logic ---
+        function updateCheck() {
+            const num = clamp(document.getElementById('check-num').value, 0, 255);
+            const pos = clamp(document.getElementById('check-pos').value, 0, 7);
+            
+            const mask = 1 << pos;
+            const result = num & mask;
+            const isSet = result !== 0;
+
+            document.getElementById('check-num-bin').innerHTML = renderBinary(toBinary(num));
+            document.getElementById('check-mask-bin').innerHTML = renderBinary(toBinary(mask));
+            document.getElementById('check-result-bin').innerHTML = renderBinary(toBinary(result));
+            
+            const resultBoolEl = document.getElementById('check-result-bool');
+            resultBoolEl.textContent = isSet ? 'SET (1)' : 'NOT SET (0)';
+            resultBoolEl.className = `px-2 py-1 rounded ${isSet ? 'bg-blue-100 text-blue-800' : 'bg-gray-200 text-gray-800'}`;
+        }
+
+        function updateSet() {
+            const num = clamp(document.getElementById('set-num').value, 0, 255);
+            const pos = clamp(document.getElementById('set-pos').value, 0, 7);
+
+            const mask = 1 << pos;
+            const result = num | mask;
+
+            document.getElementById('set-num-bin').innerHTML = renderBinary(toBinary(num));
+            document.getElementById('set-mask-bin').innerHTML = renderBinary(toBinary(mask));
+            document.getElementById('set-result-bin').innerHTML = renderBinary(toBinary(result));
+            document.getElementById('set-result-dec').textContent = result;
+        }
+
+        function updateUnset() {
+            const num = clamp(document.getElementById('unset-num').value, 0, 255);
+            const pos = clamp(document.getElementById('unset-pos').value, 0, 7);
+
+            const mask = ~(1 << pos) & 255;
+            const result = num & mask;
+
+            document.getElementById('unset-num-bin').innerHTML = renderBinary(toBinary(num));
+            document.getElementById('unset-mask-bin').innerHTML = renderBinary(toBinary(mask));
+            document.getElementById('unset-result-bin').innerHTML = renderBinary(toBinary(result));
+            document.getElementById('unset-result-dec').textContent = result;
+        }
+
+        // --- Event Listeners ---
+        function addOperatorListeners(op) {
+             document.getElementById(`${op}-a`).addEventListener('input', () => updateOperator(op));
+             if (op !== 'not') {
+                document.getElementById(`${op}-b`).addEventListener('input', () => updateOperator(op));
+             }
+        }
+        
+        ['and', 'or', 'xor', 'not'].forEach(addOperatorListeners);
+
+        ['check', 'set', 'unset'].forEach(op => {
+            document.getElementById(`${op}-num`).addEventListener('input', window[`update${op.charAt(0).toUpperCase() + op.slice(1)}`]);
+            document.getElementById(`${op}-pos`).addEventListener('input', window[`update${op.charAt(0).toUpperCase() + op.slice(1)}`]);
+        });
+        
+        document.querySelectorAll('.toggle-solution').forEach(button => {
+            button.addEventListener('click', () => {
+                const solution = button.parentElement.nextElementSibling;
+                const isHidden = solution.classList.contains('hidden');
+                solution.classList.toggle('hidden');
+                button.textContent = isHidden ? 'Hide Solution' : 'Show Solution';
+                button.classList.toggle('btn-primary', isHidden);
+                button.classList.toggle('btn-secondary', !isHidden);
+            });
+        });
+
+        // --- Initial Load ---
+        window.addEventListener('load', () => {
+            updateOperator('and');
+            updateOperator('or');
+            updateOperator('xor');
+            updateOperator('not');
+            updateCheck();
+            updateSet();
+            updateUnset();
+        });
+
+    </script>
+</body>
+</html>

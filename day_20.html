@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 20: Applications of Bit Manipulation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Tailwind Slate & Indigo -->
+    <!-- Application Structure Plan: The application uses a single-page, vertical layout with a sticky sidebar navigation. This structure was chosen to mimic a 'roadmap' or a study guide, allowing users to easily see all topics at a glance and navigate between them smoothly. Each section is designed as a self-contained module with theory, a visual/interactive demo, and a code snippet. The practice problem section is enhanced with interactive, collapsible solution blocks. This design transforms passive reading into an active learning experience, which is more effective for understanding abstract concepts. The flow progresses from foundational knowledge to specific problem applications, ending with challenges to solidify learning. -->
+    <!-- Visualization & Content Choices: The core concepts (Single Number, Power of Two, XOR Swap) are presented using a combination of textual explanation and interactive visualizations. Instead of static charts, dynamic bit representations are created with styled HTML divs. This makes abstract concepts tangible and easy to grasp. The practice problems are presented with a new interactive element: a collapsible section for the solution. This encourages users to attempt the problem before viewing the answer, fostering a more engaging and effective learning process. All interactive elements are powered by vanilla JavaScript and styled with Tailwind CSS, ensuring a clean and responsive user interface without external libraries. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link.active {
+            background-color: #4f46e5;
+            color: white;
+            transform: translateX(4px);
+        }
+        .bit-container {
+            display: flex;
+            gap: 2px;
+            font-family: 'JetBrains Mono', monospace;
+            flex-wrap: wrap;
+        }
+        .bit {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #94a3b8;
+            border-radius: 4px;
+            background-color: #e2e8f0;
+            font-weight: 500;
+        }
+        .bit.one {
+            background-color: #818cf8;
+            color: white;
+            border-color: #4f46e5;
+        }
+        .bit.zero {
+             background-color: #f1f5f9;
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+         .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #475569;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .copy-btn:hover {
+            background-color: #64748b;
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">30-Day Daily Roadmap</h1>
+            <h2 class="mt-3 text-2xl font-semibold text-indigo-600">Day 20: Applications of Bit Manipulation in C#</h2>
+        </header>
+
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+            <aside class="lg:col-span-3">
+                <nav id="sidebar-nav" class="sticky top-8">
+                    <ul class="space-y-2">
+                        <li><a href="#introduction" class="nav-link block font-medium p-3 rounded-lg hover:bg-slate-200">Introduction</a></li>
+                        <li><a href="#single-number" class="nav-link block font-medium p-3 rounded-lg hover:bg-slate-200">Single Number Problem</a></li>
+                        <li><a href="#power-of-two" class="nav-link block font-medium p-3 rounded-lg hover:bg-slate-200">Power of Two Check</a></li>
+                        <li><a href="#xor-swap" class="nav-link block font-medium p-3 rounded-lg hover:bg-slate-200">Swap Numbers with XOR</a></li>
+                        <li><a href="#practice" class="nav-link block font-medium p-3 rounded-lg hover:bg-slate-200">Practice Problems</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main class="lg:col-span-9 mt-10 lg:mt-0">
+                <div class="space-y-16">
+                    <section id="introduction">
+                        <div class="bg-white p-8 rounded-xl shadow-lg">
+                            <h3 class="text-2xl font-bold text-slate-900 mb-4">What is Bit Manipulation?</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Bit manipulation involves performing operations on numbers at the level of their individual bits. Processors have native instructions for bitwise operations, making them extremely fast. While modern compilers and interpreters are very good at optimization, direct bit manipulation can still be a powerful tool for solving certain problems with remarkable efficiency in terms of both time and memory. This lesson explores common, practical applications you might encounter in technical interviews and competitive programming.
+                            </p>
+                        </div>
+                    </section>
+                    
+                    <section id="single-number">
+                        <div class="bg-white p-8 rounded-xl shadow-lg">
+                            <h3 class="text-2xl font-bold text-slate-900 mb-2">1. The Single Number Problem</h3>
+                            <p class="text-slate-600 mb-6">
+                                This section introduces a classic problem: in an array where every element appears twice except for one, find that single element. The XOR (exclusive OR) bitwise operator provides an elegant and highly efficient solution. By understanding XOR's properties—that any number XORed with itself is zero, and any number XORed with zero is itself—we can find the unique number by XORing all elements together. The paired numbers will cancel out, leaving only the single number.
+                            </p>
+
+                            <div class="grid md:grid-cols-2 gap-8 items-start">
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">Interactive Demo</h4>
+                                    <p class="text-sm text-slate-500 mb-4">Enter numbers separated by commas. Example: 4, 1, 2, 1, 2</p>
+                                    <input id="single-number-input" type="text" class="w-full p-2 border border-slate-300 rounded-md mb-2" value="4, 1, 2, 1, 2">
+                                    <button id="single-number-btn" class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 transition">Find Single Number</button>
+                                    <div id="single-number-output" class="mt-4 p-4 bg-slate-100 rounded-md min-h-[50px]"></div>
+                                </div>
+                                <div id="single-number-viz" class="space-y-3">
+                                    <h4 class="font-semibold text-lg mb-2">Visualization</h4>
+                                    <div class="text-slate-500">The visualization will appear here.</div>
+                                </div>
+                            </div>
+                            
+                            <h4 class="font-semibold text-lg mt-8 mb-4">C# Implementation</h4>
+                            <div class="code-block">
+                                <button class="copy-btn">Copy</button>
+                                <pre><code class="language-csharp">public class Solution {
+    public int SingleNumber(int[] nums) {
+        int result = 0;
+        foreach (int num in nums) {
+            result ^= num;
+        }
+        return result;
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="power-of-two">
+                        <div class="bg-white p-8 rounded-xl shadow-lg">
+                            <h3 class="text-2xl font-bold text-slate-900 mb-2">2. Power of Two Check</h3>
+                             <p class="text-slate-600 mb-6">
+                                Determining if a number is a power of two is a common requirement. A number is a power of two if it has exactly one '1' bit in its binary representation (e.g., 8 is `1000`). This section demonstrates a clever trick using the AND bitwise operator. For any power of two `n`, `n-1` will have all bits to the right of that single '1' bit set to '1'. Therefore, `n & (n - 1)` will always be zero. This provides a constant-time check.
+                            </p>
+                            <div class="grid md:grid-cols-2 gap-8 items-start">
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">Interactive Demo</h4>
+                                    <p class="text-sm text-slate-500 mb-4">Enter a positive integer.</p>
+                                    <input id="power-of-two-input" type="number" class="w-full p-2 border border-slate-300 rounded-md mb-2" value="16">
+                                    <button id="power-of-two-btn" class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 transition">Check</button>
+                                    <div id="power-of-two-output" class="mt-4 p-4 bg-slate-100 rounded-md min-h-[50px]"></div>
+                                </div>
+                                <div id="power-of-two-viz" class="space-y-3">
+                                    <h4 class="font-semibold text-lg mb-2">Visualization</h4>
+                                     <div class="text-slate-500">The visualization will appear here.</div>
+                                </div>
+                            </div>
+
+                            <h4 class="font-semibold text-lg mt-8 mb-4">C# Implementation</h4>
+                            <div class="code-block">
+                                <button class="copy-btn">Copy</button>
+                                <pre><code class="language-csharp">public class Solution {
+    public bool IsPowerOfTwo(int n) {
+        // A power of two must be positive and
+        // have only one bit set to '1'.
+        return n > 0 && (n & (n - 1)) == 0;
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="xor-swap">
+                        <div class="bg-white p-8 rounded-xl shadow-lg">
+                            <h3 class="text-2xl font-bold text-slate-900 mb-2">3. Swap Numbers Using XOR</h3>
+                            <p class="text-slate-600 mb-6">
+                                While mostly an academic puzzle in modern high-level languages, the XOR swap algorithm is a classic demonstration of bit manipulation's power. It allows you to swap the values of two integer variables without using a temporary third variable. This technique relies on the properties of XOR to store and retrieve the original values within the two variables themselves. This section breaks down the three-step process to make it clear how the swap occurs at the bit level.
+                            </p>
+
+                            <div class="grid md:grid-cols-2 gap-8 items-start">
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">Interactive Demo</h4>
+                                    <div class="flex gap-4 mb-2">
+                                        <input id="xor-swap-a" type="number" class="w-full p-2 border border-slate-300 rounded-md" value="86" placeholder="Value A">
+                                        <input id="xor-swap-b" type="number" class="w-full p-2 border border-slate-300 rounded-md" value="42" placeholder="Value B">
+                                    </div>
+                                    <button id="xor-swap-btn" class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 transition">Swap</button>
+                                    <div id="xor-swap-output" class="mt-4 p-4 bg-slate-100 rounded-md min-h-[50px]"></div>
+                                </div>
+                                <div id="xor-swap-viz" class="space-y-3">
+                                     <h4 class="font-semibold text-lg mb-2">Visualization</h4>
+                                     <div class="text-slate-500">The visualization will appear here.</div>
+                                </div>
+                            </div>
+
+                            <h4 class="font-semibold text-lg mt-8 mb-4">C# Implementation</h4>
+                            <div class="code-block">
+                                <button class="copy-btn">Copy</button>
+                                <pre><code class="language-csharp">public class Solution {
+    public void Swap(ref int a, ref int b) {
+        if (a == b) return; // Important edge case
+        
+        a = a ^ b;
+        b = b ^ a; // Now b is original a's value
+        a = a ^ b; // Now a is original b's value
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="practice">
+                        <div class="bg-white p-8 rounded-xl shadow-lg">
+                            <h3 class="text-2xl font-bold text-slate-900 mb-4">4. Practice Problems</h3>
+                            <p class="text-slate-600 mb-6">
+                                The best way to master bit manipulation is to practice. Here are five problems that build upon the concepts covered in this guide. They will challenge you to apply bitwise operators in different contexts.
+                            </p>
+                            
+                            <div class="space-y-6">
+                                <div class="border border-slate-200 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-lg">1. Number of 1 Bits (Hamming Weight)</h4>
+                                    <p class="text-slate-500 mt-1">Write a function that takes the binary representation of an unsigned integer and returns the number of '1' bits it has.</p>
+                                    <button class="toggle-solution-btn mt-4 w-full bg-slate-200 text-slate-700 py-2 px-4 rounded-md font-medium hover:bg-slate-300 transition">View Solution</button>
+                                    <div class="solution-content hidden mt-4">
+                                        <div class="code-block">
+                                            <button class="copy-btn">Copy</button>
+                                            <pre><code class="language-csharp">public class Solution {
+    public int HammingWeight(uint n) {
+        int count = 0;
+        while (n != 0) {
+            n &= (n - 1);
+            count++;
+        }
+        return count;
+    }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-slate-200 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-lg">2. Missing Number</h4>
+                                    <p class="text-slate-500 mt-1">Given an array `nums` containing `n` distinct numbers in the range `[0, n]`, return the only number in the range that is missing from the array.</p>
+                                    <button class="toggle-solution-btn mt-4 w-full bg-slate-200 text-slate-700 py-2 px-4 rounded-md font-medium hover:bg-slate-300 transition">View Solution</button>
+                                    <div class="solution-content hidden mt-4">
+                                        <div class="code-block">
+                                            <button class="copy-btn">Copy</button>
+                                            <pre><code class="language-csharp">public class Solution {
+    public int MissingNumber(int[] nums) {
+        int missing = nums.Length;
+        for (int i = 0; i < nums.Length; i++) {
+            missing ^= i ^ nums[i];
+        }
+        return missing;
+    }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-slate-200 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-lg">3. Reverse Bits</h4>
+                                    <p class="text-slate-500 mt-1">Reverse bits of a given 32-bit unsigned integer.</p>
+                                    <button class="toggle-solution-btn mt-4 w-full bg-slate-200 text-slate-700 py-2 px-4 rounded-md font-medium hover:bg-slate-300 transition">View Solution</button>
+                                    <div class="solution-content hidden mt-4">
+                                        <div class="code-block">
+                                            <button class="copy-btn">Copy</button>
+                                            <pre><code class="language-csharp">public class Solution {
+    public uint ReverseBits(uint n) {
+        uint reversed = 0;
+        for (int i = 0; i < 32; i++) {
+            reversed = (reversed << 1) | (n & 1);
+            n >>= 1;
+        }
+        return reversed;
+    }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                 <div class="border border-slate-200 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-lg">4. Subsets (Power Set)</h4>
+                                    <p class="text-slate-500 mt-1">Given an integer array `nums` of unique elements, return all possible subsets. The solution set must not contain duplicate subsets.</p>
+                                    <button class="toggle-solution-btn mt-4 w-full bg-slate-200 text-slate-700 py-2 px-4 rounded-md font-medium hover:bg-slate-300 transition">View Solution</button>
+                                    <div class="solution-content hidden mt-4">
+                                        <div class="code-block">
+                                            <button class="copy-btn">Copy</button>
+                                            <pre><code class="language-csharp">public class Solution {
+    public IList&lt;IList&lt;int&gt;&gt; Subsets(int[] nums) {
+        var subsets = new List&lt;IList&lt;int&gt;&gt;();
+        int n = nums.Length;
+        int max = 1 &lt;&lt; n;
+
+        for (int i = 0; i &lt; max; i++) {
+            var currentSubset = new List&lt;int&gt;();
+            for (int j = 0; j &lt; n; j++) {
+                if ((i & (1 &lt;&lt; j)) &gt; 0) {
+                    currentSubset.Add(nums[j]);
+                }
+            }
+            subsets.Add(currentSubset);
+        }
+        return subsets;
+    }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-slate-200 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-lg">5. Single Number II</h4>
+                                    <p class="text-slate-500 mt-1">Given an integer array `nums` where every element appears three times except for one, which appears exactly once. Find the single element.</p>
+                                    <button class="toggle-solution-btn mt-4 w-full bg-slate-200 text-slate-700 py-2 px-4 rounded-md font-medium hover:bg-slate-300 transition">View Solution</button>
+                                    <div class="solution-content hidden mt-4">
+                                        <div class="code-block">
+                                            <button class="copy-btn">Copy</button>
+                                            <pre><code class="language-csharp">public class Solution {
+    public int SingleNumber(int[] nums) {
+        int result = 0;
+        for (int i = 0; i &lt; 32; i++) {
+            int sum = 0;
+            foreach (int num in nums) {
+                sum += (num &gt;&gt; i) & 1;
+            }
+            if (sum % 3 != 0) {
+                result |= (1 &lt;&lt; i);
+            }
+        }
+        return result;
+    }
+}</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('#sidebar-nav a');
+            const toggleButtons = document.querySelectorAll('.toggle-solution-btn');
+
+            function toBinary(num, pad = 8) {
+                return num.toString(2).padStart(pad, '0');
+            }
+            
+            function createBitHTML(binaryString) {
+                let html = '<div class="bit-container">';
+                for (const char of binaryString) {
+                    html += `<div class="bit ${char === '1' ? 'one' : 'zero'}">${char}</div>`;
+                }
+                html += '</div>';
+                return html;
+            }
+
+            function updateActiveLink() {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateActiveLink);
+            updateActiveLink();
+            
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const code = button.nextElementSibling.textContent;
+                    const textarea = document.createElement('textarea');
+                    textarea.value = code;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    button.textContent = 'Copied!';
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+
+            const singleNumberBtn = document.getElementById('single-number-btn');
+            singleNumberBtn.addEventListener('click', () => {
+                const input = document.getElementById('single-number-input').value;
+                const outputEl = document.getElementById('single-number-output');
+                const vizEl = document.getElementById('single-number-viz');
+                
+                const nums = input.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+                
+                if (nums.length === 0) {
+                    outputEl.innerHTML = `<p class="text-red-600">Please enter valid numbers.</p>`;
+                    vizEl.innerHTML = `<h4 class="font-semibold text-lg mb-2">Visualization</h4><div class="text-slate-500">The visualization will appear here.</div>`;
+                    return;
+                }
+
+                let result = 0;
+                let vizHTML = `<h4 class="font-semibold text-lg mb-2">Visualization</h4>`;
+                vizHTML += `<div class="flex items-center gap-3"> ${createBitHTML(toBinary(0))} <span class="text-slate-500">= 0 (start)</span></div>`;
+
+                for (const num of nums) {
+                    const oldResult = result;
+                    result ^= num;
+                    vizHTML += `<div class="mt-2 pl-4 border-l-2 border-slate-300">`;
+                    vizHTML += `<div class="flex items-center gap-2 mb-1"> <span class="font-mono text-xl text-indigo-500">^</span> <div>${createBitHTML(toBinary(num))} <span class="text-xs text-slate-500">XOR ${num}</span></div></div>`;
+                    vizHTML += `<div class="flex items-center gap-3"> ${createBitHTML(toBinary(result))} <span class="text-slate-500">= ${result}</span></div>`;
+                    vizHTML += `</div>`;
+                }
+                
+                vizEl.innerHTML = vizHTML;
+                outputEl.innerHTML = `<p class="font-semibold">Result: <span class="text-2xl text-indigo-600 font-bold">${result}</span></p>`;
+            });
+
+            const powerOfTwoBtn = document.getElementById('power-of-two-btn');
+            powerOfTwoBtn.addEventListener('click', () => {
+                const input = document.getElementById('power-of-two-input').value;
+                const n = parseInt(input);
+                const outputEl = document.getElementById('power-of-two-output');
+                const vizEl = document.getElementById('power-of-two-viz');
+                
+                if (isNaN(n)) {
+                    outputEl.innerHTML = `<p class="text-red-600">Please enter a valid number.</p>`;
+                    vizEl.innerHTML = `<h4 class="font-semibold text-lg mb-2">Visualization</h4><div class="text-slate-500">The visualization will appear here.</div>`;
+                    return;
+                }
+                
+                const isPowerOfTwo = n > 0 && (n & (n - 1)) === 0;
+                const resultText = isPowerOfTwo ? 'Yes' : 'No';
+                
+                let vizHTML = `<h4 class="font-semibold text-lg mb-2">Visualization</h4>`;
+                const nMinus1 = n - 1;
+                const andResult = n & nMinus1;
+
+                vizHTML += `<p class="mb-2 text-sm">n = ${n}</p><div class="flex items-center gap-3">${createBitHTML(toBinary(n))}</div>`;
+                vizHTML += `<p class="mt-3 mb-2 text-sm">n - 1 = ${nMinus1}</p><div class="flex items-center gap-3">${createBitHTML(toBinary(nMinus1))}</div>`;
+                vizHTML += `<div class="my-2 border-t border-slate-300 w-full max-w-[240px]"></div>`;
+                vizHTML += `<p class="mb-2 text-sm">n & (n-1) = ${andResult}</p><div class="flex items-center gap-3">${createBitHTML(toBinary(andResult))}</div>`;
+
+                vizEl.innerHTML = vizHTML;
+                outputEl.innerHTML = `<p class="font-semibold">Is ${n} a power of two? <span class="text-2xl font-bold ${isPowerOfTwo ? 'text-green-600' : 'text-red-600'}">${resultText}</span></p>`;
+            });
+
+            const xorSwapBtn = document.getElementById('xor-swap-btn');
+            xorSwapBtn.addEventListener('click', () => {
+                let a = parseInt(document.getElementById('xor-swap-a').value);
+                let b = parseInt(document.getElementById('xor-swap-b').value);
+                const outputEl = document.getElementById('xor-swap-output');
+                const vizEl = document.getElementById('xor-swap-viz');
+
+                if (isNaN(a) || isNaN(b)) {
+                    outputEl.innerHTML = `<p class="text-red-600">Please enter valid numbers for A and B.</p>`;
+                     vizEl.innerHTML = `<h4 class="font-semibold text-lg mb-2">Visualization</h4><div class="text-slate-500">The visualization will appear here.</div>`;
+                    return;
+                }
+                
+                const originalA = a;
+                const originalB = b;
+
+                let vizHTML = `<h4 class="font-semibold text-lg mb-2">Visualization</h4>`;
+                vizHTML += `<div class="mb-4"><p class="text-sm font-medium">Initial:</p> <span class="font-mono">A=${a}</span> ${createBitHTML(toBinary(a))} <span class="font-mono">B=${b}</span> ${createBitHTML(toBinary(b))}</div>`;
+
+                a = a ^ b;
+                vizHTML += `<div class="mb-4"><p class="text-sm font-medium">Step 1: a = a ^ b</p> <span class="font-mono">A=${a}</span> ${createBitHTML(toBinary(a))} <span class="font-mono">B=${b}</span> ${createBitHTML(toBinary(b))}</div>`;
+
+                b = b ^ a;
+                vizHTML += `<div class="mb-4"><p class="text-sm font-medium">Step 2: b = b ^ a</p> <span class="font-mono">A=${a}</span> ${createBitHTML(toBinary(a))} <span class="font-mono">B=${b}</span> ${createBitHTML(toBinary(b))}</div>`;
+                
+                a = a ^ b;
+                vizHTML += `<div><p class="text-sm font-medium">Step 3: a = a ^ b</p> <span class="font-mono">A=${a}</span> ${createBitHTML(toBinary(a))} <span class="font-mono">B=${b}</span> ${createBitHTML(toBinary(b))}</div>`;
+
+                vizEl.innerHTML = vizHTML;
+                outputEl.innerHTML = `<p class="font-semibold">Original: A=${originalA}, B=${originalB}</p><p class="font-semibold">Swapped: <span class="text-xl font-bold text-indigo-600">A=${a}, B=${b}</span></p>`;
+            });
+            
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const solutionContent = button.nextElementSibling;
+                    solutionContent.classList.toggle('hidden');
+                    if (solutionContent.classList.contains('hidden')) {
+                        button.textContent = 'View Solution';
+                    } else {
+                        button.textContent = 'Hide Solution';
+                    }
+                });
+            });
+
+            singleNumberBtn.click();
+            powerOfTwoBtn.click();
+            xorSwapBtn.click();
+
+        });
+    </script>
+
+</body>
+</html>

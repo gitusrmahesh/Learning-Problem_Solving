@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: Advanced Bit Tricks in C#</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate & Sky -->
+    <!-- Application Structure Plan: The application is structured as an interactive educational module, not a linear report. It's divided into three core, task-oriented sections: 1) Counting Set Bits, 2) Subset Generation, and 3) Practice. This structure was chosen to facilitate active learning. Users can jump to a specific topic, read the concept, interact with a live visualizer to test their own inputs, and then see a practical C# implementation. The flow is designed to build understanding from theory -> interactive exploration -> practical code -> application, which is a more effective learning path for technical concepts than a static document. -->
+    <!-- Visualization & Content Choices: 
+        1. Brian Kernighan's Algorithm: Report Info -> Step-by-step bit clearing. Goal -> Visualize the algorithm's state at each iteration. Viz/Presentation Method -> An HTML-based interactive simulator that shows the decimal/binary values of `n`, `n-1`, and `n & (n-1)` for each step. Interaction -> User provides a number; JS calculates and displays the loop's progression. Justification -> Makes the abstract `n & (n-1)` operation concrete and easy to follow. Library/Method -> Vanilla JS DOM manipulation.
+        2. Efficiency Comparison: Report Info -> Kernighan's is faster (O(k)) than naive check (O(log n)). Goal -> Visually compare performance. Viz/Presentation Method -> A bar chart showing iteration counts for different numbers. Interaction -> Static chart displaying pre-calculated comparison. Justification -> Charts provide an immediate, clear comparison of performance. Library/Method -> Chart.js with a Canvas element.
+        3. Subset Generation: Report Info -> Mapping numbers 0 to 2^n-1 to subsets. Goal -> Demonstrate the mapping. Viz/Presentation Method -> An HTML table generated dynamically. Interaction -> User provides a set of items; JS iterates and displays each number, its binary mask, and the resulting subset. Justification -> Clearly links the binary representation to the output subset, solidifying the core concept. Library/Method -> Vanilla JS DOM manipulation.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 300px; max-height: 350px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            position: relative;
+        }
+        .code-block pre { margin: 0; }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #334155;
+            color: #94a3b8;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover { background-color: #475569; }
+        .pill {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-10 border-b border-slate-200">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-slate-900">Advanced Bit Tricks in C#</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#intro" class="text-slate-600 hover:bg-slate-100 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium">Introduction</a>
+                        <a href="#counting" class="text-slate-600 hover:bg-slate-100 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium">Counting Set Bits</a>
+                        <a href="#subsets" class="text-slate-600 hover:bg-slate-100 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium">Subset Generation</a>
+                        <a href="#practice" class="text-slate-600 hover:bg-slate-100 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium">Practice</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <section id="intro" class="mb-16">
+            <div class="text-center">
+                <p class="text-base text-sky-600 font-semibold tracking-wide uppercase">Week 3 / Day 19</p>
+                <h2 class="mt-2 text-3xl font-extrabold text-slate-900 tracking-tight sm:text-4xl">Intermediate Problem Solving Roadmap</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
+                    Welcome to this interactive guide on advanced bit manipulation techniques. Bit manipulation is a crucial skill for competitive programming and performance-critical applications, allowing you to solve complex problems with remarkable efficiency. This module explores two powerful tricks: counting set bits with Brian Kernighan's algorithm and generating all subsets of a set.
+                </p>
+            </div>
+        </section>
+
+        <div class="space-y-20">
+
+            <section id="counting" class="bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-slate-900 mb-1">Counting Set Bits</h3>
+                <p class="text-sky-600 font-semibold mb-4">Brian Kernighan’s Algorithm</p>
+                
+                <div class="grid md:grid-cols-2 gap-8 items-start">
+                    <div>
+                        <p class="text-slate-600 mb-4">
+                            This clever algorithm provides an efficient way to count the number of '1's (set bits) in a number's binary representation. Its efficiency comes from a simple yet powerful trick: the operation <code class="bg-slate-100 text-sky-700 p-1 rounded font-mono text-sm">n & (n - 1)</code> unsets (turns off) the rightmost set bit of <code class="bg-slate-100 text-sky-700 p-1 rounded font-mono text-sm">n</code>. By repeating this operation until the number becomes zero, we can count exactly how many set bits were originally present.
+                        </p>
+                        <p class="text-slate-600 mb-4">
+                            The number of iterations is equal to the number of set bits, making it much faster than checking every single bit in the number, especially for sparse numbers (numbers with few set bits). Use the visualizer to see this process in action.
+                        </p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-csharp">public static int CountSetBits(int n)
+{
+    int count = 0;
+    while (n > 0)
+    {
+        // This operation clears the rightmost set bit
+        n &= (n - 1);
+        count++;
+    }
+    return count;
+}
+</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 p-6 rounded-md border border-slate-200">
+                        <h4 class="font-semibold text-lg mb-3">Interactive Visualizer</h4>
+                        <div class="flex items-center space-x-2 mb-4">
+                            <input type="number" id="bk-input" value="78" class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500" placeholder="Enter an integer">
+                            <button id="bk-visualize-btn" class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition-colors">Visualize</button>
+                        </div>
+                        <div id="bk-output" class="space-y-3 mt-4 text-sm font-mono"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-12">
+                     <h4 class="font-semibold text-lg mb-3 text-center">Efficiency Comparison</h4>
+                     <p class="text-slate-600 text-center max-w-2xl mx-auto mb-4">This chart compares the number of loop iterations required by Brian Kernighan's algorithm versus a naive approach (checking each bit one by one for a 32-bit integer). Notice how Kernighan's performance depends only on the number of set bits (k), not the size of the number.</p>
+                     <div class="chart-container">
+                        <canvas id="efficiencyChart"></canvas>
+                     </div>
+                </div>
+            </section>
+            
+            <section id="subsets" class="bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-slate-900 mb-1">Subset Generation</h3>
+                <p class="text-sky-600 font-semibold mb-4">Using Bitmasks</p>
+                
+                 <div class="grid md:grid-cols-2 gap-8 items-start">
+                    <div>
+                        <p class="text-slate-600 mb-4">
+                            Bit manipulation offers an elegant way to generate all possible subsets (the power set) of a given set. If a set has <code class="bg-slate-100 text-sky-700 p-1 rounded font-mono text-sm">n</code> elements, there are <code class="bg-slate-100 text-sky-700 p-1 rounded font-mono text-sm">2^n</code> possible subsets. We can map each subset to a number from <code class="bg-slate-100 text-sky-700 p-1 rounded font-mono text-sm">0</code> to <code class="bg-slate-100 text-sky-700 p-1 rounded font-mono text-sm">2^n - 1</code>.
+                        </p>
+                         <p class="text-slate-600 mb-4">
+                            The binary representation of each number acts as a "mask". If the <code class="bg-slate-100 text-sky-700 p-1 rounded font-mono text-sm">i</code>-th bit in the number is 1, we include the <code class="bg-slate-100 text-sky-700 p-1 rounded font-mono text-sm">i</code>-th element of the set in the current subset. By iterating through all numbers in the range, we can generate every combination.
+                        </p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-csharp">public static List&lt;List&lt;T&gt;&gt; GenerateSubsets&lt;T&gt;(T[] set)
+{
+    var allSubsets = new List&lt;List&lt;T&gt;&gt;();
+    int n = set.Length;
+    int max = 1 &lt;&lt; n; // Equivalent to 2^n
+
+    for (int i = 0; i &lt; max; i++)
+    {
+        var subset = new List&lt;T&gt;();
+        for (int j = 0; j &lt; n; j++)
+        {
+            // Check if the j-th bit is set in i
+            if ((i & (1 &lt;&lt; j)) > 0)
+            {
+                subset.Add(set[j]);
+            }
+        }
+        allSubsets.Add(subset);
+    }
+    return allSubsets;
+}
+</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-md border border-slate-200">
+                        <h4 class="font-semibold text-lg mb-3">Interactive Generator</h4>
+                        <div class="flex items-center space-x-2 mb-4">
+                            <input type="text" id="sg-input" value="A, B, C" class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500" placeholder="Enter items, comma-separated">
+                            <button id="sg-generate-btn" class="bg-sky-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-sky-700 transition-colors">Generate</button>
+                        </div>
+                        <div id="sg-output" class="text-sm font-mono bg-white p-2 rounded-md max-h-96 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="practice" class="text-center">
+                 <h3 class="text-2xl font-bold text-slate-900 mb-4">Practice Problems</h3>
+                 <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600 mb-8">
+                    Apply what you've learned. Solving these problems will help solidify your understanding of bit manipulation techniques.
+                </p>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <a href="https://leetcode.com/problems/number-of-1-bits/" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow text-left">
+                        <p class="font-semibold text-slate-900">Number of 1 Bits</p>
+                        <p class="text-slate-500 text-sm mt-1">A direct application of counting set bits. Practice implementing the algorithm efficiently.</p>
+                        <span class="pill bg-green-100 text-green-800 mt-3">Easy</span>
+                    </a>
+                    <a href="https://leetcode.com/problems/subsets/" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow text-left">
+                        <p class="font-semibold text-slate-900">Subsets</p>
+                        <p class="text-slate-500 text-sm mt-1">The classic problem of generating the power set. Can be solved with bitmasking or recursion.</p>
+                        <span class="pill bg-yellow-100 text-yellow-800 mt-3">Medium</span>
+                    </a>
+                    <a href="https://leetcode.com/problems/counting-bits/" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow text-left">
+                        <p class="font-semibold text-slate-900">Counting Bits</p>
+                        <p class="text-slate-500 text-sm mt-1">Count the set bits for all numbers from 0 to n. This requires an even more optimized approach.</p>
+                        <span class="pill bg-yellow-100 text-yellow-800 mt-3">Medium</span>
+                    </a>
+                     <a href="https://leetcode.com/problems/single-number/" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow text-left">
+                        <p class="font-semibold text-slate-900">Single Number</p>
+                        <p class="text-slate-500 text-sm mt-1">A problem that can be elegantly solved using the XOR bitwise operator. A fundamental trick.</p>
+                         <span class="pill bg-green-100 text-green-800 mt-3">Easy</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer class="bg-white border-t border-slate-200 mt-16">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500">
+            <p>&copy; 2025 Interactive Learning Module. Designed to demonstrate advanced programming concepts.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bkInput = document.getElementById('bk-input');
+            const bkButton = document.getElementById('bk-visualize-btn');
+            const bkOutput = document.getElementById('bk-output');
+
+            const sgInput = document.getElementById('sg-input');
+            const sgButton = document.getElementById('sg-generate-btn');
+            const sgOutput = document.getElementById('sg-output');
+            
+            function toBinary(n, pad = 8) {
+                return n.toString(2).padStart(pad, '0');
+            }
+
+            function visualizeBrianKernighan() {
+                let n = parseInt(bkInput.value);
+                if (isNaN(n) || n < 0) {
+                    bkOutput.innerHTML = '<p class="text-red-500">Please enter a non-negative integer.</p>';
+                    return;
+                }
+
+                bkOutput.innerHTML = '';
+                let count = 0;
+                let currentN = n;
+                
+                let initialHtml = `<div class="p-2 bg-white rounded"><strong>Initial:</strong> n = ${currentN} (${toBinary(currentN)})</div>`;
+                bkOutput.insertAdjacentHTML('beforeend', initialHtml);
+                
+                let steps = [];
+                while (currentN > 0) {
+                    count++;
+                    let prevN = currentN;
+                    let nMinus1 = prevN - 1;
+                    currentN &= (prevN - 1);
+                    
+                    let stepHtml = `
+                        <div class="border-t border-slate-200 pt-3 mt-3">
+                            <p class="font-semibold">Step ${count}:</p>
+                            <div class="grid grid-cols-3 gap-x-2">
+                                <span>n</span>
+                                <span>n-1</span>
+                                <span>n & (n-1)</span>
+                                <span class="text-sky-600">${toBinary(prevN)}</span>
+                                <span class="text-slate-500">${toBinary(nMinus1)}</span>
+                                <span class="text-green-600 font-bold">${toBinary(currentN)}</span>
+                            </div>
+                            <p class="mt-1">New n = ${currentN}</p>
+                        </div>`;
+                    steps.push(stepHtml);
+                }
+                
+                bkOutput.insertAdjacentHTML('beforeend', steps.join(''));
+                
+                let finalHtml = `<div class="p-2 bg-green-100 text-green-800 rounded mt-4"><strong>Result:</strong> Total set bits = ${count}</div>`;
+                bkOutput.insertAdjacentHTML('beforeend', finalHtml);
+            }
+
+            function generateSubsets() {
+                const rawInput = sgInput.value.trim();
+                if (!rawInput) {
+                    sgOutput.innerHTML = '<p class="text-red-500 p-2">Please enter some items.</p>';
+                    return;
+                }
+                const set = rawInput.split(',').map(item => item.trim()).filter(Boolean);
+                const n = set.length;
+                const max = 1 << n;
+
+                let html = '<div class="space-y-1">';
+                for (let i = 0; i < max; i++) {
+                    const subset = [];
+                    for (let j = 0; j < n; j++) {
+                        if ((i & (1 << j)) > 0) {
+                            subset.push(set[j]);
+                        }
+                    }
+                    html += `
+                        <div class="flex items-center space-x-4 p-1 rounded hover:bg-slate-100">
+                           <span class="w-8 text-right text-slate-400">${i}:</span>
+                           <span class="text-sky-600">${toBinary(i, n)}</span>
+                           <span class="text-slate-800 font-medium">{ ${subset.join(', ') || '∅'} }</span>
+                        </div>`;
+                }
+                html += '</div>';
+                sgOutput.innerHTML = html;
+            }
+
+            bkButton.addEventListener('click', visualizeBrianKernighan);
+            bkInput.addEventListener('keydown', (e) => {
+                if(e.key === 'Enter') visualizeBrianKernighan();
+            });
+
+            sgButton.addEventListener('click', generateSubsets);
+            sgInput.addEventListener('keydown', (e) => {
+                if(e.key === 'Enter') generateSubsets();
+            });
+
+            visualizeBrianKernighan();
+            generateSubsets();
+
+            const ctx = document.getElementById('efficiencyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['7 (3 bits)', '8 (1 bit)', '255 (8 bits)', '65535 (16 bits)'],
+                    datasets: [{
+                        label: 'Naive Approach (Iterations)',
+                        data: [32, 32, 32, 32],
+                        backgroundColor: 'rgba(100, 116, 139, 0.5)',
+                        borderColor: 'rgba(100, 116, 139, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Brian Kernighan (Iterations)',
+                        data: [3, 1, 8, 16],
+                        backgroundColor: 'rgba(2, 132, 199, 0.6)',
+                        borderColor: 'rgba(2, 132, 199, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Loop Iterations'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                           callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + ' iterations';
+                                    }
+                                    return label;
+                                }
+                           }
+                        }
+                    }
+                }
+            });
+        });
+
+        function copyCode(button) {
+            const codeBlock = button.parentElement;
+            const code = codeBlock.querySelector('code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
+
+</body>
+</html>
