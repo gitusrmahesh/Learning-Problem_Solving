@@ -3,21 +3,666 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 15: Sorting Basics</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Interactive Sorting Algorithm Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutral -->
+    <!-- Application Structure Plan: A tabbed single-page application is used to provide a focused learning environment. Each sorting algorithm (Bubble, Selection, Insertion) gets its own dedicated tab containing a detailed explanation, an interactive visualizer, and its C# code implementation. This modular approach prevents information overload. A final "Performance Comparison" tab synthesizes the information, allowing users to directly compare the algorithms' efficiency on the same dataset using a dynamic bar chart. This structure guides the user from individual understanding to comparative analysis, which is the most effective way to learn these concepts. The primary interaction is the step-by-step animation of the sorting process, which turns abstract algorithms into concrete, visual steps. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Step-by-step algorithm logic -> Goal: Demonstrate -> Viz/Presentation Method: Animated HTML bars (divs) -> Interaction: User can generate data, start the sort, and control speed -> Justification: Visually demonstrates the sorting process, making it far easier to understand than static text or code. HTML/CSS is sufficient and lightweight for this.
+        - Report Info: Algorithm efficiency (complexity) -> Goal: Compare -> Viz/Presentation Method: Dynamic Bar Chart (Chart.js/Canvas) -> Interaction: Chart updates with operation counts for a newly generated array -> Justification: Provides an immediate, quantitative, and visual comparison of the algorithms' real-world performance on a given dataset, making abstract Big O notation more tangible.
+        - Report Info: C# Implementations -> Goal: Inform/Provide resource -> Viz/Presentation Method: Formatted code block (<pre><code>) -> Interaction: Copy-to-clipboard button -> Justification: Provides users with practical, ready-to-use code for their own projects and study.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            color: #4f46e5; /* indigo-600 */
+            border-bottom-color: #4f46e5;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .visualizer-bar {
+            display: inline-block;
+            margin: 0 1px;
+            width: 10px;
+            background-color: #64748b; /* slate-500 */
+            transition: height 0.3s ease, background-color 0.3s ease;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 450px;
+        }
+        .code-block {
+            background-color: #1e293b; /* slate-800 */
+            color: #e2e8f0; /* slate-200 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #334155; /* slate-700 */
+            color: #e2e8f0;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .copy-btn:hover {
+            background-color: #475569; /* slate-600 */
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-4">Day 15: Sorting Basics</h1>
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-2">Topic</h2>
-            <p class="mb-4">Sorting Basics</p>
-            <h2 class="text-2xl font-bold mb-2">Content</h2>
-            <p>Content for this day will be added here.</p>
-        </div>
-        <div class="mt-8">
-            <a href="30_days_progress.html" class="text-blue-500 hover:underline">Back to Roadmap</a>
+<body class="text-slate-800">
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900">Interactive Sorting Algorithm Visualizer</h1>
+            <p class="text-lg text-slate-600 mt-2">Day 15: Bubble, Selection, & Insertion Sort in C#</p>
+        </header>
+
+        <div class="w-full max-w-7xl mx-auto bg-white rounded-xl shadow-lg p-4 sm:p-6">
+            <!-- Tabs Navigation -->
+            <div class="border-b border-slate-200 mb-6">
+                <nav class="flex -mb-px" id="tabs">
+                    <button data-tab="bubble" class="tab-btn active text-slate-500 hover:text-slate-700 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm md:text-base md:px-4">Bubble Sort</button>
+                    <button data-tab="selection" class="tab-btn text-slate-500 hover:text-slate-700 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm md:text-base md:px-4">Selection Sort</button>
+                    <button data-tab="insertion" class="tab-btn text-slate-500 hover:text-slate-700 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm md:text-base md:px-4">Insertion Sort</button>
+                    <button data-tab="comparison" class="tab-btn text-slate-500 hover:text-slate-700 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm md:text-base md:px-4">Performance Comparison</button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tab-contents">
+                <!-- Bubble Sort -->
+                <div id="bubble-content" class="tab-content active">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-3 text-indigo-700">Bubble Sort</h2>
+                            <p class="text-slate-600 mb-4">Bubble Sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order. The pass through the list is repeated until the list is sorted. It's named for the way smaller or larger elements "bubble" to the top of the list.</p>
+                            <ul class="list-disc list-inside text-slate-600 space-y-2">
+                                <li><strong>Time Complexity:</strong> O(n²) in average and worst cases. O(n) in the best case (already sorted).</li>
+                                <li><strong>Space Complexity:</strong> O(1) - it's an in-place sorting algorithm.</li>
+                                <li><strong>When to use:</strong> Rarely used in practice for performance reasons, but it's a great educational tool for introducing sorting concepts.</li>
+                            </ul>
+                        </div>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-csharp">public static void BubbleSort(int[] arr)
+{
+    int n = arr.Length;
+    for (int i = 0; i < n - 1; i++)
+    {
+        bool swapped = false;
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (arr[j] > arr[j + 1])
+            {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                swapped = true;
+            }
+        }
+        if (!swapped)
+            break; // Array is sorted
+    }
+}
+</code></pre>
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-slate-200">
+                        <h3 class="text-xl font-semibold text-center mb-4">Visualizer</h3>
+                        <div id="bubble-visualizer" class="w-full h-64 bg-slate-100 rounded-lg flex items-end justify-center p-2"></div>
+                        <div class="flex flex-wrap items-center justify-center gap-4 mt-4">
+                            <button id="bubble-new-array" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">New Array</button>
+                            <button id="bubble-sort" class="bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-emerald-600 transition">Sort</button>
+                            <div class="flex items-center gap-2">
+                                <label for="bubble-speed" class="text-sm font-medium">Speed:</label>
+                                <input id="bubble-speed" type="range" min="10" max="500" value="100" class="w-32">
+                            </div>
+                             <div class="flex items-center gap-2">
+                                <label for="bubble-size" class="text-sm font-medium">Size:</label>
+                                <input id="bubble-size" type="range" min="10" max="100" value="50" class="w-32">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selection Sort -->
+                <div id="selection-content" class="tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-3 text-indigo-700">Selection Sort</h2>
+                            <p class="text-slate-600 mb-4">This algorithm divides the input list into two parts: a sorted sublist of items which is built up from left to right at the front of the list and a sublist of the remaining unsorted items. Initially, the sorted sublist is empty and the unsorted sublist is the entire input list. The algorithm proceeds by finding the smallest element in the unsorted sublist, swapping it with the leftmost unsorted element, and moving the sublist boundaries one element to the right.</p>
+                             <ul class="list-disc list-inside text-slate-600 space-y-2">
+                                <li><strong>Time Complexity:</strong> O(n²) in all cases (best, average, and worst).</li>
+                                <li><strong>Space Complexity:</strong> O(1) - in-place sorting.</li>
+                                <li><strong>Advantage:</strong> It makes the minimum possible number of swaps, (n-1) in the worst case.</li>
+                            </ul>
+                        </div>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-csharp">public static void SelectionSort(int[] arr)
+{
+    int n = arr.Length;
+    for (int i = 0; i < n - 1; i++)
+    {
+        int minIndex = i;
+        for (int j = i + 1; j < n; j++)
+        {
+            if (arr[j] < arr[minIndex])
+            {
+                minIndex = j;
+            }
+        }
+        int temp = arr[minIndex];
+        arr[minIndex] = arr[i];
+        arr[i] = temp;
+    }
+}
+</code></pre>
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-slate-200">
+                        <h3 class="text-xl font-semibold text-center mb-4">Visualizer</h3>
+                        <div id="selection-visualizer" class="w-full h-64 bg-slate-100 rounded-lg flex items-end justify-center p-2"></div>
+                        <div class="flex flex-wrap items-center justify-center gap-4 mt-4">
+                            <button id="selection-new-array" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">New Array</button>
+                            <button id="selection-sort" class="bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-emerald-600 transition">Sort</button>
+                            <div class="flex items-center gap-2">
+                                <label for="selection-speed" class="text-sm font-medium">Speed:</label>
+                                <input id="selection-speed" type="range" min="10" max="500" value="100" class="w-32">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label for="selection-size" class="text-sm font-medium">Size:</label>
+                                <input id="selection-size" type="range" min="10" max="100" value="50" class="w-32">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insertion Sort -->
+                <div id="insertion-content" class="tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-3 text-indigo-700">Insertion Sort</h2>
+                            <p class="text-slate-600 mb-4">Insertion sort iterates through an input array and removes one element per iteration, finds the location it belongs to in the sorted part of the array, and inserts it there. It repeats until no input elements remain. It's like sorting a hand of playing cards: you pick up one card at a time and insert it into its correct position among the cards you're already holding.</p>
+                             <ul class="list-disc list-inside text-slate-600 space-y-2">
+                                <li><strong>Time Complexity:</strong> O(n²) in average and worst cases. O(n) in the best case.</li>
+                                <li><strong>Space Complexity:</strong> O(1) - in-place sorting.</li>
+                                <li><strong>Advantage:</strong> Efficient for small datasets and for datasets that are already substantially sorted.</li>
+                            </ul>
+                        </div>
+                         <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-csharp">public static void InsertionSort(int[] arr)
+{
+    int n = arr.Length;
+    for (int i = 1; i < n; ++i)
+    {
+        int key = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j] > key)
+        {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
+</code></pre>
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-slate-200">
+                        <h3 class="text-xl font-semibold text-center mb-4">Visualizer</h3>
+                        <div id="insertion-visualizer" class="w-full h-64 bg-slate-100 rounded-lg flex items-end justify-center p-2"></div>
+                        <div class="flex flex-wrap items-center justify-center gap-4 mt-4">
+                            <button id="insertion-new-array" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">New Array</button>
+                            <button id="insertion-sort" class="bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-emerald-600 transition">Sort</button>
+                            <div class="flex items-center gap-2">
+                                <label for="insertion-speed" class="text-sm font-medium">Speed:</label>
+                                <input id="insertion-speed" type="range" min="10" max="500" value="100" class="w-32">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label for="insertion-size" class="text-sm font-medium">Size:</label>
+                                <input id="insertion-size" type="range" min="10" max="100" value="50" class="w-32">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison -->
+                <div id="comparison-content" class="tab-content">
+                    <h2 class="text-2xl font-bold mb-4 text-indigo-700 text-center">Performance Comparison</h2>
+                    <p class="text-slate-600 mb-6 max-w-3xl mx-auto text-center">This section provides a direct comparison of the three sorting algorithms. The table below summarizes their theoretical complexities, while the chart visualizes their practical performance by counting the number of key operations (comparisons and swaps) for a randomly generated dataset. Click "Run Comparison" to see how they perform on the same data.</p>
+                    <div class="overflow-x-auto mb-8">
+                        <table class="w-full min-w-max text-left text-sm text-slate-500 rounded-lg shadow-md">
+                            <thead class="bg-slate-100 text-xs text-slate-700 uppercase">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Algorithm</th>
+                                    <th scope="col" class="px-6 py-3">Best Case Time</th>
+                                    <th scope="col" class="px-6 py-3">Average Case Time</th>
+                                    <th scope="col" class="px-6 py-3">Worst Case Time</th>
+                                    <th scope="col" class="px-6 py-3">Space Complexity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b">
+                                    <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">Bubble Sort</th>
+                                    <td class="px-6 py-4">O(n)</td>
+                                    <td class="px-6 py-4">O(n²)</td>
+                                    <td class="px-6 py-4">O(n²)</td>
+                                    <td class="px-6 py-4">O(1)</td>
+                                </tr>
+                                <tr class="bg-slate-50 border-b">
+                                    <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">Selection Sort</th>
+                                    <td class="px-6 py-4">O(n²)</td>
+                                    <td class="px-6 py-4">O(n²)</td>
+                                    <td class="px-6 py-4">O(n²)</td>
+                                    <td class="px-6 py-4">O(1)</td>
+                                </tr>
+                                <tr class="bg-white">
+                                    <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">Insertion Sort</th>
+                                    <td class="px-6 py-4">O(n)</td>
+                                    <td class="px-6 py-4">O(n²)</td>
+                                    <td class="px-6 py-4">O(n²)</td>
+                                    <td class="px-6 py-4">O(1)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-4 mt-4">
+                        <button id="comparison-run" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">Run Comparison</button>
+                        <div class="flex items-center gap-2">
+                           <label for="comparison-size" class="text-sm font-medium">Array Size:</label>
+                           <input id="comparison-size" type="range" min="10" max="200" value="50" class="w-40">
+                           <span id="comparison-size-label" class="text-sm font-semibold text-slate-700">50</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.getElementById('tabs');
+            const contents = document.getElementById('tab-contents').children;
+            let currentArray = [];
+            let isSorting = false;
+            let comparisonChart;
+
+            const ALGORITHMS = {
+                bubble: { name: 'Bubble Sort' },
+                selection: { name: 'Selection Sort' },
+                insertion: { name: 'Insertion Sort' },
+            };
+
+            const COLORS = {
+                default: '#64748b',   // slate-500
+                compare: '#f59e0b',  // amber-500
+                swap: '#ef4444',     // red-500
+                sorted: '#22c55e',   // emerald-500
+                key: '#3b82f6'      // blue-500
+            };
+
+            function switchTab(tabName) {
+                tabs.querySelectorAll('.tab-btn').forEach(btn => {
+                    if (btn.dataset.tab === tabName) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                Array.from(contents).forEach(content => {
+                    if (content.id === `${tabName}-content`) {
+                        content.classList.add('active');
+                    } else {
+                        content.classList.remove('active');
+                    }
+                });
+
+                if (tabName !== 'comparison' && !isSorting) {
+                    const size = document.getElementById(`${tabName}-size`).value;
+                    generateNewArray(tabName, size);
+                }
+            }
+
+            tabs.addEventListener('click', (e) => {
+                if (e.target.matches('.tab-btn') && !isSorting) {
+                    const tabName = e.target.dataset.tab;
+                    switchTab(tabName);
+                } else if (isSorting) {
+                    console.log("Cannot switch tabs while sorting is in progress.");
+                }
+            });
+
+            function generateNewArray(algoName, size) {
+                currentArray = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 5);
+                renderArray(algoName, currentArray);
+            }
+
+            function renderArray(algoName, arr, highlights = {}) {
+                const visualizer = document.getElementById(`${algoName}-visualizer`);
+                if (!visualizer) return;
+                visualizer.innerHTML = '';
+                const maxValue = Math.max(...arr);
+                arr.forEach((value, index) => {
+                    const bar = document.createElement('div');
+                    bar.classList.add('visualizer-bar');
+                    bar.style.height = `${(value / maxValue) * 100}%`;
+                    bar.style.width = `${100 / arr.length}%`;
+                    if (highlights.compare && (index === highlights.compare[0] || index === highlights.compare[1])) {
+                        bar.style.backgroundColor = COLORS.compare;
+                    }
+                    if (highlights.swap && (index === highlights.swap[0] || index === highlights.swap[1])) {
+                        bar.style.backgroundColor = COLORS.swap;
+                    }
+                    if (highlights.sorted && index <= highlights.sorted) {
+                        bar.style.backgroundColor = COLORS.sorted;
+                    }
+                     if (highlights.key && index === highlights.key) {
+                        bar.style.backgroundColor = COLORS.key;
+                    }
+                    visualizer.appendChild(bar);
+                });
+            }
+
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            function getSpeed(algoName) {
+                const speedValue = document.getElementById(`${algoName}-speed`).value;
+                return 510 - speedValue; // Invert so higher slider value is faster
+            }
+
+            async function setSortingState(state) {
+                isSorting = state;
+                document.querySelectorAll('button, input[type="range"]').forEach(el => {
+                    if (!el.classList.contains('copy-btn')) {
+                       el.disabled = state;
+                    }
+                });
+            }
+
+            // --- Sorting Algorithms (Visual) ---
+
+            async function visualBubbleSort(algoName) {
+                await setSortingState(true);
+                let arr = [...currentArray];
+                let n = arr.length;
+                let swapped;
+                for (let i = 0; i < n - 1; i++) {
+                    swapped = false;
+                    for (let j = 0; j < n - i - 1; j++) {
+                        if (isSorting === false) { await setSortingState(false); return; }
+                        renderArray(algoName, arr, { compare: [j, j + 1], sorted: n - i });
+                        await sleep(getSpeed(algoName));
+
+                        if (arr[j] > arr[j + 1]) {
+                            renderArray(algoName, arr, { swap: [j, j + 1], sorted: n - i });
+                            await sleep(getSpeed(algoName));
+                            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                            swapped = true;
+                            renderArray(algoName, arr, { swap: [j, j + 1], sorted: n - i });
+                            await sleep(getSpeed(algoName));
+                        }
+                    }
+                    if (!swapped) break;
+                }
+                currentArray = arr;
+                renderArray(algoName, arr, { sorted: n });
+                await setSortingState(false);
+            }
+
+            async function visualSelectionSort(algoName) {
+                await setSortingState(true);
+                let arr = [...currentArray];
+                let n = arr.length;
+                for (let i = 0; i < n - 1; i++) {
+                    let minIndex = i;
+                    for (let j = i + 1; j < n; j++) {
+                        if (isSorting === false) { await setSortingState(false); return; }
+                        renderArray(algoName, arr, { compare: [j, minIndex], sorted: i - 1, key: minIndex});
+                        await sleep(getSpeed(algoName));
+                        if (arr[j] < arr[minIndex]) {
+                            minIndex = j;
+                        }
+                    }
+                    renderArray(algoName, arr, { swap: [i, minIndex], sorted: i - 1 });
+                    await sleep(getSpeed(algoName));
+                    [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+                    renderArray(algoName, arr, { swap: [i, minIndex], sorted: i });
+                    await sleep(getSpeed(algoName));
+                }
+                currentArray = arr;
+                renderArray(algoName, arr, { sorted: n });
+                await setSortingState(false);
+            }
+
+            async function visualInsertionSort(algoName) {
+                await setSortingState(true);
+                let arr = [...currentArray];
+                let n = arr.length;
+                for (let i = 1; i < n; i++) {
+                    let key = arr[i];
+                    let j = i - 1;
+                    renderArray(algoName, arr, { key: i, sorted: i - 1 });
+                    await sleep(getSpeed(algoName));
+
+                    while (j >= 0 && arr[j] > key) {
+                         if (isSorting === false) { await setSortingState(false); return; }
+                        renderArray(algoName, arr, { compare: [j, j + 1], sorted: i - 1 });
+                        await sleep(getSpeed(algoName));
+                        arr[j + 1] = arr[j];
+                        j = j - 1;
+                        renderArray(algoName, arr, { swap: [j + 1, j + 2], sorted: i - 1 });
+                        await sleep(getSpeed(algoName));
+                    }
+                    arr[j + 1] = key;
+                    renderArray(algoName, arr, { sorted: i });
+                    await sleep(getSpeed(algoName));
+                }
+                currentArray = arr;
+                renderArray(algoName, arr, { sorted: n });
+                await setSortingState(false);
+            }
+
+            // --- Sorting Algorithms (Performance Count) ---
+
+            function perfBubbleSort(arr) {
+                let operations = 0;
+                let n = arr.length;
+                for (let i = 0; i < n - 1; i++) {
+                    for (let j = 0; j < n - i - 1; j++) {
+                        operations++; // comparison
+                        if (arr[j] > arr[j + 1]) {
+                            operations++; // swap
+                            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                        }
+                    }
+                }
+                return operations;
+            }
+
+            function perfSelectionSort(arr) {
+                let operations = 0;
+                let n = arr.length;
+                for (let i = 0; i < n - 1; i++) {
+                    let minIndex = i;
+                    for (let j = i + 1; j < n; j++) {
+                        operations++; // comparison
+                        if (arr[j] < arr[minIndex]) {
+                            minIndex = j;
+                        }
+                    }
+                    if (minIndex !== i) {
+                        operations++; // swap
+                        [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+                    }
+                }
+                return operations;
+            }
+
+            function perfInsertionSort(arr) {
+                let operations = 0;
+                let n = arr.length;
+                for (let i = 1; i < n; i++) {
+                    let key = arr[i];
+                    let j = i - 1;
+                    while (j >= 0 && arr[j] > key) {
+                        operations++; // comparison
+                        operations++; // shift
+                        arr[j + 1] = arr[j];
+                        j--;
+                    }
+                    operations++; // final comparison
+                    operations++; // placement
+                    arr[j + 1] = key;
+                }
+                return operations;
+            }
+
+            // --- Event Listeners Setup ---
+
+            Object.keys(ALGORITHMS).forEach(algoName => {
+                document.getElementById(`${algoName}-new-array`).addEventListener('click', () => {
+                    const size = document.getElementById(`${algoName}-size`).value;
+                    generateNewArray(algoName, size);
+                });
+                 document.getElementById(`${algoName}-size`).addEventListener('input', (e) => {
+                    generateNewArray(algoName, e.target.value);
+                });
+            });
+
+            document.getElementById('bubble-sort').addEventListener('click', () => visualBubbleSort('bubble'));
+            document.getElementById('selection-sort').addEventListener('click', () => visualSelectionSort('selection'));
+            document.getElementById('insertion-sort').addEventListener('click', () => visualInsertionSort('insertion'));
+
+            // --- Comparison Chart ---
+
+            function initComparisonChart() {
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                comparisonChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Bubble Sort', 'Selection Sort', 'Insertion Sort'],
+                        datasets: [{
+                            label: '# of Operations (Comparisons + Swaps)',
+                            data: [0, 0, 0],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 86, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#475569'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#475569'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Algorithm Performance on Random Data',
+                                color: '#1e293b',
+                                font: {
+                                    size: 16
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            document.getElementById('comparison-run').addEventListener('click', () => {
+                const size = document.getElementById('comparison-size').value;
+                const baseArray = Array.from({ length: size }, () => Math.floor(Math.random() * 1000));
+
+                const bubbleOps = perfBubbleSort([...baseArray]);
+                const selectionOps = perfSelectionSort([...baseArray]);
+                const insertionOps = perfInsertionSort([...baseArray]);
+
+                comparisonChart.data.datasets[0].data = [bubbleOps, selectionOps, insertionOps];
+                comparisonChart.update();
+            });
+
+            const comparisonSizeSlider = document.getElementById('comparison-size');
+            const comparisonSizeLabel = document.getElementById('comparison-size-label');
+            comparisonSizeSlider.addEventListener('input', (e) => {
+                comparisonSizeLabel.textContent = e.target.value;
+            });
+
+            // --- Init ---
+            switchTab('bubble');
+            initComparisonChart();
+        });
+
+        // --- Utility ---
+        function copyCode(button) {
+            const pre = button.parentElement;
+            const code = pre.querySelector('code');
+            const text = code.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                button.innerText = 'Copied!';
+                setTimeout(() => {
+                    button.innerText = 'Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+    </script>
 </body>
 </html>

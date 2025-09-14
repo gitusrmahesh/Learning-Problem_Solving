@@ -3,21 +3,482 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 2: Time Complexity Basics</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Time Complexity Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cool Slate & Blue -->
+    <!-- Application Structure Plan: The application is structured as a single-page interactive learning module. The design prioritizes a logical, educational flow over mirroring a linear report. It starts with a basic definition, then allows users to explore different Big O notations in a non-linear fashion via an interactive tabbed section. This is followed by a powerful visual comparison tool (a dynamic chart) to solidify understanding of relative performance. The module concludes with a hands-on practice section with immediate feedback. This structure was chosen because it facilitates self-paced, discovery-based learning, allowing users to compare concepts, visualize their impact, and then immediately apply their knowledge, which is a highly effective educational model. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Core concepts of O(1), O(n), O(log n), O(n²). Goal: Inform & Compare. Viz/Presentation: Interactive tabs with text, C# code snippets, and individual Chart.js line charts. Interaction: Clicking tabs reveals relevant content and updates the chart. Justification: This breaks down complex topics into digestible chunks and provides immediate visual context for each. Library: Chart.js (Canvas).
+        - Report Info: Relative performance of different complexities. Goal: Compare. Viz/Presentation: A single, large Chart.js line chart plotting all complexities. Interaction: A slider allows the user to adjust the input size 'n', dynamically updating plotted values and a summary table. Justification: This is the most effective way to demonstrate the dramatic differences in scalability. Library: Chart.js (Canvas).
+        - Report Info: Practice problems. Goal: Engage & Test. Viz/Presentation: A series of cards with code snippets and multiple-choice buttons. Interaction: Users click a button to answer; immediate feedback and detailed explanations are revealed. Justification: Active recall and immediate feedback are proven methods for reinforcing learning. Method: HTML/CSS/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        .code-block .keyword { color: #93c5fd; }
+        .code-block .type { color: #86efac; }
+        .code-block .comment { color: #9ca3af; }
+        .code-block .string { color: #fde047; }
+        .code-block .number { color: #f0abfc; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-button.active {
+            background-color: #2563eb;
+            color: white;
+        }
+        .tab-button.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-4">Day 2: Time Complexity Basics</h1>
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-2">Topic</h2>
-            <p class="mb-4">Time Complexity Basics</p>
-            <h2 class="text-2xl font-bold mb-2">Content</h2>
-            <p>Content for this day will be added here.</p>
-        </div>
-        <div class="mt-8">
-            <a href="30_days_progress.html" class="text-blue-500 hover:underline">Back to Roadmap</a>
-        </div>
-    </div>
+<body class="antialiased">
+
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-2xl font-bold text-slate-800">Time Complexity Guide</h1>
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="#introduction" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100">Introduction</a>
+                    <a href="#explorer" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100">Big O Explorer</a>
+                    <a href="#comparison" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100">Comparison</a>
+                    <a href="#practice" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100">Practice</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <section id="introduction" class="mb-16 scroll-mt-24">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">What is Time Complexity?</h2>
+                <p class="text-lg text-slate-600 mb-4">Time complexity isn't about measuring the exact time an algorithm takes to run. Instead, it's about how the runtime of an algorithm grows as the size of the input grows. We use a notation called **Big O** to describe this relationship.</p>
+                <p class="text-lg text-slate-600">Think of it like this: if you double the input data, does the time it takes to run the algorithm also double? Does it quadruple? Or does it barely change at all? Big O notation gives us a standardized way to talk about these growth rates, helping us compare the efficiency of different solutions to a problem.</p>
+            </div>
+        </section>
+
+        <section id="explorer" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center text-slate-900 mb-2">Big O Explorer</h2>
+            <p class="text-lg text-center text-slate-600 mb-8">Click on a complexity type to see how it works, its C# code, and a visual of its growth.</p>
+
+            <div class="flex justify-center flex-wrap gap-2 mb-8">
+                <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="o1">O(1) - Constant</button>
+                <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="on">O(n) - Linear</button>
+                <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="ologn">O(log n) - Logarithmic</button>
+                <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="on2">O(n²) - Quadratic</button>
+            </div>
+
+            <div id="explorer-content" class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+            </div>
+        </section>
+
+        <section id="comparison" class="mb-16 scroll-mt-24">
+             <h2 class="text-3xl font-bold text-center text-slate-900 mb-2">Visual Growth Comparison</h2>
+            <p class="text-lg text-center text-slate-600 mb-8">Use the slider to see how the number of operations changes for each complexity as the input size ('n') increases.</p>
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div class="chart-container mb-8">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+                <div class="flex flex-col items-center">
+                    <label for="n-slider" class="font-medium mb-2">Input Size (n): <span id="n-value-label" class="font-bold text-blue-600">50</span></label>
+                    <input id="n-slider" type="range" min="1" max="100" value="50" class="w-full max-w-lg">
+                </div>
+                 <div id="comparison-table" class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                </div>
+            </div>
+        </section>
+
+        <section id="practice" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center text-slate-900 mb-2">Practice Problems</h2>
+            <p class="text-lg text-center text-slate-600 mb-8">Analyze the C# code snippets below and determine their time complexity.</p>
+            <div id="practice-container" class="space-y-8">
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const contentData = {
+            o1: {
+                title: 'O(1) - Constant Time',
+                description: "An algorithm has constant time complexity if its execution time does not depend on the input size 'n'. No matter how large the input, the time it takes to run will always be the same. This is the most efficient complexity.",
+                code: `<span class="keyword">public void</span> <span class="type">PrintFirstElement</span>(<span class="type">int</span>[] numbers)
+{
+    <span class="comment">// This operation takes the same amount of time</span>
+    <span class="comment">// regardless of the array's size.</span>
+    <span class="keyword">if</span> (numbers.Length > <span class="number">0</span>)
+    {
+        Console.WriteLine(numbers[<span class="number">0</span>]);
+    }
+}`,
+                chartData: (n) => Array(n.length).fill(1),
+                chartLabel: 'O(1) Operations'
+            },
+            on: {
+                title: 'O(n) - Linear Time',
+                description: "An algorithm has linear time complexity when its runtime grows in direct proportion to the size of the input 'n'. If the input size doubles, the number of operations also doubles. A single loop through a collection is a classic example.",
+                code: `<span class="keyword">public void</span> <span class="type">PrintAllElements</span>(<span class="type">int</span>[] numbers)
+{
+    <span class="comment">// The loop runs 'n' times, where 'n' is numbers.Length.</span>
+    <span class="keyword">foreach</span> (<span class="type">int</span> number <span class="keyword">in</span> numbers)
+    {
+        Console.WriteLine(number);
+    }
+}`,
+                chartData: (n) => n.map(val => val),
+                chartLabel: 'O(n) Operations'
+            },
+            ologn: {
+                title: 'O(log n) - Logarithmic Time',
+                description: "An algorithm has logarithmic time complexity when the runtime grows logarithmically with the input size. This typically occurs when the algorithm halves the size of the input data with each step. It's extremely efficient for large datasets. Binary search is a prime example.",
+                code: `<span class="keyword">public bool</span> <span class="type">BinarySearch</span>(<span class="type">int</span>[] sortedArray, <span class="type">int</span> target)
+{
+    <span class="type">int</span> left = <span class="number">0</span>;
+    <span class="type">int</span> right = sortedArray.Length - <span class="number">1</span>;
+
+    <span class="keyword">while</span> (left <= right)
+    {
+        <span class="comment">// With each step, we cut the search space in half.</span>
+        <span class="type">int</span> mid = left + (right - left) / <span class="number">2</span>;
+        <span class="keyword">if</span> (sortedArray[mid] == target) <span class="keyword">return true</span>;
+        <span class="keyword">if</span> (sortedArray[mid] < target) left = mid + <span class="number">1</span>;
+        <span class="keyword">else</span> right = mid - <span class="number">1</span>;
+    }
+    <span class="keyword">return false</span>;
+}`,
+                chartData: (n) => n.map(val => val > 0 ? Math.log2(val) : 0),
+                chartLabel: 'O(log n) Operations'
+            },
+            on2: {
+                title: 'O(n²) - Quadratic Time',
+                description: "An algorithm has quadratic time complexity when its runtime is proportional to the square of the input size. This is common when using nested loops that iterate over the same dataset. As 'n' grows, the runtime increases dramatically, so this should be avoided for large inputs.",
+                code: `<span class="keyword">public void</span> <span class="type">PrintPairs</span>(<span class="type">int</span>[] numbers)
+{
+    <span class="comment">// The outer loop runs 'n' times.</span>
+    <span class="keyword">foreach</span> (<span class="type">int</span> num1 <span class="keyword">in</span> numbers)
+    {
+        <span class="comment">// The inner loop also runs 'n' times for each</span>
+        <span class="comment">// outer loop iteration. Total: n * n = n².</span>
+        <span class="keyword">foreach</span> (<span class="type">int</span> num2 <span class="keyword">in</span> numbers)
+        {
+            Console.WriteLine($<span class="string">"{num1}, {num2}"</span>);
+        }
+    }
+}`,
+                chartData: (n) => n.map(val => val * val),
+                chartLabel: 'O(n²) Operations'
+            }
+        };
+
+        const practiceProblems = [
+            {
+                id: 1,
+                title: 'Problem 1: Find an item in an array',
+                code: `<span class="keyword">public bool</span> <span class="type">ContainsValue</span>(<span class="type">string</span>[] names, <span class="type">string</span> target)
+{
+    <span class="keyword">foreach</span>(<span class="type">string</span> name <span class="keyword">in</span> names)
+    {
+        <span class="keyword">if</span> (name == target)
+        {
+            <span class="keyword">return true</span>; <span class="comment">// Found it!</span>
+        }
+    }
+    <span class="keyword">return false</span>; <span class="comment">// Not in the array</span>
+}`,
+                options: ['O(1)', 'O(log n)', 'O(n)', 'O(n²)'],
+                correctAnswer: 'O(n)',
+                explanation: 'This algorithm iterates through the array once. In the worst-case scenario, it has to check every single element to find the target, or to determine it\'s not there. Therefore, the runtime is directly proportional to the number of elements, \'n\'.'
+            },
+            {
+                id: 2,
+                title: 'Problem 2: Check for duplicates',
+                code: `<span class="keyword">public bool</span> <span class="type">HasDuplicates</span>(<span class="type">int</span>[] numbers)
+{
+    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i < numbers.Length; i++)
+    {
+        <span class="keyword">for</span>(<span class="type">int</span> j = i + <span class="number">1</span>; j < numbers.Length; j++)
+        {
+            <span class="keyword">if</span> (numbers[i] == numbers[j])
+            {
+                <span class="keyword">return true</span>;
+            }
+        }
+    }
+    <span class="keyword">return false</span>;
+}`,
+                options: ['O(1)', 'O(n log n)', 'O(n)', 'O(n²)'],
+                correctAnswer: 'O(n²)',
+                explanation: 'This code uses a nested loop. The outer loop runs about \'n\' times, and the inner loop also runs about \'n\' times for each outer iteration. This leads to approximately n * n operations, which simplifies to O(n²).'
+            },
+            {
+                id: 3,
+                title: 'Problem 3: Get an element by index',
+                code: `<span class="keyword">public</span> <span class="type">object</span> <span class="type">GetItem</span>(List<object> items, <span class="type">int</span> index)
+{
+    <span class="comment">// Accessing an element in a List by index is a direct lookup.</span>
+    <span class="keyword">return</span> items[index];
+}`,
+                options: ['O(1)', 'O(log n)', 'O(n)', 'O(n²)'],
+                correctAnswer: 'O(1)',
+                explanation: 'Accessing an element in a list or array by its index is a constant time operation. The computer knows exactly where to find the data in memory based on the index, regardless of how many other elements are in the list.'
+            },
+            {
+                id: 4,
+                title: 'Problem 4: Recursive Halving',
+                code: `<span class="keyword">public int</span> <span class="type">CountSteps</span>(<span class="type">int</span> n)
+{
+    <span class="type">int</span> steps = <span class="number">0</span>;
+    <span class="keyword">while</span> (n > <span class="number">1</span>)
+    {
+        n = n / <span class="number">2</span>;
+        steps++;
+    }
+    <span class="keyword">return</span> steps;
+}`,
+                options: ['O(1)', 'O(log n)', 'O(n)', 'O(n²)'],
+                correctAnswer: 'O(log n)',
+                explanation: 'In this function, the input \'n\' is divided by 2 in each iteration of the loop. The number of times you can halve a number before it reaches 1 is the definition of log base 2. Thus, the complexity is logarithmic.'
+            }
+        ];
+
+        let explorerChart = null;
+        let comparisonChart = null;
+
+        function renderExplorerContent(complexity) {
+            const data = contentData[complexity];
+            const contentDiv = document.getElementById('explorer-content');
+
+            contentDiv.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">${data.title}</h3>
+                        <p class="text-slate-600 mb-6">${data.description}</p>
+                        <div class="code-block">${data.code}</div>
+                    </div>
+                    <div>
+                         <div class="chart-container h-64 md:h-80">
+                            <canvas id="explorerChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const ctx = document.getElementById('explorerChart').getContext('2d');
+            const labels = Array.from({length: 51}, (_, i) => i * 2);
+            const chartData = data.chartData(labels);
+
+            if (explorerChart) {
+                explorerChart.destroy();
+            }
+
+            explorerChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: data.chartLabel,
+                        data: chartData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Input Size (n)' } },
+                        y: { title: { display: true, text: 'Number of Operations' } }
+                    },
+                    plugins: {
+                        legend: { display: true }
+                    }
+                }
+            });
+        }
+
+        function setupExplorer() {
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    const complexity = button.dataset.complexity;
+                    renderExplorerContent(complexity);
+                });
+            });
+            buttons[0].click();
+        }
+
+        function setupComparisonChart() {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            const slider = document.getElementById('n-slider');
+            const label = document.getElementById('n-value-label');
+            const table = document.getElementById('comparison-table');
+
+            const datasets = {
+                'O(1)': { data: [], borderColor: '#10b981', hidden: false },
+                'O(log n)': { data: [], borderColor: '#8b5cf6', hidden: false },
+                'O(n)': { data: [], borderColor: '#3b82f6', hidden: false },
+                'O(n²)': { data: [], borderColor: '#ef4444', hidden: false },
+            };
+
+            const chartLabels = Array.from({length: 101}, (_, i) => i);
+
+            comparisonChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: Object.keys(datasets).map(key => ({
+                        label: key,
+                        data: datasets[key].data,
+                        borderColor: datasets[key].borderColor,
+                        fill: false,
+                        tension: 0.1,
+                        pointRadius: 0
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Input Size (n)' } },
+                        y: {
+                            title: { display: true, text: 'Number of Operations (log scale)' },
+                            type: 'logarithmic',
+                            min: 1
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                    },
+                    animation: {
+                        duration: 0
+                    }
+                }
+            });
+
+            function updateChart() {
+                const n = parseInt(slider.value);
+                label.textContent = n;
+
+                datasets['O(1)'].data = chartLabels.map(() => 1);
+                datasets['O(log n)'].data = chartLabels.map(i => i > 0 ? Math.log2(i) : 0);
+                datasets['O(n)'].data = chartLabels.map(i => i);
+                datasets['O(n²)'].data = chartLabels.map(i => i * i);
+
+                comparisonChart.data.datasets.forEach((d, i) => {
+                    d.data = Object.values(datasets)[i].data;
+                });
+
+                comparisonChart.update();
+                updateTable(n);
+            }
+
+            function updateTable(n) {
+                const o1_val = 1;
+                const ologn_val = n > 0 ? Math.log2(n).toFixed(2) : 0;
+                const on_val = n;
+                const on2_val = n * n;
+
+                table.innerHTML = `
+                    <div class="p-4 rounded-lg bg-green-50">
+                        <p class="font-bold text-green-700">O(1)</p>
+                        <p class="text-2xl font-semibold text-green-800">${o1_val}</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-purple-50">
+                        <p class="font-bold text-purple-700">O(log n)</p>
+                        <p class="text-2xl font-semibold text-purple-800">${ologn_val}</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-blue-50">
+                        <p class="font-bold text-blue-700">O(n)</p>
+                        <p class="text-2xl font-semibold text-blue-800">${on_val}</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-red-50">
+                        <p class="font-bold text-red-700">O(n²)</p>
+                        <p class="text-2xl font-semibold text-red-800">${on2_val}</p>
+                    </div>
+                `;
+            }
+
+            slider.addEventListener('input', updateChart);
+            updateChart();
+        }
+
+        function setupPracticeProblems() {
+            const container = document.getElementById('practice-container');
+            practiceProblems.forEach(problem => {
+                const problemDiv = document.createElement('div');
+                problemDiv.className = 'bg-white rounded-xl shadow-lg p-6 md:p-8';
+                problemDiv.innerHTML = `
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">${problem.title}</h3>
+                    <div class="code-block mb-6">${problem.code}</div>
+                    <p class="font-medium text-slate-700 mb-3">What is the time complexity?</p>
+                    <div class="flex flex-wrap gap-3 mb-4" id="options-${problem.id}">
+                        ${problem.options.map(opt => `<button data-answer="${opt}" class="border border-slate-300 px-4 py-2 rounded-md hover:bg-slate-100">${opt}</button>`).join('')}
+                    </div>
+                    <div id="feedback-${problem.id}" class="hidden mt-4 p-4 rounded-md"></div>
+                `;
+                container.appendChild(problemDiv);
+
+                const optionButtons = problemDiv.querySelectorAll(`#options-${problem.id} button`);
+                const feedbackDiv = problemDiv.querySelector(`#feedback-${problem.id}`);
+
+                optionButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const selectedAnswer = button.dataset.answer;
+                        feedbackDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                        if (selectedAnswer === problem.correctAnswer) {
+                            feedbackDiv.classList.add('bg-green-100', 'text-green-800');
+                            feedbackDiv.innerHTML = `<strong class="font-bold">Correct!</strong> ${problem.explanation}`;
+                        } else {
+                            feedbackDiv.classList.add('bg-red-100', 'text-red-800');
+                            feedbackDiv.innerHTML = `<strong class="font-bold">Not quite.</strong> The correct answer is ${problem.correctAnswer}. ${problem.explanation}`;
+                        }
+                    });
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupExplorer();
+            setupComparisonChart();
+            setupPracticeProblems();
+        });
+
+    </script>
 </body>
 </html>
