@@ -205,7 +205,7 @@
             weekData.forEach(day => {
                 const isCompleted = completionStatus[day.day];
                 html += `
-                    <div id="day-card-${day.day}" class="day-card bg-white rounded-xl border border-gray-200 cursor-pointer ${isCompleted ? 'completed-card' : ''}" onclick="toggleDetails(${day.day})">
+                    <div id="day-card-${day.day}" class="day-card bg-white rounded-xl border border-gray-200 cursor-pointer ${isCompleted ? 'completed-card' : ''}" onclick="window.location.href='day_${day.day}.html'">
                         <div class="p-4">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -217,20 +217,12 @@
                                     <input type="checkbox" id="check-${day.day}" class="h-5 w-5 rounded text-teal-600 focus:ring-teal-500" ${isCompleted ? 'checked' : ''} onclick="event.stopPropagation(); toggleCompletion(${day.day});">
                                 </div>
                             </div>
-                            <div id="details-${day.day}" class="day-details">
-                                <p class="text-gray-600 text-sm">${day.details}</p>
-                            </div>
                         </div>
                     </div>
                 `;
             });
             html += `</div>`;
             contentDiv.innerHTML = html;
-        }
-
-        function toggleDetails(day) {
-            const detailsDiv = document.getElementById(`details-${day}`);
-            detailsDiv.classList.toggle('expanded');
         }
 
         function toggleCompletion(day) {
