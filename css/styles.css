@@ -1,0 +1,31 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f7f4; /* Calm Neutral Palette */
+    color: #3f3c3a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.font-code {
+    font-family: 'Source Code Pro', monospace;
+}
+
+.code-block {
+    background-color: #282c34;
+    color: #abb2bf;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+    white-space: pre;
+}
+
+a {
+    color: #0d9488; /* teal-600 */
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #047857; /* teal-700 */
+    text-decoration: underline;
+}

@@ -13,20 +13,8 @@
     <!-- Application Structure Plan: A single-page, scrollable educational layout with a sticky navigation bar for easy access to key concepts. The structure progresses logically from basic definitions (Total vs. Auxiliary Space) to more complex topics (Recursion/Call Stack), culminating in an interactive case study (Fibonacci). This linear, chapter-like flow is chosen for optimal learning and comprehension, as each concept builds upon the previous one. The interactivity in the case study allows users to directly experience the performance difference, reinforcing the theoretical knowledge. -->
     <!-- Visualization & Content Choices: 1. Total vs. Auxiliary Space -> Goal: Inform -> Method: Side-by-side text definitions and a color-coded C# code block -> Interaction: None, static explanation for clarity -> Justification: Clearly separates and defines fundamental concepts before building on them. 2. Recursion/Call Stack -> Goal: Organize/Explain -> Method: Diagram built with styled HTML/CSS divs -> Interaction: None, static visual -> Justification: A literal, visual representation of the call stack is more intuitive for learning than an abstract chart. 3. Fibonacci Comparison -> Goal: Compare -> Method: Chart.js Bar Chart -> Interaction: User-controlled slider adjusts input 'n', chart updates dynamically -> Justification: Visually and interactively demonstrates the dramatic difference in space complexity growth (O(n) vs. O(1)) between recursive and iterative solutions. CONFIRMED: NO SVG, NO Mermaid. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FAF9F6;
-            color: #4A4A4A;
-        }
-        .code-block {
-            background-color: #2D3748;
-            color: #E2E8F0;
-            font-family: 'Courier New', Courier, monospace;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            white-space: pre-wrap;
-        }
         .code-keyword { color: #90CDF4; }
         .code-type { color: #9AE6B4; }
         .code-method { color: #F6AD55; }
@@ -47,8 +35,15 @@
         }
     </style>
 </head>
-<body class="antialiased">
-
+<body>
+<header class="bg-stone-800 text-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-5xl">
+        <h1 class="text-xl md:text-2xl font-bold">Problem Solving Roadmap</h1>
+        <a href="30_days_progress.html" class="text-sm md:text-base bg-stone-600 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded transition-colors duration-300">
+            &larr; Back to Roadmap
+        </a>
+    </div>
+</header>
     <div class="container mx-auto px-4 py-8 md:py-12">
         <header class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Understanding Space Complexity</h1>
@@ -229,11 +224,13 @@
             </section>
         </main>
 
-        <footer class="text-center mt-16 text-gray-500">
-            <p>&copy; 2025 Space Complexity Guide. All rights reserved.</p>
-        </footer>
-
+        </main>
     </div>
+<footer class="bg-stone-800 text-white mt-12 py-6">
+    <div class="container mx-auto px-4 text-center max-w-5xl">
+        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap. All Rights Reserved.</p>
+    </div>
+</footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

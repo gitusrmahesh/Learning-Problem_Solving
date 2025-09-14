@@ -17,10 +17,8 @@
     - Report Info: Complexity Reasoning -> Goal: Compare/Engage -> Viz/Method: Chart.js Line Chart + Interactive HTML/JS Quiz -> Interaction: Hover on chart, click quiz answers -> Justification: The line chart visually contrasts algorithmic growth rates effectively. The quiz transforms a passive reading task into an active learning exercise, reinforcing understanding. Library: Chart.js.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
         .chart-container {
             position: relative;
             width: 100%;
@@ -37,8 +35,15 @@
         }
     </style>
 </head>
-<body class="bg-neutral-50 text-neutral-800">
-
+<body>
+<header class="bg-stone-800 text-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-5xl">
+        <h1 class="text-xl md:text-2xl font-bold">Problem Solving Roadmap</h1>
+        <a href="30_days_progress.html" class="text-sm md:text-base bg-stone-600 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded transition-colors duration-300">
+            &larr; Back to Roadmap
+        </a>
+    </div>
+</header>
     <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
@@ -221,11 +226,11 @@ public class Program {
         </div>
     </main>
 
-    <footer class="bg-white mt-16 border-t border-neutral-200">
-        <div class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm text-neutral-500">
-            <p>&copy; 2025 Problem Solving Roadmap. Keep practicing!</p>
-        </div>
-    </footer>
+<footer class="bg-stone-800 text-white mt-12 py-6">
+    <div class="container mx-auto px-4 text-center max-w-5xl">
+        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap. All Rights Reserved.</p>
+    </div>
+</footer>
 
     <script>
         function copyCode(button, codeId) {

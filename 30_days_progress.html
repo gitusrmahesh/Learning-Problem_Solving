@@ -205,7 +205,7 @@
             weekData.forEach(day => {
                 const isCompleted = completionStatus[day.day];
                 html += `
-                    <div id="day-card-${day.day}" class="day-card bg-white rounded-xl border border-gray-200 cursor-pointer ${isCompleted ? 'completed-card' : ''}" onclick="window.location.href='day_${day.day}.html'">
+                    <a href="day_${day.day}.html" id="day-card-${day.day}" class="day-card block bg-white rounded-xl border border-gray-200 cursor-pointer ${isCompleted ? 'completed-card' : ''}" style="text-decoration: none;">
                         <div class="p-4">
                             <div class="flex justify-between items-start">
                                 <div>
@@ -214,11 +214,11 @@
                                 </div>
                                 <div class="flex items-center space-x-2">
                                     ${getTypePill(day.type)}
-                                    <input type="checkbox" id="check-${day.day}" class="h-5 w-5 rounded text-teal-600 focus:ring-teal-500" ${isCompleted ? 'checked' : ''} onclick="event.stopPropagation(); toggleCompletion(${day.day});">
+                                    <input type="checkbox" id="check-${day.day}" class="h-5 w-5 rounded text-teal-600 focus:ring-teal-500" ${isCompleted ? 'checked' : ''} onclick="event.preventDefault(); event.stopPropagation(); toggleCompletion(${day.day});">
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 `;
             });
             html += `</div>`;
