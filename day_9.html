@@ -14,20 +14,8 @@
         - Subarray Sum Problem: Report Info: Using a hash set with prefix sums to find a subarray with sum k. -> Goal: Organize/Relationships. -> Viz: An animated walkthrough showing the iteration through the prefix sums, the current_sum - k calculation, and the state of the hash set at each step. -> Interaction: User provides an array and target k, then watches the animated solution. -> Justification: Deconstructs a more complex algorithm into understandable, sequential steps, clarifying the role of the hash set. -> Method: Vanilla JS DOM manipulation.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        body {
-            background-color: #F5F5F4; /* stone-100 */
-            color: #334155; /* slate-700 */
-        }
-        .code-block {
-            background-color: #1E293B; /* slate-800 */
-            color: #F1F5F9; /* slate-100 */
-            border-radius: 0.5rem;
-            padding: 1rem;
-            font-family: monospace;
-            white-space: pre-wrap;
-            position: relative;
-        }
         .accent-color {
             color: #60A5FA; /* blue-400 */
         }
@@ -71,12 +59,14 @@
     </style>
 </head>
 <body>
-    <header class="bg-white shadow-md">
-        <div class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold leading-tight text-slate-800">30-Day Daily Roadmap – Intermediate Problem Solving</h1>
-            <p class="text-slate-600 mt-1">Week 2, Day 9: Prefix & Suffix Arrays</p>
-        </div>
-    </header>
+<header class="bg-stone-800 text-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-5xl">
+        <h1 class="text-xl md:text-2xl font-bold">Problem Solving Roadmap</h1>
+        <a href="30_days_progress.html" class="text-sm md:text-base bg-stone-600 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded transition-colors duration-300">
+            &larr; Back to Roadmap
+        </a>
+    </div>
+</header>
 
     <main class="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-12">
         <!-- Introduction -->
@@ -314,6 +304,11 @@ public int SubarraySum(int[] nums, int k) {
         </section>
 
     </main>
+<footer class="bg-stone-800 text-white mt-12 py-6">
+    <div class="container mx-auto px-4 text-center max-w-5xl">
+        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap. All Rights Reserved.</p>
+    </div>
+</footer>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {

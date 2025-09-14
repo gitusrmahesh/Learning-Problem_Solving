@@ -11,12 +11,8 @@
     <!-- Application Structure Plan: A single-page educational portal with tab-based navigation for distinct topics (Conditionals, Loops, Complexity). This structure was chosen to break down a dense technical subject into digestible, sequential modules, promoting a linear learning path. Interactive examples within each section allow for hands-on learning, and a final quiz reinforces the concepts. The user flow is from basic concepts to more advanced ones, ending with self-assessment. -->
     <!-- Visualization & Content Choices: Report Info: C# Conditionals -> Goal: Demonstrate logic -> Presentation: Interactive input field and dynamic text output -> Interaction: User enters value, JS evaluates and shows result -> Justification: Active participation solidifies understanding better than static code. | Report Info: C# Loops -> Goal: Compare loop types -> Presentation: Interactive loop simulator -> Interaction: User selects loop type, sees visual output of its execution -> Justification: Helps differentiate the behavior of various loops. | Report Info: Complexity Analysis -> Goal: Visualize growth rates -> Viz: Line Chart (Chart.js/Canvas) -> Interaction: Hover for tooltips, buttons to toggle lines -> Justification: A chart provides an immediate, intuitive understanding of abstract Big O concepts that text alone cannot. | Report Info: Knowledge Check -> Goal: Assess understanding -> Presentation: Multiple-choice quiz -> Interaction: User selects answer, gets instant feedback -> Justification: Reinforces learning and provides user a metric for their comprehension. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-        }
         .nav-button {
             transition: all 0.3s ease;
         }
@@ -30,15 +26,6 @@
         }
         .content-section.active {
             display: block;
-        }
-        .code-block {
-            background-color: #1e293b;
-            color: #e2e8f0;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            font-family: 'Courier New', Courier, monospace;
-            white-space: pre-wrap;
-            word-wrap: break-word;
         }
         .keyword { color: #60a5fa; }
         .type { color: #34d399; }
@@ -71,8 +58,15 @@
         }
     </style>
 </head>
-<body class="antialiased">
-
+<body>
+<header class="bg-stone-800 text-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-5xl">
+        <h1 class="text-xl md:text-2xl font-bold">Problem Solving Roadmap</h1>
+        <a href="30_days_progress.html" class="text-sm md:text-base bg-stone-600 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded transition-colors duration-300">
+            &larr; Back to Roadmap
+        </a>
+    </div>
+</header>
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <header class="text-center mb-8">
             <h1 class="text-4xl font-bold text-sky-600">C# Fundamentals Explorer</h1>
@@ -252,6 +246,11 @@
             </section>
         </main>
     </div>
+<footer class="bg-stone-800 text-white mt-12 py-6">
+    <div class="container mx-auto px-4 text-center max-w-5xl">
+        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap. All Rights Reserved.</p>
+    </div>
+</footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

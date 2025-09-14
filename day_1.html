@@ -15,15 +15,8 @@
         - Report Info: Practice Problems (Sum, Max/Min, Reverse Array). Goal: Engage/Apply. Presentation: Interactive code simulator. Interaction: Users select a problem, toggle between brute-force/optimized C# code views, provide custom input, and "run" the code to see the output (simulated via JS). Justification: This active learning approach is crucial for reinforcing problem-solving skills, allowing users to see the direct impact of different algorithms on their own data. Method: JS logic manages state, simulates C# algorithms, and updates the DOM.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8;
-            color: #333;
-        }
-        .font-code {
-            font-family: 'Source Code Pro', monospace;
-        }
         .tab-active {
             background-color: #A8A29E;
             color: #FFFFFF;
@@ -49,22 +42,22 @@
             background-color: #D6D3D1;
             color: #333;
         }
-        .code-block {
-            background-color: #282c34;
-            color: #abb2bf;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            overflow-x: auto;
-            white-space: pre;
-        }
     </style>
 </head>
-<body class="antialiased">
+<body>
+<header class="bg-stone-800 text-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-5xl">
+        <h1 class="text-xl md:text-2xl font-bold">Problem Solving Roadmap</h1>
+        <a href="30_days_progress.html" class="text-sm md:text-base bg-stone-600 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded transition-colors duration-300">
+            &larr; Back to Roadmap
+        </a>
+    </div>
+</header>
     <div class="container mx-auto px-4 py-8 md:py-12 max-w-5xl">
 
         <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-stone-700">30-Day Problem Solving Roadmap</h1>
-            <p class="text-xl text-stone-500 mt-2">Day 1: Introduction to Problem Solving in C#</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-stone-700">Day 1: Introduction to Problem Solving</h1>
+            <p class="text-lg text-stone-500 mt-2">in C#</p>
         </header>
 
         <main>
@@ -162,6 +155,11 @@
             </section>
         </main>
     </div>
+<footer class="bg-stone-800 text-white mt-12 py-6">
+    <div class="container mx-auto px-4 text-center max-w-5xl">
+        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap. All Rights Reserved.</p>
+    </div>
+</footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

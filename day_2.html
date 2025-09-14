@@ -15,22 +15,8 @@
         - Report Info: Practice problems. Goal: Engage & Test. Viz/Presentation: A series of cards with code snippets and multiple-choice buttons. Interaction: Users click a button to answer; immediate feedback and detailed explanations are revealed. Justification: Active recall and immediate feedback are proven methods for reinforcing learning. Method: HTML/CSS/JS.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-        }
-        .code-block {
-            background-color: #1e293b;
-            color: #e2e8f0;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            overflow-x: auto;
-        }
         .code-block .keyword { color: #93c5fd; }
         .code-block .type { color: #86efac; }
         .code-block .comment { color: #9ca3af; }
@@ -61,7 +47,15 @@
         }
     </style>
 </head>
-<body class="antialiased">
+<body>
+<header class="bg-stone-800 text-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-5xl">
+        <h1 class="text-xl md:text-2xl font-bold">Problem Solving Roadmap</h1>
+        <a href="30_days_progress.html" class="text-sm md:text-base bg-stone-600 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded transition-colors duration-300">
+            &larr; Back to Roadmap
+        </a>
+    </div>
+</header>
 
     <header class="bg-white shadow-sm sticky top-0 z-10">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -125,6 +119,11 @@
             </div>
         </section>
     </main>
+<footer class="bg-stone-800 text-white mt-12 py-6">
+    <div class="container mx-auto px-4 text-center max-w-5xl">
+        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap. All Rights Reserved.</p>
+    </div>
+</footer>
 
     <script>
         const contentData = {
