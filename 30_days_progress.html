@@ -288,7 +288,13 @@
 
             // Roadmap logic
             loadCompletionStatus();
-            renderWeek(1);
+
+            // Handle week query param
+            const urlParams = new URLSearchParams(window.location.search);
+            const weekParam = urlParams.get('week');
+            const initialWeek = weekParam ? parseInt(weekParam) : 1;
+
+            renderWeek(initialWeek);
             updateProgress();
             initializeChart();
 
@@ -300,7 +306,13 @@
                     renderWeek(week);
                 });
             });
-            document.querySelector('.week-btn[data-week="1"]').classList.add('active-week');
+
+            // Set active button based on initial week
+            const activeButton = document.querySelector(`.week-btn[data-week="${initialWeek}"]`);
+            if (activeButton) {
+                document.querySelectorAll('.week-btn').forEach(btn => btn.classList.remove('active-week'));
+                activeButton.classList.add('active-week');
+            }
 
             // Curriculum logic
             const curriculumContentContainer = document.getElementById('curriculum-content-display');
