@@ -3,21 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>30-Day Intermediate Problem Solving Roadmap</title>
+    <title>Intermediate Problem-Solving Roadmap</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Neutrals -->
-    <!-- Application Structure Plan: The application is structured as an interactive dashboard rather than a static list. The core components are: 1) A main header with progress tracking (a dynamic progress bar and key stats) and a topic distribution chart to give an immediate overview. 2) A tab-based weekly navigation system to break down the 30-day plan into manageable, thematic chunks (Foundations, Arrays, Sorting/Bits, Strings). This is more user-friendly than a long scroll. 3) A grid-based daily view for the selected week, where each day is an interactive card. Users can click a card to expand it and view details, and check it off to update their progress. This structure turns a passive document into an active learning tracker, enhancing user engagement and motivation. -->
-    <!-- Visualization & Content Choices: 1. Overall Progress: Goal=Track Completion, Method=HTML/CSS Progress Bar, Interaction=Updates on day completion, Justification=Visual feedback on user's journey. 2. Topic Distribution: Goal=Inform about course structure, Method=Donut Chart, Interaction=Hover for details, Justification=Quickly shows the focus areas of the course, Library=Chart.js. 3. Daily Tasks: Goal=Organize daily content, Method=Interactive HTML Cards in a Grid, Interaction=Click to expand details, checkbox to mark complete, Justification=Manages information density and provides satisfying interactive feedback, preventing overwhelm. 4. Weekly Navigation: Goal=Organize content, Method=HTML Buttons, Interaction=Click to filter displayed week, Justification=Thematic grouping is more intuitive than a single long list. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8f7f4;
             color: #3f3c3a;
+        }
+        .main-nav-btn.active {
+            background-color: #0d9488;
+            color: white;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
         }
         .active-week {
             background-color: #0d9488 !important;
@@ -30,18 +36,6 @@
         .day-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .day-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-        .day-details.expanded {
-            max-height: 500px;
-            padding-top: 1rem;
-            padding-bottom: 1rem;
         }
         .completed-card {
             opacity: 0.6;
@@ -58,6 +52,15 @@
             margin-right: auto;
             height: 350px;
         }
+        .curriculum-nav-btn.active {
+            background-color: #A58258;
+            color: #FFFFFF;
+        }
+        .content-card {
+            background-color: #FFFFFF;
+            border: 1px solid #F0EBE3;
+            border-radius: 0.75rem;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -66,71 +69,126 @@
 
         <header class="text-center mb-8">
             <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-            <p class="text-lg md:text-xl text-gray-600 mt-2">Your 30-Day Interactive Roadmap</p>
+            <p class="text-lg md:text-xl text-gray-600 mt-2">Your 30-Day Interactive Learning Hub</p>
         </header>
 
-        <main>
-            <section id="dashboard" class="bg-white rounded-2xl p-6 mb-8 shadow-sm border border-gray-200">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                    <div class="md:col-span-2">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Progress</h2>
-                        <div class="w-full bg-gray-200 rounded-full h-6 mb-2">
-                            <div id="progressBar" class="bg-teal-600 h-6 rounded-full text-center text-white text-sm leading-6 transition-all duration-500" style="width: 0%">0%</div>
-                        </div>
-                         <div class="flex justify-between text-sm text-gray-600">
-                            <span id="progressText">0 of 30 days completed</span>
-                            <span>Goal: Day 30</span>
-                        </div>
-                        <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
-                            <div class="bg-teal-50 p-4 rounded-lg">
-                                <p class="text-2xl font-bold text-teal-700">30</p>
-                                <p class="text-sm text-teal-600">Total Days</p>
-                            </div>
-                            <div class="bg-amber-50 p-4 rounded-lg">
-                                <p class="text-2xl font-bold text-amber-700">5</p>
-                                <p class="text-sm text-amber-600">Contests</p>
-                            </div>
-                            <div class="bg-sky-50 p-4 rounded-lg col-span-2 sm:col-span-1">
-                                <p class="text-2xl font-bold text-sky-700">20+</p>
-                                <p class="text-sm text-sky-600">Key Topics</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md:col-span-1">
-                        <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Topic Distribution</h3>
-                        <div class="chart-container">
-                            <canvas id="topicChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <nav id="week-navigation" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
-                <button data-week="1" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 1: Foundations</button>
-                <button data-week="2" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 2: Arrays</button>
-                <button data-week="3" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 3: Sorting & Bits</button>
-                <button data-week="4" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 4: Strings</button>
-            </nav>
+        <nav class="flex justify-center border-b-2 border-gray-200 mb-8">
+            <button id="nav-roadmap" class="main-nav-btn active py-4 px-6 text-lg font-semibold">Interactive Roadmap</button>
+            <button id="nav-curriculum" class="main-nav-btn py-4 px-6 text-lg font-semibold">Full Curriculum</button>
+        </nav>
 
-            <div id="roadmap-content"></div>
-            
-            <section id="final-outcome" class="bg-teal-700 text-white rounded-2xl p-8 mt-10 text-center">
-                 <h2 class="text-3xl font-bold mb-4">Course Outcomes</h2>
-                 <p class="max-w-3xl mx-auto mb-6 text-teal-100">By successfully completing this 30-day plan, you will have developed the core skills needed to confidently tackle intermediate-level coding challenges.</p>
-                 <div class="flex flex-wrap justify-center gap-4 text-left">
-                     <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
-                         <span class="text-2xl">✅</span><span>Analyze time & space complexity</span>
+        <main>
+            <section id="roadmap-section" class="content-section active">
+                <section id="dashboard" class="bg-white rounded-2xl p-6 mb-8 shadow-sm border border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                        <div class="md:col-span-2">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Progress</h2>
+                            <div class="w-full bg-gray-200 rounded-full h-6 mb-2">
+                                <div id="progressBar" class="bg-teal-600 h-6 rounded-full text-center text-white text-sm leading-6 transition-all duration-500" style="width: 0%">0%</div>
+                            </div>
+                             <div class="flex justify-between text-sm text-gray-600">
+                                <span id="progressText">0 of 30 days completed</span>
+                                <span>Goal: Day 30</span>
+                            </div>
+                            <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
+                                <div class="bg-teal-50 p-4 rounded-lg">
+                                    <p class="text-2xl font-bold text-teal-700">30</p>
+                                    <p class="text-sm text-teal-600">Total Days</p>
+                                </div>
+                                <div class="bg-amber-50 p-4 rounded-lg">
+                                    <p class="text-2xl font-bold text-amber-700">5</p>
+                                    <p class="text-sm text-amber-600">Contests</p>
+                                </div>
+                                <div class="bg-sky-50 p-4 rounded-lg col-span-2 sm:col-span-1">
+                                    <p class="text-2xl font-bold text-sky-700">20+</p>
+                                    <p class="text-sm text-sky-600">Key Topics</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:col-span-1">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Topic Distribution</h3>
+                            <div class="chart-container">
+                                <canvas id="topicChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <nav id="week-navigation" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                    <button data-week="1" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 1: Foundations</button>
+                    <button data-week="2" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 2: Arrays</button>
+                    <button data-week="3" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 3: Sorting & Bits</button>
+                    <button data-week="4" class="week-btn px-6 py-2 rounded-full font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-teal-100 transition">Week 4: Strings</button>
+                </nav>
+
+                <div id="roadmap-content"></div>
+
+                <section id="final-outcome" class="bg-teal-700 text-white rounded-2xl p-8 mt-10 text-center">
+                     <h2 class="text-3xl font-bold mb-4">Course Outcomes</h2>
+                     <p class="max-w-3xl mx-auto mb-6 text-teal-100">By successfully completing this 30-day plan, you will have developed the core skills needed to confidently tackle intermediate-level coding challenges.</p>
+                     <div class="flex flex-wrap justify-center gap-4 text-left">
+                         <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
+                             <span class="text-2xl">✅</span><span>Analyze time & space complexity</span>
+                         </div>
+                         <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
+                             <span class="text-2xl">✅</span><span>Solve array & string problems efficiently</span>
+                         </div>
+                         <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
+                             <span class="text-2xl">✅</span><span>Implement sorting & bit manipulation</span>
+                         </div>
+                         <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
+                             <span class="text-2xl">✅</span><span>Handle problems in contests/interviews</span>
+                         </div>
                      </div>
-                     <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
-                         <span class="text-2xl">✅</span><span>Solve array & string problems efficiently</span>
-                     </div>
-                     <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
-                         <span class="text-2xl">✅</span><span>Implement sorting & bit manipulation</span>
-                     </div>
-                     <div class="bg-teal-600 p-4 rounded-lg flex items-center gap-3">
-                         <span class="text-2xl">✅</span><span>Handle problems in contests/interviews</span>
-                     </div>
-                 </div>
+                </section>
+            </section>
+
+            <section id="curriculum-section" class="content-section">
+                <nav class="flex justify-center items-center space-x-2 md:space-x-4 mb-12 p-2 bg-[#F0EBE3] rounded-full shadow-inner w-full max-w-lg mx-auto">
+                    <button data-week="1" class="curriculum-nav-btn active flex-1 text-center py-2 px-4 rounded-full font-semibold text-gray-700 hover:bg-white">Week 1</button>
+                    <button data-week="2" class="curriculum-nav-btn flex-1 text-center py-2 px-4 rounded-full font-semibold text-gray-700 hover:bg-white">Week 2</button>
+                    <button data-week="3" class="curriculum-nav-btn flex-1 text-center py-2 px-4 rounded-full font-semibold text-gray-700 hover:bg-white">Week 3</button>
+                    <button data-week="4" class="curriculum-nav-btn flex-1 text-center py-2 px-4 rounded-full font-semibold text-gray-700 hover:bg-white">Week 4</button>
+                </nav>
+
+                <div id="curriculum-content-display">
+                    <!-- Content will be injected by JavaScript -->
+                </div>
+
+                <section id="summary-section" class="mt-16">
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div class="content-card p-6 md:p-8">
+                            <h2 class="text-2xl font-bold text-[#A58258] mb-4">Curriculum Focus</h2>
+                            <p class="text-gray-600 mb-6">This curriculum is designed to provide a balanced foundation, with significant emphasis on array-based techniques which are fundamental to many complex problems. The donut chart visualizes the distribution of key topics across the month.</p>
+                            <div class="chart-container">
+                                <canvas id="focusChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div class="content-card p-6 md:p-8">
+                                <h3 class="text-xl font-bold text-[#A58258] mb-3">🗓️ Weekly Practice Plan</h3>
+                                <p class="text-gray-600 mb-4">Follow this schedule each week to maximize your learning and retention. Consistency is key to building strong problem-solving habits.</p>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li class="flex items-start"><span class="font-bold w-24">Day 1–2:</span><span>Learn theory and study guided examples.</span></li>
+                                    <li class="flex items-start"><span class="font-bold w-24">Day 3–5:</span><span>Solve 5–8 focused problems on the topic.</span></li>
+                                    <li class="flex items-start"><span class="font-bold w-24">Day 6:</span><span>Engage in mixed problem practice.</span></li>
+                                    <li class="flex items-start"><span class="font-bold w-24">Day 7:</span><span>Participate in a weekly timed contest.</span></li>
+                                </ul>
+                            </div>
+                            <div class="content-card p-6 md:p-8">
+                                <h3 class="text-xl font-bold text-[#A58258] mb-3">✅ Expected Outcome</h3>
+                                 <p class="text-gray-600 mb-4">After successfully completing this one-month curriculum, you will have developed a solid foundation in essential data structures and algorithms, preparing you for more advanced topics.</p>
+                                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                    <li>Strong grasp of complexity analysis.</li>
+                                    <li>Comfort with arrays and strings.</li>
+                                    <li>Familiarity with sorting and bit manipulation.</li>
+                                    <li>Readiness for intermediate DSA topics.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </section>
         </main>
     </div>
@@ -169,9 +227,66 @@
             { day: 30, week: 4, title: 'Final Mock Contest (3 hrs)', details: '6 problems (easy-medium-hard mix).', type: 'Contest' },
         ];
 
+        const curriculumData = {
+            1: {
+                title: "Foundations & Complexity",
+                intro: "This foundational week focuses on understanding the core principles of problem-solving and how to measure the efficiency of your code. Mastering these concepts is crucial before tackling more complex data structures and algorithms.",
+                topics: [
+                    { name: "Introduction to Problem Solving", points: ["Understanding problem statements", "Breaking problems into subproblems", "Dry runs, edge cases, and brute force thinking"] },
+                    { name: "Time and Space Complexity", points: ["Big-O, Big-Θ, Big-Ω notations", "Best, worst, and average case analysis", "Common complexities: O(1), O(log n), O(n), O(n log n), O(n²)", "Trade-offs between time & space"] }
+                ]
+            },
+            2: {
+                title: "Arrays & Techniques",
+                intro: "Week 2 dives deep into arrays, one of the most fundamental data structures. You'll learn essential techniques for manipulating and analyzing array data efficiently, which are patterns that appear in a wide range of problems.",
+                topics: [
+                    { name: "Introduction to Arrays", points: ["Static vs dynamic arrays", "Indexing, traversals, insertion, deletion"] },
+                    { name: "Array Techniques", points: ["Prefix sum, suffix sum", "Sliding window (fixed & variable)", "Two pointers (start-end technique)", "Kadane’s Algorithm (max subarray sum)"] },
+                    { name: "Memory Management", points: ["Stack vs Heap memory", "Memory allocation in arrays", "Pass-by-value vs pass-by-reference"] }
+                ]
+            },
+            3: {
+                title: "Sorting & Bit Manipulation",
+                intro: "This week covers two important areas: sorting algorithms, which are critical for organizing data, and bit manipulation, a powerful tool for optimization and solving specific types of problems with high efficiency.",
+                topics: [
+                    { name: "Sorting Basics", points: ["Bubble, Selection, Insertion sort (O(n²))", "Merge sort, Quick sort (O(n log n))", "Counting sort, Radix sort (non-comparison)", "Using inbuilt sorting functions"] },
+                    { name: "Bit Manipulation Basics", points: ["AND, OR, XOR, NOT, left/right shift", "Check even/odd, set/unset bits", "Counting set bits (Brian Kernighan’s Algorithm)", "Applications: Find unique element, Subset generation"] }
+                ]
+            },
+            4: {
+                title: "Strings & Mixed Problem Solving",
+                intro: "The final week focuses on string manipulation and consolidates your learning. You will tackle common string-based problems and learn advanced pattern matching basics, preparing you for real-world coding challenges.",
+                topics: [
+                    { name: "Problems on Strings", points: ["Char array vs string object", "Palindrome and Anagram checks", "String reversal, substring search", "Hashing with strings (frequency maps)"] },
+                    { name: "Advanced Pattern Matching", points: ["Basics of KMP (Knuth-Morris-Pratt)", "Basics of Rabin-Karp algorithm"] }
+                ]
+            }
+        };
+
         let completionStatus = {};
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Main navigation
+            const navRoadmapBtn = document.getElementById('nav-roadmap');
+            const navCurriculumBtn = document.getElementById('nav-curriculum');
+            const roadmapSection = document.getElementById('roadmap-section');
+            const curriculumSection = document.getElementById('curriculum-section');
+
+            navRoadmapBtn.addEventListener('click', () => {
+                navRoadmapBtn.classList.add('active');
+                navCurriculumBtn.classList.remove('active');
+                roadmapSection.classList.add('active');
+                curriculumSection.classList.remove('active');
+            });
+
+            navCurriculumBtn.addEventListener('click', () => {
+                navCurriculumBtn.classList.add('active');
+                navRoadmapBtn.classList.remove('active');
+                curriculumSection.classList.add('active');
+                roadmapSection.classList.remove('active');
+            });
+
+            // Roadmap logic
             loadCompletionStatus();
             renderWeek(1);
             updateProgress();
@@ -186,6 +301,22 @@
                 });
             });
             document.querySelector('.week-btn[data-week="1"]').classList.add('active-week');
+
+            // Curriculum logic
+            const curriculumContentContainer = document.getElementById('curriculum-content-display');
+            const curriculumNavButtons = document.querySelectorAll('.curriculum-nav-btn');
+
+            curriculumNavButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const week = button.dataset.week;
+                    curriculumNavButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderCurriculumContent(week);
+                });
+            });
+
+            renderCurriculumContent(1);
+            initializeFocusChart();
         });
 
         function getTypePill(type) {
@@ -276,14 +407,7 @@
                     datasets: [{
                         label: 'Days per Topic',
                         data: Object.values(topicCounts),
-                        backgroundColor: [
-                            '#a7f3d0', 
-                            '#6ee7b7', 
-                            '#34d399', 
-                            '#10b981', 
-                            '#059669', 
-                            '#047857'
-                        ],
+                        backgroundColor: ['#a7f3d0', '#6ee7b7', '#34d399', '#10b981', '#059669', '#047857'],
                         borderColor: '#f8f7f4',
                         borderWidth: 4,
                         hoverOffset: 8
@@ -293,30 +417,63 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 15,
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed !== null) {
-                                        label += context.parsed + ' days';
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
+                        legend: { position: 'bottom', labels: { padding: 15, font: { size: 12 } } },
+                        tooltip: { callbacks: { label: (c) => `${c.label}: ${c.parsed} days` } }
                     }
+                }
+            });
+        }
+
+        function renderCurriculumContent(week) {
+            const data = curriculumData[week];
+            const contentContainer = document.getElementById('curriculum-content-display');
+            if (!data) return;
+
+            let topicsHtml = data.topics.map(topic => `
+                <div class="content-card p-6">
+                    <h4 class="font-bold text-lg text-gray-800 mb-3">${topic.name}</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        ${topic.points.map(point => `<li>${point}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+
+            contentContainer.innerHTML = `
+                <section id="week-${week}" class="week-content">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-[#A58258]">${data.title}</h2>
+                        <p class="mt-2 text-gray-600 max-w-2xl mx-auto">${data.intro}</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${topicsHtml}
+                    </div>
+                </section>
+            `;
+        }
+
+        function initializeFocusChart() {
+            const ctx = document.getElementById('focusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Foundations', 'Arrays & Techniques', 'Sorting & Bits', 'Strings'],
+                    datasets: [{
+                        label: 'Curriculum Focus',
+                        data: [20, 40, 25, 15],
+                        backgroundColor: ['#D6C3AB', '#A58258', '#C3A98B', '#EAE0D5'],
+                        borderColor: '#f8f7f4',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#4A4A4A', font: { family: "'Inter', sans-serif", size: 14 } } },
+                        tooltip: { callbacks: { label: (c) => `${c.label}: ${c.parsed}%` } }
+                    },
+                    cutout: '60%'
                 }
             });
         }
