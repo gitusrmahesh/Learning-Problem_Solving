@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 27: Mixed Problem Practice (Arrays + Strings)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Stone, Slate, Amber) -->
+    <!-- Application Structure Plan: A task-oriented, single-page application using a tabbed navigation system. The user selects one of five coding problems, and a central content area dynamically displays the problem statement, key concepts, a C# solution, and an interactive example. This structure was chosen to break down the day's learning into focused, manageable units, preventing overwhelm from a long scrolling page and providing immediate access to any problem. -->
+    <!-- Visualization & Content Choices: 1. Overview Chart: Report Info -> Concepts covered in the 5 problems. Goal -> Inform/Overview. Viz -> Bar Chart (Chart.js/Canvas). Interaction -> Static. Justification -> Provides a quick visual summary of the skills being practiced. 2. Problem Details: Report Info -> Problem statement, solution, examples. Goal -> Inform/Educate. Presentation -> Structured HTML (headings, paragraphs, pre/code blocks). Interaction -> Content revealed on tab click; example output shown on button click. Justification -> Organizes complex information clearly and provides a simple interactive element to reinforce learning. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4; /* stone-100 */
+            color: #1e293b; /* slate-800 */
+        }
+        .code-block {
+            background-color: #0f172a; /* slate-900 */
+            color: #e2e8f0; /* slate-200 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+        }
+        .code-block .keyword { color: #93c5fd; } /* blue-300 */
+        .code-block .type { color: #86efac; } /* green-300 */
+        .code-block .string { color: #fcd34d; } /* amber-300 */
+        .code-block .comment { color: #9ca3af; } /* gray-400 */
+        .code-block .method { color: #a5b4fc; } /* indigo-300 */
+        .tab.active {
+            background-color: #d97706; /* amber-600 */
+            color: #ffffff;
+            border-color: #d97706; /* amber-600 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">30-Day Problem Solving Roadmap</h1>
+            <p class="text-lg text-amber-700 font-semibold mt-1">Day 27: Mixed Problem Practice (Arrays + Strings)</p>
+        </header>
+
+        <section id="overview" class="mb-10 bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">Today's Focus Concepts</h2>
+            <p class="text-slate-600 mb-6">
+                Today's problems are designed to strengthen your ability to manipulate and analyze data structures that combine arrays and strings. We will focus on techniques like hashing for quick lookups, in-place array modifications, custom sorting logic, and careful string parsing. This session bridges the gap between basic data structure knowledge and complex real-world problem-solving.
+            </p>
+            <div class="chart-container">
+                <canvas id="conceptsChart"></canvas>
+            </div>
+        </section>
+
+        <main>
+            <nav id="problem-tabs" class="flex flex-wrap justify-center border-b-2 border-slate-200 mb-8 gap-2">
+                <!-- Tabs will be dynamically inserted here -->
+            </nav>
+            <div id="content-area" class="bg-white p-6 rounded-lg shadow-sm min-h-[400px]">
+                <!-- Problem content will be dynamically inserted here -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const problems = [
+            {
+                title: "Group Anagrams",
+                description: "Given an array of strings, group the anagrams together. An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.",
+                concepts: "Hashing, Dictionaries, String Sorting. This problem is a classic example of using a canonical representation (the sorted string) as a key in a hash map to group items. It's highly efficient for categorization tasks.",
+                code: `
+<span class="keyword">public class</span> <span class="type">Solution</span> {
+    <span class="keyword">public</span> <span class="type">IList&lt;IList&lt;string&gt;&gt;</span> <span class="method">GroupAnagrams</span>(<span class="type">string</span>[] strs) {
+        <span class="keyword">if</span> (strs == <span class="keyword">null</span> || strs.Length == 0) <span class="keyword">return new</span> <span class="type">List&lt;IList&lt;string&gt;&gt;</span>();
+
+        <span class="type">var</span> map = <span class="keyword">new</span> <span class="type">Dictionary&lt;string, List&lt;string&gt;&gt;</span>();
+        
+        <span class="keyword">foreach</span> (<span class="type">var</span> str <span class="keyword">in</span> strs) {
+            <span class="type">char</span>[] charArray = str.ToCharArray();
+            <span class="type">Array</span>.Sort(charArray);
+            <span class="type">string</span> key = <span class="keyword">new</span> <span class="type">string</span>(charArray);
+            
+            <span class="keyword">if</span> (!map.ContainsKey(key)) {
+                map[key] = <span class="keyword">new</span> <span class="type">List&lt;string&gt;</span>();
+            }
+            map[key].Add(str);
+        }
+        
+        <span class="keyword">return new</span> <span class="type">List&lt;IList&lt;string&gt;&gt;</span>(map.Values);
+    }
+}`,
+                example: {
+                    input: '["eat", "tea", "tan", "ate", "nat", "bat"]',
+                    output: `
+[
+  ["eat", "tea", "ate"],
+  ["tan", "nat"],
+  ["bat"]
+]`
+                }
+            },
+            {
+                title: "Most Common Word",
+                description: "Given a string paragraph and a string array of banned words, return the most frequent word that is not in the list of banned words. It is guaranteed there is at least one word that is not banned, and that the answer is unique. The words in the paragraph are case-insensitive and the answer should be returned in lowercase.",
+                concepts: "String Manipulation, Dictionaries, Sets. This problem involves several steps: cleaning the input string (removing punctuation, converting to lowercase), filtering out banned words, counting frequencies, and finding the maximum. A HashSet is ideal for fast lookups of banned words.",
+                code: `
+<span class="keyword">public class</span> <span class="type">Solution</span> {
+    <span class="keyword">public</span> <span class="type">string</span> <span class="method">MostCommonWord</span>(<span class="type">string</span> paragraph, <span class="type">string</span>[] banned) {
+        <span class="type">var</span> bannedSet = <span class="keyword">new</span> <span class="type">HashSet&lt;string&gt;</span>(banned);
+        <span class="type">var</span> counts = <span class="keyword">new</span> <span class="type">Dictionary&lt;string, int&gt;</span>();
+        
+        <span class="comment">// 1. Normalize the string: replace punctuation, lowercase</span>
+        <span class="type">var</span> normalized = <span class="keyword">new</span> <span class="type">System.Text.StringBuilder</span>();
+        <span class="keyword">foreach</span> (<span class="type">char</span> c <span class="keyword">in</span> paragraph) {
+            normalized.Append(<span class="type">char</span>.IsLetter(c) ? <span class="type">char</span>.ToLower(c) : <span class="literal">' '</span>);
+        }
+
+        <span class="type">string</span>[] words = normalized.ToString().Split(<span class="keyword">new</span>[] {<span class="literal">' '</span>}, <span class="type">StringSplitOptions</span>.RemoveEmptyEntries);
+        
+        <span class="keyword">foreach</span> (<span class="type">var</span> word <span class="keyword">in</span> words) {
+            <span class="keyword">if</span> (!bannedSet.Contains(word)) {
+                <span class="keyword">if</span> (!counts.ContainsKey(word)) {
+                    counts[word] = 0;
+                }
+                counts[word]++;
+            }
+        }
+        
+        <span class="type">string</span> result = <span class="string">""</span>;
+        <span class="type">int</span> maxCount = 0;
+        <span class="keyword">foreach</span> (<span class="type">var</span> pair <span class="keyword">in</span> counts) {
+            <span class="keyword">if</span> (pair.Value > maxCount) {
+                maxCount = pair.Value;
+                result = pair.Key;
+            }
+        }
+        
+        <span class="keyword">return</span> result;
+    }
+}`,
+                example: {
+                    input: 'Paragraph: "Bob hit a ball, the hit BALL flew far after it was hit."\nBanned: ["hit"]',
+                    output: 'ball'
+                }
+            },
+            {
+                title: "URLify a String",
+                description: "Write a method to replace all spaces in a string with '%20'. You may assume that the string has sufficient space at the end to hold the additional characters, and that you are given the 'true' length of the string. (Note: In C#, strings are immutable. This is typically done with a character array).",
+                concepts: "In-place Array Manipulation, Two Pointers. The key to solving this efficiently is to work backward from the end of the array. This prevents overwriting data you haven't processed yet. You use one pointer for the end of the new string and one for the end of the original string.",
+                code: `
+<span class="keyword">public class</span> <span class="type">Solution</span> {
+    <span class="comment">// Modifies the character array in-place</span>
+    <span class="keyword">public void</span> <span class="method">URLify</span>(<span class="type">char</span>[] str, <span class="type">int</span> trueLength) {
+        <span class="type">int</span> spaceCount = 0;
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < trueLength; i++) {
+            <span class="keyword">if</span> (str[i] == <span class="literal">' '</span>) {
+                spaceCount++;
+            }
+        }
+        
+        <span class="type">int</span> index = trueLength + spaceCount * 2;
+        
+        <span class="keyword">for</span> (<span class="type">int</span> i = trueLength - 1; i >= 0; i--) {
+            <span class="keyword">if</span> (str[i] == <span class="literal">' '</span>) {
+                str[index - 1] = <span class="literal">'0'</span>;
+                str[index - 2] = <span class="literal">'2'</span>;
+                str[index - 3] = <span class="literal">'%'</span>;
+                index -= 3;
+            } <span class="keyword">else</span> {
+                str[index - 1] = str[i];
+                index--;
+            }
+        }
+    }
+}`,
+                example: {
+                    input: 'char[]: [\'M\', \'r\', \' \', \'J\', \'o\', \'h\', \'n\', \' \', \'S\', \'m\', \'i\', \'t\', \'h\', \' \', \' \', \' \', \' \']\nTrue Length: 13',
+                    output: '[\'M\', \'r\', \'%\', \'2\', \'0\', \'J\', \'o\', \'h\', \'n\', \'%\', \'2\', \'0\', \'S\', \'m\', \'i\', \'t\', \'h\']'
+                }
+            },
+            {
+                title: "String to Integer (atoi)",
+                description: "Implement the `atoi` function, which converts a string to a 32-bit signed integer. The function should first discard as much whitespace as possible, then handle an optional '+' or '-' sign. It should read in digits until a non-digit character is found, and handle potential integer overflows, clamping the result to the 32-bit integer range.",
+                concepts: "String Parsing, Edge Case Handling, Overflow Prevention. This is a simulation problem that tests attention to detail. You must carefully handle whitespace, signs, non-numeric characters, and most importantly, check for potential overflow *before* it happens.",
+                code: `
+<span class="keyword">public class</span> <span class="type">Solution</span> {
+    <span class="keyword">public</span> <span class="type">int</span> <span class="method">MyAtoi</span>(<span class="type">string</span> s) {
+        <span class="keyword">if</span> (<span class="type">string</span>.IsNullOrEmpty(s)) <span class="keyword">return</span> 0;
+        
+        <span class="type">int</span> i = 0;
+        <span class="type">int</span> sign = 1;
+        <span class="type">long</span> result = 0; <span class="comment">// Use long to detect overflow</span>
+
+        <span class="comment">// 1. Skip whitespace</span>
+        <span class="keyword">while</span> (i < s.Length && s[i] == <span class="literal">' '</span>) i++;
+        
+        <span class="comment">// 2. Handle sign</span>
+        <span class="keyword">if</span> (i < s.Length && (s[i] == <span class="literal">'+'</span> || s[i] == <span class="literal">'-'</span>)) {
+            sign = (s[i] == <span class="literal">'-'</span>) ? -1 : 1;
+            i++;
+        }
+        
+        <span class="comment">// 3. Convert digits and handle overflow</span>
+        <span class="keyword">while</span> (i < s.Length && <span class="type">char</span>.IsDigit(s[i])) {
+            result = result * 10 + (s[i] - <span class="literal">'0'</span>);
+            
+            <span class="keyword">if</span> (sign == 1 && result > <span class="type">int</span>.MaxValue) <span class="keyword">return</span> <span class="type">int</span>.MaxValue;
+            <span class="keyword">if</span> (sign == -1 && -result < <span class="type">int</span>.MinValue) <span class="keyword">return</span> <span class="type">int</span>.MinValue;
+            
+            i++;
+        }
+        
+        result *= sign;
+        
+        <span class="keyword">return</span> (<span class="type">int</span>)result;
+    }
+}`,
+                example: {
+                    input: '"   -42 with words"',
+                    output: '-42'
+                }
+            },
+            {
+                title: "Reorder Log Files",
+                description: "You are given an array of logs. Each log is a space-delimited string of words, where the first word is the identifier. There are two types of logs: letter-logs (all words except the identifier consist of only lowercase letters) and digit-logs (all words except the identifier consist of only digits). Reorder the logs so that letter-logs come before digit-logs. Letter-logs are sorted lexicographically by their contents, and if contents are the same, then by their identifier. Digit-logs maintain their original relative order.",
+                concepts: "Custom Sorting, Comparators, String Splitting. The core of this problem is implementing a custom comparison logic. You need to parse each log string to determine its type and content, then apply different sorting rules based on whether you are comparing two letter-logs or other combinations.",
+                code: `
+<span class="keyword">public class</span> <span class="type">Solution</span> {
+    <span class="keyword">public</span> <span class="type">string</span>[] <span class="method">ReorderLogFiles</span>(<span class="type">string</span>[] logs) {
+        <span class="type">Array</span>.Sort(logs, (log1, log2) => {
+            <span class="type">int</span> index1 = log1.IndexOf(<span class="literal">' '</span>);
+            <span class="type">string</span> id1 = log1.Substring(0, index1);
+            <span class="type">string</span> content1 = log1.Substring(index1 + 1);
+            <span class="type">bool</span> isLetterLog1 = <span class="type">char</span>.IsLetter(content1[0]);
+
+            <span class="type">int</span> index2 = log2.IndexOf(<span class="literal">' '</span>);
+            <span class="type">string</span> id2 = log2.Substring(0, index2);
+            <span class="type">string</span> content2 = log2.Substring(index2 + 1);
+            <span class="type">bool</span> isLetterLog2 = <span class="type">char</span>.IsLetter(content2[0]);
+
+            <span class="comment">// Case 1: Both are letter-logs</span>
+            <span class="keyword">if</span> (isLetterLog1 && isLetterLog2) {
+                <span class="type">int</span> contentCmp = content1.CompareTo(content2);
+                <span class="keyword">if</span> (contentCmp != 0) <span class="keyword">return</span> contentCmp;
+                <span class="keyword">return</span> id1.CompareTo(id2);
+            }
+
+            <span class="comment">// Case 2: One is letter-log, one is digit-log</span>
+            <span class="keyword">if</span> (isLetterLog1 && !isLetterLog2) <span class="keyword">return</span> -1; <span class="comment">// letter-log comes first</span>
+            <span class="keyword">if</span> (!isLetterLog1 && isLetterLog2) <span class="keyword">return</span> 1;  <span class="comment">// digit-log comes after</span>
+
+            <span class="comment">// Case 3: Both are digit-logs - stable sort</span>
+            <span class="keyword">return</span> 0;
+        });
+        <span class="keyword">return</span> logs;
+    }
+}`,
+                example: {
+                    input: '["dig1 8 1 5 1", "let1 art can", "dig2 3 6", "let2 own kit dig", "let3 art zero"]',
+                    output: `
+[
+  "let1 art can",
+  "let3 art zero",
+  "let2 own kit dig",
+  "dig1 8 1 5 1",
+  "dig2 3 6"
+]`
+                }
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabsContainer = document.getElementById('problem-tabs');
+            const contentArea = document.getElementById('content-area');
+
+            problems.forEach((problem, index) => {
+                const tab = document.createElement('button');
+                tab.className = 'tab px-4 py-2 text-sm sm:text-base font-medium border-b-2 border-transparent hover:border-amber-500 hover:text-amber-600 transition-colors duration-200';
+                tab.textContent = `Problem ${index + 1}`;
+                tab.dataset.index = index;
+                tabsContainer.appendChild(tab);
+            });
+            
+            tabsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab')) {
+                    const allTabs = tabsContainer.querySelectorAll('.tab');
+                    allTabs.forEach(t => t.classList.remove('active'));
+                    e.target.classList.add('active');
+                    renderProblem(e.target.dataset.index);
+                }
+            });
+
+            function renderProblem(index) {
+                const problem = problems[index];
+                contentArea.innerHTML = `
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">${problem.title}</h2>
+                    <p class="text-slate-600 mb-6">${problem.description}</p>
+
+                    <h3 class="text-xl font-semibold text-slate-700 mb-2">Key Concepts</h3>
+                    <p class="text-slate-600 mb-6">${problem.concepts}</p>
+
+                    <h3 class="text-xl font-semibold text-slate-700 mb-2">C# Solution</h3>
+                    <div class="code-block mb-6"><pre><code>${problem.code}</code></pre></div>
+
+                    <h3 class="text-xl font-semibold text-slate-700 mb-2">Example</h3>
+                    <div class="bg-stone-50 p-4 rounded-md border border-stone-200">
+                        <p class="font-mono text-sm text-slate-700 whitespace-pre-wrap"><strong class="font-semibold">Input:</strong><br>${problem.example.input}</p>
+                        <button class="run-example-btn mt-4 px-4 py-2 bg-amber-600 text-white font-semibold rounded-md hover:bg-amber-700 transition-colors">Show Output</button>
+                        <div class="example-output hidden mt-4 p-4 bg-slate-800 text-slate-100 rounded-md">
+                           <p class="font-mono text-sm whitespace-pre-wrap"><strong class="font-semibold">Output:</strong><br>${problem.example.output}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            contentArea.addEventListener('click', (e) => {
+                if (e.target.classList.contains('run-example-btn')) {
+                    const outputDiv = e.target.nextElementSibling;
+                    outputDiv.classList.toggle('hidden');
+                    e.target.textContent = outputDiv.classList.contains('hidden') ? 'Show Output' : 'Hide Output';
+                }
+            });
+
+            // Initial render
+            tabsContainer.querySelector('.tab').classList.add('active');
+            renderProblem(0);
+
+            // Chart.js implementation
+            const ctx = document.getElementById('conceptsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Hashing', 'String Parsing', 'Custom Sorting', 'In-Place Array', 'Edge Cases'],
+                    datasets: [{
+                        label: 'Problems Covering Concept',
+                        data: [3, 4, 1, 1, 1],
+                        backgroundColor: 'rgba(217, 119, 6, 0.6)', // amber-600 with opacity
+                        borderColor: 'rgba(217, 119, 6, 1)', // amber-600
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribution of Core Concepts in Today\'s Problems'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

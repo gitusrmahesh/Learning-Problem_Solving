@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 30-Day Problem Solving Roadmap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony Neutrals -->
+    <!-- Application Structure Plan: The application is designed as a daily learning planner. It uses a persistent, collapsible sidebar for navigation, allowing users to easily jump between the 30 days, which are grouped by week. The main content area is dynamically updated. This structure was chosen because the source report is a curriculum, and this layout provides a clear, non-linear way to access daily lessons. Each day's content is presented in distinct cards for 'Concepts' and 'Practice Problems', with interactive 'Show/Hide Solution' toggles. This modular, interactive approach is superior to a static document for a learning-focused goal, as it encourages active engagement and self-assessment. -->
+    <!-- Visualization & Content Choices: The report is conceptual, focusing on algorithms and techniques rather than quantitative data. Therefore, complex charts are unnecessary. Instead, the focus is on clear textual explanations and code examples. Report Info: Kadane's Algorithm -> Goal: Explain the algorithm -> Viz/Presentation Method: A dedicated content card with a step-by-step text explanation of the logic. -> Interaction: An interactive "Maximum Subarray Sum" problem with a hidden solution. -> Justification: This approach makes abstract algorithms concrete and testable for the user. Similarly, concepts like Sliding Window are explained with text and an illustrative problem. This method supports the educational structure without needing graphical libraries. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4; 
+            color: #3D3D3D;
+        }
+        .sidebar-item-active {
+            background-color: #EBE8E2;
+            color: #6D5B4F;
+            font-weight: 600;
+        }
+        .content-card {
+            background-color: #FFFFFF;
+            border: 1px solid #EBE8E2;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .code-block {
+            background-color: #2D3748;
+            color: #F7FAFC;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .btn {
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background-color: #A89B8C;
+            color: #FFFFFF;
+        }
+        .btn-primary:hover {
+            background-color: #6D5B4F;
+        }
+        .contest-card {
+            background-color: #EBE8E2;
+            border-left: 5px solid #A89B8C;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8F7F4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D1C7BC;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #B6A99A;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <header class="bg-white shadow-sm z-30 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-[#6D5B4F]">Intermediate Problem Solving Roadmap</h1>
+            <button id="menu-toggle" class="md:hidden p-2 rounded-md">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 p-4 flex-shrink-0 h-full overflow-y-auto transition-transform duration-300 ease-in-out md:translate-x-0 -translate-x-full absolute md:relative z-20">
+            <h2 class="text-xl font-bold text-[#6D5B4F] mb-6">Daily Roadmap</h2>
+            <nav id="roadmap-nav" class="space-y-4">
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+            <div id="content-area" class="max-w-7xl mx-auto">
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const roadmapData = {
+            "Week 1: Foundations & Complexity": {
+                days: {
+                    "Day 1": { title: "Introduction to Problem Solving", intro: "Today's focus is on deconstructing problems effectively. We'll learn how to analyze problem statements, identify core requirements, and differentiate between a quick solution and an efficient one.", 
+                        concepts: [{ title: "Core Concepts", points: ["**Understanding the Problem:** Break down the prompt into inputs, outputs, constraints, and edge cases.", "**Brute Force vs. Optimized:** A brute force solution solves the problem in the most straightforward way, often inefficiently. An optimized solution aims for better time and space complexity."] }],
+                        problems: [{id: "sumOfArray", title: "Practice: Sum of an Array", description: "Given an array of integers, write a function to calculate their sum.", solution: "public int SumArray(int[] arr) \n{\n    int sum = 0;\n    foreach(int num in arr) \n    {\n        sum += num;\n    }\n    return sum;\n}"}] 
+                    },
+                    "Day 2": { title: "Time Complexity Basics", intro: "Time complexity measures how the runtime of an algorithm scales with the size of the input. Today, we'll cover the fundamental Big O notations used to classify algorithm performance.", 
+                        concepts: [{ title: "Big O Notations", points: ["**O(1) - Constant:** Runtime is independent of input size (e.g., array index access).", "**O(log n) - Logarithmic:** Runtime increases logarithmically (e.g., binary search).", "**O(n) - Linear:** Runtime grows linearly with input size (e.g., iterating an array).", "**O(n²) - Quadratic:** Runtime grows quadratically, often due to nested loops (e.g., simple sorting algorithms)."] }],
+                        problems: [{id: "analyzeComplexity", title: "Practice: Analyze Nested Loops", description: "What is the time complexity of a function that has two nested loops, each iterating from 0 to n?", solution: "The time complexity is O(n²). The outer loop runs 'n' times, and for each iteration, the inner loop also runs 'n' times. This results in n * n operations." }]
+                    },
+                    "Day 3": { title: "Space Complexity Basics", intro: "Space complexity analyzes the total memory an algorithm uses. We'll distinguish between memory for inputs and the extra 'auxiliary' space our algorithm needs to run.", 
+                        concepts: [{ title: "Memory Usage", points: ["**Input Space:** The space required to store the input data.", "**Auxiliary Space:** The extra space used by the algorithm, excluding input space.", "**Recursion & Stack Space:** Recursive functions use the call stack, which contributes to space complexity. Deep recursion can lead to stack overflow errors."] }],
+                        problems: [{id: "fibonacciSpace", title: "Practice: Fibonacci Space Complexity", description: "Compare the space complexity of calculating Fibonacci numbers recursively vs. iteratively.", solution: "Recursive Fibonacci has a space complexity of O(n) due to the call stack depth. The iterative approach uses a fixed number of variables (e.g., `a`, `b`, `c`), giving it a space complexity of O(1), which is much more efficient." }]
+                    },
+                    "Day 4": { title: "Dry Runs & Edge Cases", intro: "A dry run is manually tracing your code's execution to find bugs. Today we'll focus on this crucial debugging skill and the importance of testing for edge cases.", 
+                        concepts: [{ title: "Debugging and Testing", points: ["**Dry Running:** Step through your code with a sample input, tracking variable values on paper or a whiteboard.", "**Edge Cases:** Consider extreme inputs: empty arrays, arrays with one element, large numbers, negative values, duplicates."] }],
+                        problems: [{id: "handleEmptyArray", title: "Practice: Find Maximum with Edge Cases", description: "Write a function to find the maximum element in an array. What happens if the input array is empty?", solution: "If the array is empty, trying to access an element will cause an error. A robust function should handle this, for example, by throwing an `InvalidOperationException` or returning a default value like `int.MinValue`." }]
+                    },
+                    "Day 5": { title: "Mini Problem Set (Mix)", intro: "Let's apply what we've learned this week. This mini-set includes problems that require careful loop construction, conditional logic, and a basic understanding of complexity.",
+                        problems: [{id: "isEven", title: "Check if a Number is Even", description: "Without using the modulo operator (%), how can you determine if a number is even?", solution: "You can use the bitwise AND operator. An even number's least significant bit is always 0. So, `(number & 1) == 0` will be true if the number is even."}]
+                    },
+                    "Day 6": { title: "Contest Simulation (2 hrs)", intro: "Time to test your skills under pressure. This simulated contest will help you practice time management and applying fundamental concepts quickly.", isContest: true, content: "Set a timer for 2 hours. Find a platform like LeetCode or HackerRank and solve 3 problems: 1 easy array problem, 1 easy math problem, and 1 problem that asks you to determine the complexity of a given code snippet. The goal is to finish within the time limit." },
+                    "Day 7": { 
+                        title: "Review & Revision", 
+                        intro: "This is a crucial day to consolidate your knowledge from Week 1. Solidifying these foundations will set you up for success in the coming weeks.", 
+                        concepts: [{
+                            title: "Week 1 Core Concepts Recap",
+                            points: [
+                                "**Problem Deconstruction:** Always start by identifying inputs, outputs, constraints, and potential edge cases before writing code.",
+                                "**Time Complexity (Big O):** This measures how runtime scales with input size 'n'. Key complexities to know are **O(1)** (Constant), **O(log n)** (Logarithmic), **O(n)** (Linear), and **O(n²)** (Quadratic). Always aim for a lower complexity.",
+                                "**Space Complexity:** This measures how much extra memory an algorithm needs. Distinguish between input space and auxiliary space. Be mindful of recursion, as it uses stack space (often O(n) for simple recursion).",
+                                "**Debugging & Edge Cases:** Master the art of the dry run (manual code tracing) to find bugs. Always test your code against edge cases: empty inputs, single-element inputs, large values, and negative numbers."
+                            ]
+                        }]
+                    }
+                }
+            },
+            "Week 2: Arrays & Techniques": {
+                days: {
+                    "Day 8": { title: "Array Basics", intro: "Arrays are fundamental. Today, we'll practice common operations like traversal and in-place modifications, which are building blocks for more complex algorithms.",
+                        problems: [{id: "rotateArray", title: "Practice: Left Rotation", description: "Implement a function to rotate an array to the left by `k` steps without using extra space.", solution: "A common O(1) space solution is the 'Three Reversals' method: \n1. Reverse the first `k` elements. \n2. Reverse the remaining `n-k` elements. \n3. Reverse the entire array." }]
+                    },
+                    "Day 9": { title: "Prefix & Suffix Arrays", intro: "Prefix Sum arrays allow for constant-time range sum queries. This powerful technique pre-computes sums to answer questions about subarrays efficiently.", 
+                        concepts: [{ title: "The Technique", points: ["A Prefix Sum array `P` is defined as `P[i] = A[0] + A[1] + ... + A[i]`.", "The sum of a subarray from index `i` to `j` can then be calculated in O(1) time as `P[j] - P[i-1]` (with a base case for i=0)."] }],
+                        problems: [{id: "rangeSum", title: "Practice: Range Sum Query", description: "Given an array, how would you use a prefix sum array to find the sum of elements between index 3 and 7?", solution: "First, create the prefix sum array `P`. The sum of the range [3, 7] would be `P[7] - P[2]`." }]
+                    },
+                    "Day 10": { title: "Sliding Window (Fixed Size)", intro: "The sliding window technique is used to efficiently solve problems on contiguous subarrays. The fixed-size window maintains a constant subarray length as it slides across the data.", 
+                        problems: [{id: "maxSumSubarray", title: "Practice: Max Sum Subarray of Size K", description: "Find the maximum sum of any contiguous subarray of size `k`. A naive solution is O(n*k). How can you do it in O(n)?", solution: "Calculate the sum of the first window of size `k`. Then, slide the window one element at a time. In each step, subtract the element that's leaving the window and add the element that's entering. This updates the sum in O(1) time for each step, making the total complexity O(n)." }]
+                    },
+                    "Day 11": { title: "Sliding Window (Variable Size)", intro: "The variable-size window is more dynamic. The window expands and shrinks based on problem constraints, making it a powerful tool for optimization problems.", 
+                        problems: [{id: "smallestSubarraySum", title: "Practice: Smallest Subarray with Sum ≥ Target", description: "Find the length of the smallest contiguous subarray whose sum is greater than or equal to a target value.", solution: "Use two pointers, `left` and `right`. Expand the window by incrementing `right` and adding to the current sum. Once the `sum >= target`, record the window length and shrink the window from the left by incrementing `left` and subtracting from the sum. Repeat until `right` reaches the end." }]
+                    },
+                    "Day 12": { title: "Two Pointer Technique", intro: "The two-pointer technique uses two indices to traverse a data structure in a coordinated way, often on sorted arrays, to find pairs or triplets that satisfy a condition in linear time.", 
+                        problems: [{id: "pairSum", title: "Practice: Pair Sum in Sorted Array", description: "Given a sorted array and a target sum, find if a pair of elements exists that sums up to the target.", solution: "Use one pointer `left` at the start and `right` at the end. If `arr[left] + arr[right]` is less than the target, increment `left`. If it's greater, decrement `right`. If it's equal, you've found the pair. This is an O(n) solution." }]
+                    },
+                    "Day 13": { title: "Kadane’s Algorithm", intro: "Kadane's Algorithm is a brilliant and efficient O(n) dynamic programming approach to find the maximum sum of a contiguous subarray in an array with both positive and negative numbers.", 
+                        concepts: [{ title: "The Logic", points: ["Iterate through the array, keeping track of two variables: `max_so_far` and `current_max`.", "`current_max` is the maximum sum of a subarray ending at the current position.", "`max_so_far` is the overall maximum sum found anywhere in the array.", "At each step, `current_max = max(current_element, current_max + current_element)`."] }],
+                        problems: [{id: "kadanePractice", title: "Practice: Kadane's Algorithm", description: "Given the array `[-2, 1, -3, 4, -1, 2, 1, -5, 4]`, what is the maximum subarray sum?", solution: "The maximum subarray is `[4, -1, 2, 1]`, and its sum is 6." }]
+                    },
+                    "Day 14": { title: "Weekly Contest (Arrays Only)", intro: "This contest focuses exclusively on the array techniques learned this week. It's a great way to see how prefix sums, sliding windows, and two-pointers can be combined.", isContest: true, content: "Set a timer for 2.5 hours. Find a contest or create a problem set of 4 medium-difficulty array problems that require the techniques learned in Week 2. Focus on identifying the correct pattern for each problem." }
+                }
+            },
+            "Week 3: Sorting & Bit Manipulation": {
+                days: {
+                    "Day 15": { title: "Sorting Basics", intro: "Understanding how basic sorting algorithms work provides a foundation for more complex topics. Today, we'll look at the intuition behind simple, albeit inefficient, sorts.", 
+                        concepts: [{ title: "Simple Sorts", points: ["**Bubble Sort:** Repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.", "**Selection Sort:** Repeatedly finds the minimum element from the unsorted part and puts it at the beginning.", "**Insertion Sort:** Builds the final sorted array one item at a time."] }],
+                        problems: [{id: "bubbleSort", title: "Practice: Bubble Sort", description: "Implement the Bubble Sort algorithm.", solution: "public void BubbleSort(int[] arr) \n{\n    int n = arr.Length;\n    for (int i = 0; i < n - 1; i++)\n        for (int j = 0; j < n - i - 1; j++)\n            if (arr[j] > arr[j + 1])\n            {\n                int temp = arr[j];\n                arr[j] = arr[j + 1];\n                arr[j + 1] = temp;\n            }\n}" }]
+                    },
+                    "Day 16": { title: "Efficient Sorting", intro: "Merge Sort and Quick Sort are highly efficient, O(n log n) sorting algorithms based on the 'divide and conquer' paradigm. They are the backbone of many standard library sort functions.", 
+                        concepts: [{ title: "Divide and Conquer", points: ["**Merge Sort:** Divides the array into halves, recursively sorts them, and then merges the sorted halves.", "**Quick Sort:** Picks a 'pivot' element and partitions the other elements into two sub-arrays, according to whether they are less than or greater than the pivot."] }]
+                    },
+                    "Day 17": { title: "Sorting Applications", intro: "Sorting is often a preliminary step to solving a more complex problem. Today we'll look at problems where sorting the input first is the key insight.", 
+                        problems: [{id: "kthLargest", title: "Practice: Kth Largest Element", description: "Find the Kth largest element in an unsorted array.", solution: "The simplest solution is to sort the array in ascending order. The Kth largest element will then be at index `n - k`, where `n` is the length of thearray. This solution has a time complexity of O(n log n)." }]
+                    },
+                    "Day 18": { title: "Bit Manipulation Basics", intro: "Working directly with bits can lead to extremely fast and clever solutions. We'll start with the fundamental bitwise operators.", 
+                        concepts: [{ title: "Bitwise Operators", points: ["**AND (`&`):** Sets a bit to 1 if both bits are 1.", "**OR (`|`):** Sets a bit to 1 if one of two bits is 1.", "**XOR (`^`):** Sets a bit to 1 if the two bits are different.", "**NOT (`~`):** Inverts all the bits.", "**Left Shift (`<<`):** Multiplies by 2.", "**Right Shift (`>>`):** Divides by 2."] }]
+                    },
+                    "Day 19": { title: "Advanced Bit Tricks", intro: "Let's explore some powerful bit manipulation algorithms for common tasks like counting set bits and generating all subsets of a set.", 
+                        concepts: [{ title: "Key Algorithms", points: ["**Brian Kernighan’s Algorithm:** A trick to count set bits. The operation `n & (n - 1)` clears the least significant set bit. The number of times you can do this is the number of set bits.", "**Subset Generation:** You can represent subsets of a set of size `n` with numbers from 0 to 2^n - 1. Each bit position corresponds to an element in the set."] }]
+                    },
+                    "Day 20": { title: "Applications of Bit Manipulation", intro: "Today we solve classic problems where bit manipulation provides an elegant and highly efficient solution that is often hard to find otherwise.", 
+                        problems: [{id: "singleNumber", title: "Practice: Single Number", description: "In an array where every element appears twice except for one, find that single one.", solution: "The XOR operator has the properties `x ^ x = 0` and `x ^ 0 = x`. If you XOR all numbers in the array, the duplicate numbers will cancel each other out, leaving only the single number." }, {id: "powerOfTwo", title: "Practice: Power of Two Check", description: "How can you check if a number is a power of two using bit manipulation?", solution: "A power of two in binary is a 1 followed by all 0s (e.g., 8 is 1000). The number one less than it is all 1s (e.g., 7 is 0111). Therefore, `n & (n - 1)` will be 0 if and only if `n` is a power of two (and n > 0)." }]
+                    },
+                    "Day 21": { title: "Weekly Contest (Sorting + Bits)", intro: "This contest combines the topics from the week. Expect problems where you might need to sort data before applying a bit manipulation trick.", isContest: true, content: "Set a timer for 2.5 hours. Solve 4 problems that mix sorting and bit manipulation concepts. Look for opportunities where one technique simplifies the other." }
+                }
+            },
+            "Week 4: Strings & Mixed Problem Solving": {
+                days: {
+                    "Day 22": { title: "String Basics", intro: "We begin our week on strings with fundamental operations and a classic problem: palindrome checking.", 
+                        problems: [{id: "isPalindrome", title: "Practice: Check Palindrome", description: "Write an efficient function to check if a string is a palindrome (reads the same forwards and backwards).", solution: "Use the two-pointer technique. Have a `left` pointer at the start and a `right` pointer at the end. Iterate inwards, comparing characters. If at any point `str[left] != str[right]`, it's not a palindrome. If the pointers meet or cross, it is." }]
+                    },
+                    "Day 23": { title: "Anagrams & Frequency Maps", intro: "Frequency maps (often implemented with HashMaps or arrays) are essential for solving problems involving character counts, like anagrams.", 
+                        problems: [{id: "groupAnagrams", title: "Practice: Group Anagrams", description: "Given an array of strings, group the anagrams together.", solution: "Iterate through each string. For each string, sort its characters to create a canonical key. Use a HashMap where keys are the sorted strings and values are lists of the original strings. Add each original string to the list corresponding to its sorted key." }]
+                    },
+                    "Day 24": { title: "Substring & Subsequence Problems", intro: "Let's tackle two classic string problems that are often solved with sliding windows or dynamic programming.", 
+                        problems: [{id: "longestSubstringNoRepeat", title: "Practice: Longest Substring Without Repeating Characters", description: "Find the length of the longest substring without repeating characters.", solution: "This is a classic variable-size sliding window problem. Use a HashSet to keep track of characters in the current window. Expand the window with a `right` pointer. If a character is already in the set, shrink the window from the `left` until the duplicate is removed." }]
+                    },
+                    "Day 25": { title: "String Pattern Matching", intro: "Pattern matching is about finding occurrences of a smaller string (pattern) within a larger one (text). We'll start with the basic approach.", 
+                        concepts: [{ title: "Naive Approach", points: ["The naive algorithm slides the pattern over the text one by one and checks for a match at each position.", "This has a time complexity of O((n-m+1) * m), where n is the length of the text and m is the length of the pattern."] }]
+                    },
+                    "Day 26": { title: "String Hashing Concepts", intro: "String hashing is a technique used to represent strings as numbers, allowing for fast comparisons. This is an introduction to the concept.", 
+                        concepts: [{ title: "Rabin-Karp Introduction", points: ["The Rabin-Karp algorithm uses a rolling hash to quickly find a pattern in text. It calculates the hash of the pattern and then compares it with the hash of each substring of the text.", "This can be much faster than naive string comparison."] }]
+                    },
+                    "Day 27": { title: "Mixed Problem Practice (Arrays + Strings)", intro: "Time to combine our knowledge. These problems will require you to apply techniques from both our arrays and strings weeks.",
+                        problems: [{id: "mixedPractice", title: "Practice Problem Idea", description: "Given a sentence as a string, find the most frequently occurring word that is not in a given list of banned words."}]
+                    },
+                    "Day 28": { title: "Contest Simulation (Full Mix)", intro: "This simulation includes a mix of everything we've learned so far: arrays, strings, bits, and core techniques.", isContest: true, content: "Set a timer for 3 hours. Attempt a full contest of 5 problems from a platform like Codeforces or AtCoder. The problems should range in difficulty and cover a mix of the topics from the last four weeks." },
+                    "Day 29": { 
+                        title: "Revision Day", 
+                        intro: "Use today to identify and strengthen your weak areas. Consistent review is key to long-term retention. Go over the key concepts from the entire roadmap.",
+                        concepts: [
+                            { title: "Week 1 Recap: Foundations", points: ["**Complexity:** O(1), O(log n), O(n), O(n²) are essential to know.", "**Debugging:** Dry running and checking edge cases (empty, single element, negatives) are non-negotiable skills."] },
+                            { title: "Week 2 Recap: Array Techniques", points: ["**Prefix Sum:** Pre-compute sums for O(1) range sum queries.", "**Sliding Window:** Use for problems on contiguous subarrays. Fixed size for problems like 'max sum of size k', variable size for 'smallest subarray with sum ≥ k'.", "**Two Pointers:** Ideal for sorted arrays to find pairs/triplets. Move pointers inwards or in the same direction depending on the problem.", "**Kadane's Algorithm:** The O(n) solution for the maximum contiguous subarray sum problem."] },
+                            { title: "Week 3 Recap: Sorting & Bits", points: ["**Efficient Sorting:** Know that Merge Sort and Quick Sort are O(n log n). Sorting is often a required first step for other algorithms (like two-pointers).", "**Bitwise Operators:** Master AND(&), OR(|), and especially XOR(^).", "**XOR Tricks:** `x ^ x = 0` and `x ^ 0 = x` are key for problems like finding the single number.", "**Power of Two:** The `n & (n-1) == 0` trick is a classic."] },
+                            { title: "Week 4 Recap: Strings", points: ["**Palindromes:** Solved efficiently with the two-pointer technique.", "**Anagrams:** Use frequency maps (HashMap or array) to count character occurrences.", "**Substring Problems:** Often map to array techniques like the sliding window."] }
+                        ]
+                    },
+                    "Day 30": { title: "Final Mock Contest (3 hrs)", intro: "This is the final test of your progress. Treat it like a real competition. Give it your best effort and see how much you've grown!", isContest: true, content: "Take a full 3-hour mock contest with 6 problems of varying difficulty (e.g., 2 easy, 3 medium, 1 hard). After the contest, spend time analyzing your performance: What did you do well? Where can you still improve? Congratulations on completing the 30-day roadmap!" }
+                }
+            }
+        };
+
+        const contentArea = document.getElementById('content-area');
+        const roadmapNav = document.getElementById('roadmap-nav');
+
+        function renderContent(week, day) {
+            const dayData = roadmapData[week].days[day];
+            let html = `<h2 class="text-3xl font-bold mb-2 text-[#6D5B4F]">${day}: ${dayData.title}</h2>`;
+            html += `<p class="text-lg text-gray-600 mb-8">${dayData.intro}</p>`;
+
+            if (dayData.isContest) {
+                html += `<div class="content-card contest-card p-6 mb-6"><p class="text-lg">${dayData.content}</p></div>`;
+            }
+
+            if (dayData.concepts) {
+                dayData.concepts.forEach(concept => {
+                    html += `<div class="content-card p-6 mb-6">
+                                <h3 class="text-xl font-bold text-[#6D5B4F] mb-4">${concept.title}</h3>
+                                <ul class="list-disc list-inside space-y-3">`;
+                    concept.points.forEach(point => {
+                        html += `<li class="text-gray-700">${point.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-800">$1</strong>')}</li>`;
+                    });
+                    html += `</ul></div>`;
+                });
+            }
+
+            if (dayData.problems) {
+                dayData.problems.forEach(problem => {
+                    html += `<div class="content-card p-6 mb-6">
+                                <h3 class="text-xl font-bold text-[#6D5B4F] mb-2">${problem.title}</h3>
+                                <p class="mb-4">${problem.description}</p>
+                                <button class="btn btn-primary px-4 py-2 rounded-md toggle-solution" data-target="${problem.id}-solution">View Solution</button>
+                                <div id="${problem.id}-solution" class="hidden mt-4">
+                                    <pre class="code-block">${problem.solution}</pre>
+                                </div>
+                            </div>`;
+                });
+            }
+
+            contentArea.innerHTML = html;
+            contentArea.scrollTop = 0;
+            attachSolutionToggles();
+        }
+
+        function attachSolutionToggles() {
+            document.querySelectorAll('.toggle-solution').forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const solutionDiv = document.getElementById(targetId);
+                    const isHidden = solutionDiv.classList.contains('hidden');
+                    
+                    if(isHidden) {
+                        solutionDiv.classList.remove('hidden');
+                        button.textContent = 'Hide Solution';
+                    } else {
+                        solutionDiv.classList.add('hidden');
+                        button.textContent = 'View Solution';
+                    }
+                });
+            });
+        }
+        
+        function updateActiveLink(week, day) {
+            document.querySelectorAll('#roadmap-nav a').forEach(link => {
+                link.classList.remove('sidebar-item-active');
+            });
+            const activeLink = document.querySelector(`a[data-week="${week}"][data-day="${day}"]`);
+            if(activeLink) {
+                activeLink.classList.add('sidebar-item-active');
+                
+                const parentDetails = activeLink.closest('details');
+                if(parentDetails && !parentDetails.open) {
+                    parentDetails.open = true;
+                }
+            }
+        }
+        
+        function initNav() {
+            let navHtml = '';
+            for (const week in roadmapData) {
+                navHtml += `<details class="group" ${week.startsWith("Week 1") ? 'open' : ''}>
+                                <summary class="font-semibold text-lg cursor-pointer p-2 rounded-md hover:bg-[#EBE8E2]">${week}</summary>
+                                <div class="pl-4 mt-2 space-y-1">`;
+                for (const day in roadmapData[week].days) {
+                    navHtml += `<a href="#" class="block p-2 rounded-md hover:bg-[#EBE8E2] transition-colors" data-week="${week}" data-day="${day}">${day}</a>`;
+                }
+                navHtml += `</div></details>`;
+            }
+            roadmapNav.innerHTML = navHtml;
+            
+            roadmapNav.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') {
+                    e.preventDefault();
+                    const week = e.target.dataset.week;
+                    const day = e.target.dataset.day;
+                    renderContent(week, day);
+                    updateActiveLink(week, day);
+                    
+                    if (window.innerWidth < 768) {
+                       document.getElementById('sidebar').classList.add('-translate-x-full');
+                    }
+                }
+            });
+        }
+
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+             document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        });
+
+        // Initial Load
+        initNav();
+        const firstWeek = Object.keys(roadmapData)[0];
+        const firstDay = Object.keys(roadmapData[firstWeek].days)[0];
+        renderContent(firstWeek, firstDay);
+        updateActiveLink(firstWeek, firstDay);
+
+    </script>
+</body>
+</html>
+

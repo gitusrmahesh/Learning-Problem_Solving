@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 24: Substring & Subsequence Problems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A tab-based interactive learning module. Users select a problem (Longest Substring or LCS). Each section provides a conceptual explanation, a step-by-step interactive visualizer allowing users to input their own data, and the C# code implementation. This structure was chosen to transform passive learning from a static report into an active, exploratory experience, which is more effective for understanding algorithms. -->
+    <!-- Visualization & Content Choices: Longest Substring -> Goal: Demonstrate Sliding Window -> Method: Interactive string display with moving start/end pointers and highlighted substring -> Interaction: User input, step-through controls -> Justification: Directly visualizes the core algorithm mechanics. Longest Common Subsequence -> Goal: Explain Dynamic Programming -> Method: Dynamically generated and populated HTML grid representing the DP table -> Interaction: User inputs, watches the table build and the result path traced -> Justification: Demystifies the DP approach by showing the process, not just the result. Both use vanilla JS and DOM manipulation. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            background-color: #f8fafc; 
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500&display=swap');
+        .font-code {
+            font-family: 'Source Code Pro', monospace;
+        }
+        .tab-active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .tab-inactive {
+            background-color: white;
+            color: #4f46e5;
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #334155;
+            color: #94a3b8;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .copy-btn:hover {
+            background-color: #475569;
+        }
+        .visualizer-char {
+            display: inline-block;
+            width: 2.5rem;
+            height: 2.5rem;
+            line-height: 2.5rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            margin: 0.125rem;
+            position: relative;
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+        .pointer {
+            position: absolute;
+            bottom: -1.75rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #4f46e5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .pointer::before {
+            content: '▲';
+            font-size: 1rem;
+        }
+        .substring-highlight {
+            background-color: #e0e7ff;
+        }
+        .dp-table {
+            border-collapse: collapse;
+        }
+        .dp-cell {
+            width: 3rem;
+            height: 3rem;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+        .dp-header {
+            background-color: #f1f5f9;
+            font-weight: bold;
+        }
+        .dp-cell-current {
+            background-color: #fef3c7;
+        }
+        .dp-cell-path {
+            background-color: #c7d2fe;
+        }
+        .dp-cell-final {
+            background-color: #bbf7d0;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">30-Day Daily Roadmap: Problem Solving</h1>
+            <p class="text-lg text-indigo-600 font-semibold mt-1">Day 24 – Substring & Subsequence Problems</p>
+        </header>
+
+        <div class="max-w-5xl mx-auto">
+            <div class="flex justify-center border-b border-gray-200 mb-8">
+                <button id="tab-ls" class="tab-button tab-active text-sm md:text-base font-medium py-3 px-6 rounded-t-lg focus:outline-none transition-colors duration-300">Longest Substring Without Repeating Characters</button>
+                <button id="tab-lcs" class="tab-button tab-inactive text-sm md:text-base font-medium py-3 px-6 rounded-t-lg focus:outline-none transition-colors duration-300">Longest Common Subsequence</button>
+            </div>
+
+            <main>
+                <!-- Problem 1: Longest Substring Without Repeating Characters -->
+                <div id="content-ls" class="space-y-8">
+                    <section class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold mb-3 text-gray-900">Longest Substring Without Repeating Characters</h2>
+                        <p class="text-gray-600 leading-relaxed">This section introduces a classic string manipulation problem: finding the length of the longest substring within a given string that does not contain any repeating characters. We will explore the highly efficient "Sliding Window" technique to solve this. The interactive visualizer below will help you understand how the window expands and contracts to find the optimal solution.</p>
+                    </section>
+                
+                    <section class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold mb-4">Interactive Visualizer</h3>
+                        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                            <input type="text" id="ls-input" class="flex-grow p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter a string (e.g., abca-bcbb)" value="abca-bcbb">
+                            <button id="ls-visualize-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-300">Visualize</button>
+                        </div>
+                
+                        <div id="ls-visualizer-area" class="min-h-[10rem] bg-gray-50 p-4 rounded-md mb-4 overflow-x-auto">
+                           <div id="ls-string-container" class="flex items-center pb-8 whitespace-nowrap"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                            <div class="bg-indigo-50 p-4 rounded-md">
+                                <p class="text-sm text-gray-500">Current Max Length</p>
+                                <p id="ls-max-length" class="text-2xl font-bold text-indigo-700">0</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-md">
+                                <p class="text-sm text-gray-500">Longest Substring Found</p>
+                                <p id="ls-longest-substring" class="text-2xl font-bold text-green-700 font-code">-</p>
+                            </div>
+                        </div>
+                         <div id="ls-explanation-text" class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md text-center min-h-[3rem]"></div>
+                    </section>
+
+                    <section class="bg-white p-6 rounded-lg shadow-md">
+                         <h3 class="text-xl font-bold mb-2">The Sliding Window Approach</h3>
+                         <p class="text-gray-600 mb-4 leading-relaxed">
+                             The sliding window is an algorithmic technique that involves maintaining a "window" (a sub-array or sub-string) over a larger data structure. For this problem, we use two pointers, `start` and `end`, to define the current window.
+                         </p>
+                         <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                             <li>Initialize a `start` pointer at the beginning of the string and an empty set to store characters in the current window.</li>
+                             <li>Iterate through the string with an `end` pointer.</li>
+                             <li>If the character at `end` is not in our set, add it. The window is valid. Update the maximum length found so far.</li>
+                             <li>If the character at `end` is already in the set, it means we have a repeat. We must shrink the window from the left by moving the `start` pointer forward and removing characters from the set until the repeating character is gone.</li>
+                             <li>Continue this process until the `end` pointer reaches the end of the string.</li>
+                         </ol>
+                     </section>
+                
+                    <section class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold mb-2">C# Implementation</h3>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode('ls-code')">Copy</button>
+                            <pre><code id="ls-code" class="font-code text-sm">public class Solution {
+    public int LengthOfLongestSubstring(string s) {
+        if (string.IsNullOrEmpty(s)) return 0;
+
+        int maxLength = 0;
+        int start = 0;
+        var charSet = new HashSet&lt;char&gt;();
+
+        for (int end = 0; end < s.Length; end++) {
+            // While the set contains the current character,
+            // shrink the window from the left.
+            while (charSet.Contains(s[end])) {
+                charSet.Remove(s[start]);
+                start++;
+            }
+            
+            // Add the current character to the set
+            charSet.Add(s[end]);
+            
+            // Update the max length
+            maxLength = Math.Max(maxLength, end - start + 1);
+        }
+
+        return maxLength;
+    }
+}</code></pre>
+                        </div>
+                    </section>
+
+                     <section class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold mb-2">Complexity Analysis</h3>
+                         <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1 bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-gray-700">Time Complexity: O(N)</h4>
+                                <p class="text-gray-600 text-sm">Although there is a nested `while` loop, each character in the string is visited by the `start` and `end` pointers at most once. Therefore, the complexity is linear.</p>
+                            </div>
+                            <div class="flex-1 bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-gray-700">Space Complexity: O(k)</h4>
+                                <p class="text-gray-600 text-sm">Where `k` is the size of the character set (e.g., 26 for lowercase English letters, 128 for ASCII). The space used by the `HashSet` is bounded by the number of unique characters.</p>
+                            </div>
+                         </div>
+                    </section>
+                </div>
+
+                <!-- Problem 2: Longest Common Subsequence -->
+                <div id="content-lcs" class="space-y-8 hidden">
+                     <section class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-2xl font-bold mb-3 text-gray-900">Longest Common Subsequence (LCS)</h2>
+                        <p class="text-gray-600 leading-relaxed">This section delves into the Longest Common Subsequence problem, a fundamental concept in computer science with applications in bioinformatics (DNA sequencing) and data comparison (diff utilities). Unlike a substring, a subsequence's characters do not need to be contiguous. We will solve this using Dynamic Programming, building a table to store solutions to subproblems. The visualizer will construct this DP table step-by-step.</p>
+                    </section>
+
+                     <section class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold mb-4">Interactive Visualizer</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                             <input type="text" id="lcs-input1" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter string 1" value="AGGTAB">
+                             <input type="text" id="lcs-input2" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter string 2" value="GXTXAYB">
+                        </div>
+                        <button id="lcs-visualize-btn" class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-300 mb-6">Visualize</button>
+                        
+                        <div id="lcs-visualizer-area" class="min-h-[10rem] bg-gray-50 p-4 rounded-md mb-4 overflow-x-auto">
+                           <div id="lcs-table-container"></div>
+                        </div>
+
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                            <div class="bg-indigo-50 p-4 rounded-md">
+                                <p class="text-sm text-gray-500">LCS Length</p>
+                                <p id="lcs-max-length" class="text-2xl font-bold text-indigo-700">0</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-md">
+                                <p class="text-sm text-gray-500">LCS Found</p>
+                                <p id="lcs-result-string" class="text-2xl font-bold text-green-700 font-code">-</p>
+                            </div>
+                        </div>
+                        <div id="lcs-explanation-text" class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md text-center min-h-[3rem]"></div>
+                    </section>
+                
+                     <section class="bg-white p-6 rounded-lg shadow-md">
+                         <h3 class="text-xl font-bold mb-2">The Dynamic Programming Approach</h3>
+                         <p class="text-gray-600 mb-4 leading-relaxed">
+                             We use a 2D array, let's call it `dp`, where `dp[i][j]` stores the length of the LCS for the first `i` characters of `string1` and the first `j` characters of `string2`.
+                         </p>
+                         <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                             <li>Create a `dp` table of size `(m+1) x (n+1)`, where `m` and `n` are the lengths of the two strings. Initialize it with zeros.</li>
+                             <li>Iterate through the strings from `i=1` to `m` and `j=1` to `n`.</li>
+                             <li>If `string1[i-1]` equals `string2[j-1]`, the characters match! The LCS length is one more than the LCS of the strings without these characters. So, `dp[i][j] = 1 + dp[i-1][j-1]`.</li>
+                             <li>If the characters do not match, the LCS length is the maximum of the LCS found by excluding one character from either string. So, `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`.</li>
+                             <li>The value at `dp[m][n]` will be the length of the LCS. We can then backtrack from this cell to reconstruct the actual subsequence.</li>
+                         </ol>
+                     </section>
+
+                    <section class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold mb-2">C# Implementation</h3>
+                        <div class="code-block">
+                             <button class="copy-btn" onclick="copyCode('lcs-code')">Copy</button>
+                            <pre><code id="lcs-code" class="font-code text-sm">public class Solution {
+    public int LongestCommonSubsequence(string text1, string text2) {
+        int m = text1.Length;
+        int n = text2.Length;
+        
+        // dp[i, j] will be the length of LCS of text1[0..i-1] and text2[0..j-1]
+        int[,] dp = new int[m + 1, n + 1];
+        
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (text1[i - 1] == text2[j - 1]) {
+                    // If characters match, add 1 to the result from the previous diagonal cell
+                    dp[i, j] = 1 + dp[i - 1, j - 1];
+                } else {
+                    // If characters don't match, take the max from the top or left cell
+                    dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
+                }
+            }
+        }
+        
+        // The bottom-right cell contains the length of the LCS
+        return dp[m, n];
+    }
+}
+// Note: This code finds the length. Reconstructing the string requires backtracking.</code></pre>
+                        </div>
+                    </section>
+
+                     <section class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold mb-2">Complexity Analysis</h3>
+                         <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1 bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-gray-700">Time Complexity: O(m * n)</h4>
+                                <p class="text-gray-600 text-sm">We iterate through a 2D grid of size `m x n`, where `m` and `n` are the lengths of the two strings. Each cell computation takes constant time.</p>
+                            </div>
+                            <div class="flex-1 bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-gray-700">Space Complexity: O(m * n)</h4>
+                                <p class="text-gray-600 text-sm">We use a 2D `dp` table of size `(m+1) x (n+1)` to store the intermediate results.</p>
+                            </div>
+                         </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const tabLs = document.getElementById('tab-ls');
+        const tabLcs = document.getElementById('tab-lcs');
+        const contentLs = document.getElementById('content-ls');
+        const contentLcs = document.getElementById('content-lcs');
+
+        function switchTab(activeTab, inactiveTab, activeContent, inactiveContent) {
+            activeTab.classList.remove('tab-inactive');
+            activeTab.classList.add('tab-active');
+            inactiveTab.classList.remove('tab-active');
+            inactiveTab.classList.add('tab-inactive');
+            activeContent.classList.remove('hidden');
+            inactiveContent.classList.add('hidden');
+        }
+
+        tabLs.addEventListener('click', () => switchTab(tabLs, tabLcs, contentLs, contentLcs));
+        tabLcs.addEventListener('click', () => switchTab(tabLcs, tabLs, contentLcs, contentLs));
+
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Code copied to clipboard!');
+        }
+
+        // --- Longest Substring Logic ---
+        const lsInput = document.getElementById('ls-input');
+        const lsVisualizeBtn = document.getElementById('ls-visualize-btn');
+        const lsStringContainer = document.getElementById('ls-string-container');
+        const lsMaxLength = document.getElementById('ls-max-length');
+        const lsLongestSubstring = document.getElementById('ls-longest-substring');
+        const lsExplanationText = document.getElementById('ls-explanation-text');
+        let lsAnimationTimeout;
+
+        lsVisualizeBtn.addEventListener('click', () => {
+             clearTimeout(lsAnimationTimeout);
+             visualizeLongestSubstring();
+        });
+
+        function visualizeLongestSubstring() {
+            const s = lsInput.value;
+            lsStringContainer.innerHTML = '';
+            lsMaxLength.textContent = '0';
+            lsLongestSubstring.textContent = '-';
+            lsExplanationText.textContent = 'Visualization started. The window is defined by start and end pointers.';
+
+            if (!s) {
+                 lsExplanationText.textContent = 'Please enter a string to visualize.';
+                return;
+            }
+
+            for(let i=0; i<s.length; i++) {
+                const charDiv = document.createElement('div');
+                charDiv.id = `ls-char-${i}`;
+                charDiv.className = 'visualizer-char';
+                charDiv.textContent = s[i];
+                lsStringContainer.appendChild(charDiv);
+            }
+            
+            const startPointer = document.createElement('div');
+            startPointer.id = 'ls-start-pointer';
+            startPointer.className = 'pointer';
+            startPointer.textContent = 'start';
+            
+            const endPointer = document.createElement('div');
+            endPointer.id = 'ls-end-pointer';
+            endPointer.className = 'pointer';
+            endPointer.textContent = 'end';
+
+            document.getElementById('ls-char-0').appendChild(startPointer);
+            document.getElementById('ls-char-0').appendChild(endPointer);
+
+            let maxLength = 0;
+            let start = 0;
+            let longestSub = '';
+            const charSet = new Set();
+            let steps = [];
+
+            for (let end = 0; end < s.length; end++) {
+                let explanation = `Checking character '${s[end]}' at end=${end}.`;
+                steps.push({ start, end, maxLength, longestSub, charSet: new Set(charSet), phase: 'check', explanation: explanation + ` Current set: {${[...charSet].join(', ')}}. ` });
+
+                while (charSet.has(s[end])) {
+                    let explanationShrink = `Character '${s[end]}' is already in the set. Shrinking window by moving start=${start}.`;
+                    steps.push({ start, end, maxLength, longestSub, charSet: new Set(charSet), phase: 'shrink-start', explanation: explanationShrink });
+                    
+                    charSet.delete(s[start]);
+                    
+                    explanationShrink = `Removed '${s[start]}' from set. Set is now {${[...charSet].join(', ')}}. Incrementing start.`;
+                    start++;
+                    steps.push({ start, end, maxLength, longestSub, charSet: new Set(charSet), phase: 'shrink-end', explanation: explanationShrink });
+                }
+                
+                charSet.add(s[end]);
+                explanation = `'${s[end]}' not in set. Adding it. Set is now {${[...charSet].join(', ')}}.`;
+                 steps.push({ start, end, maxLength, longestSub, charSet: new Set(charSet), phase: 'add', explanation });
+
+                if (end - start + 1 > maxLength) {
+                    maxLength = end - start + 1;
+                    longestSub = s.substring(start, end + 1);
+                    explanation = `New max length found: ${maxLength}. Current substring: '${longestSub}'.`;
+                } else {
+                    explanation = `Window size is ${end - start + 1}, not greater than max length ${maxLength}.`;
+                }
+                 steps.push({ start, end, maxLength, longestSub, charSet: new Set(charSet), phase: 'update-max', explanation });
+            }
+             steps.push({start, end: s.length - 1, maxLength, longestSub, charSet, phase: 'done', explanation: 'Finished. Final max length is ' + maxLength + '.'});
+
+            animateLs(steps, 0);
+        }
+
+        function animateLs(steps, stepIndex) {
+            if (stepIndex >= steps.length) return;
+
+            const step = steps[stepIndex];
+            const { start, end, maxLength, longestSub, explanation } = step;
+
+            document.querySelectorAll('.visualizer-char').forEach((el, i) => {
+                el.classList.remove('substring-highlight');
+                if (i >= start && i <= end) {
+                    el.classList.add('substring-highlight');
+                }
+            });
+            
+            const startPointer = document.getElementById('ls-start-pointer');
+            const endPointer = document.getElementById('ls-end-pointer');
+
+            document.getElementById(`ls-char-${start}`).appendChild(startPointer);
+            document.getElementById(`ls-char-${end}`).appendChild(endPointer);
+            
+            lsMaxLength.textContent = maxLength;
+            lsLongestSubstring.textContent = longestSub || '-';
+            lsExplanationText.textContent = explanation;
+            
+            lsAnimationTimeout = setTimeout(() => animateLs(steps, stepIndex + 1), 800);
+        }
+
+
+        // --- Longest Common Subsequence Logic ---
+        const lcsInput1 = document.getElementById('lcs-input1');
+        const lcsInput2 = document.getElementById('lcs-input2');
+        const lcsVisualizeBtn = document.getElementById('lcs-visualize-btn');
+        const lcsTableContainer = document.getElementById('lcs-table-container');
+        const lcsMaxLength = document.getElementById('lcs-max-length');
+        const lcsResultString = document.getElementById('lcs-result-string');
+        const lcsExplanationText = document.getElementById('lcs-explanation-text');
+        let lcsAnimationTimeout;
+
+        lcsVisualizeBtn.addEventListener('click', () => {
+            clearTimeout(lcsAnimationTimeout);
+            visualizeLCS();
+        });
+
+        function visualizeLCS() {
+            const text1 = lcsInput1.value;
+            const text2 = lcsInput2.value;
+            lcsTableContainer.innerHTML = '';
+            lcsMaxLength.textContent = '0';
+            lcsResultString.textContent = '-';
+            lcsExplanationText.textContent = 'Preparing visualization...';
+            
+            if (!text1 || !text2) {
+                lcsExplanationText.textContent = 'Please enter both strings.';
+                return;
+            }
+
+            const m = text1.length;
+            const n = text2.length;
+            const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+            let steps = [];
+
+            // Build table
+            let table = `<table class="dp-table mx-auto"><thead><tr><th class="dp-cell dp-header"></th><th class="dp-cell dp-header">Ø</th>`;
+            for (let j = 0; j < n; j++) table += `<th class="dp-cell dp-header">${text2[j]}</th>`;
+            table += `</tr></thead><tbody>`;
+            table += `<tr><td class="dp-cell dp-header">Ø</td>`;
+            for(let j=0; j<=n; j++) table += `<td id="dp-cell-0-${j}" class="dp-cell">0</td>`;
+            table += `</tr>`;
+            for (let i = 0; i < m; i++) {
+                table += `<tr><td class="dp-cell dp-header">${text1[i]}</td>`;
+                for (let j = 0; j <= n; j++) {
+                     table += `<td id="dp-cell-${i+1}-${j}" class="dp-cell">${j === 0 ? 0 : ''}</td>`;
+                }
+                table += `</tr>`;
+            }
+            table += `</tbody></table>`;
+            lcsTableContainer.innerHTML = table;
+
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= n; j++) {
+                     let explanation;
+                     if (text1[i - 1] == text2[j - 1]) {
+                        dp[i][j] = 1 + dp[i - 1][j - 1];
+                        explanation = `Chars '${text1[i-1]}' and '${text2[j-1]}' match. Value = 1 + dp[${i-1},${j-1}] = ${dp[i][j]}.`;
+                    } else {
+                        dp[i][j] = Math.max(dp[i - 1][j], dp[i, j - 1]);
+                        explanation = `Chars don't match. Value = max(dp[${i-1},${j}], dp[${i},${j-1}]) = ${dp[i][j]}.`;
+                    }
+                    steps.push({ type: 'fill', i, j, value: dp[i][j], explanation });
+                }
+            }
+            
+            // Backtracking steps
+            let lcs = "";
+            let i = m, j = n;
+            while (i > 0 && j > 0) {
+                 steps.push({type: 'trace', i, j, explanation: `Tracing back from dp[${i},${j}].`});
+                if (text1[i - 1] === text2[j - 1]) {
+                    lcs = text1[i - 1] + lcs;
+                    i--;
+                    j--;
+                     steps.push({type: 'trace-match', i: i+1, j: j+1, explanation: `Found matching char '${lcs[0]}'. Moving diagonally.`});
+                } else if (dp[i - 1][j] > dp[i][j - 1]) {
+                    i--;
+                     steps.push({type: 'trace-move', i: i+1, j, explanation: 'Value came from top cell. Moving up.'});
+                } else {
+                    j--;
+                     steps.push({type: 'trace-move', i, j: j+1, explanation: 'Value came from left cell. Moving left.'});
+                }
+            }
+            steps.push({type: 'done', lcs, explanation: 'Backtracking complete. Final LCS found.'});
+
+            animateLcs(steps, 0);
+        }
+
+        function animateLcs(steps, stepIndex) {
+            if (stepIndex >= steps.length) return;
+            const step = steps[stepIndex];
+            lcsExplanationText.textContent = step.explanation;
+
+            document.querySelectorAll('.dp-cell-current').forEach(c => c.classList.remove('dp-cell-current'));
+            
+            if (step.type === 'fill') {
+                const cell = document.getElementById(`dp-cell-${step.i}-${step.j}`);
+                cell.textContent = step.value;
+                cell.classList.add('dp-cell-current');
+            } else if (step.type === 'trace') {
+                document.getElementById(`dp-cell-${step.i}-${step.j}`).classList.add('dp-cell-current');
+            } else if (step.type === 'trace-match') {
+                document.getElementById(`dp-cell-${step.i}-${step.j}`).classList.add('dp-cell-path');
+            } else if (step.type === 'trace-move') {
+                document.getElementById(`dp-cell-${step.i}-${step.j}`).classList.add('dp-cell-path');
+            } else if (step.type === 'done') {
+                const len = lcsInput1.value.length;
+                const len2 = lcsInput2.value.length;
+                document.getElementById(`dp-cell-${len}-${len2}`).classList.add('dp-cell-final');
+                lcsResultString.textContent = step.lcs || '""';
+                lcsMaxLength.textContent = step.lcs.length;
+            }
+
+            lcsAnimationTimeout = setTimeout(() => animateLcs(steps, stepIndex + 1), 400);
+        }
+
+    </script>
+</body>
+</html>

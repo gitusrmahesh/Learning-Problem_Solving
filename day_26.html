@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-ag-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 26: String Hashing Concepts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate & Sky -->
+    <!-- Application Structure Plan: A single-page, vertically scrolling educational guide. The structure is designed to lead the learner from theory to practice. It starts with a high-level introduction to string hashing, moves to a practical implementation (C# Hashmaps) with an interactive simulator, demonstrates a key application (Frequency Counting) with a dynamic chart, and concludes with practice problems. This linear, "learn-by-doing" approach is ideal for a tutorial, making abstract concepts tangible and reinforcing knowledge through application. Navigation is provided for quick access to each learning module. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Hashmaps for strings -> Goal: Inform/Organize -> Viz/Method: Interactive code simulation (HTML/JS) -> Interaction: User adds key-value pairs to a visually represented dictionary -> Justification: Actively demonstrates how a hashmap works instead of just showing static code.
+        2. Report Info: Frequency counting -> Goal: Compare/Inform -> Viz/Method: Bar Chart -> Interaction: User inputs text, and the chart dynamically updates to show character frequencies -> Justification: A bar chart is the most effective way to visualize and compare frequencies, and making it interactive solidifies the concept. Library: Chart.js.
+        3. Report Info: Practice Problems -> Goal: Organize/Apply -> Viz/Method: Accordion-style content blocks -> Interaction: User clicks to reveal solutions -> Justification: Hides answers to encourage attempts, a standard and effective pattern for educational content. Library: Vanilla JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        pre {
+            background-color: #1e293b; /* slate-800 */
+            color: #e2e8f0; /* slate-200 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .solution-content {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-slate-900">Day 26: String Hashing</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#intro" class="text-slate-600 hover:text-sky-600 px-3 py-2 rounded-md text-sm font-medium">Introduction</a>
+                        <a href="#hashmaps" class="text-slate-600 hover:text-sky-600 px-3 py-2 rounded-md text-sm font-medium">C# Hashmaps</a>
+                        <a href="#frequency" class="text-slate-600 hover:text-sky-600 px-3 py-2 rounded-md text-sm font-medium">Frequency Counting</a>
+                        <a href="#practice" class="text-slate-600 hover:text-sky-600 px-3 py-2 rounded-md text-sm font-medium">Practice</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <section id="intro" class="mb-16">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">An Introduction to String Hashing</h2>
+            <div class="space-y-4 text-slate-700 leading-relaxed">
+                <p>String hashing is a powerful technique used to convert a string of any length into a fixed-size integer, known as a "hash" or "hash code." This hash acts as a unique fingerprint for the string, enabling incredibly fast comparisons and lookups. Instead of comparing two long strings character by character (an O(n) operation, where n is the length of the string), we can compare their integer hashes (an O(1) operation). This is the core principle behind data structures like hash maps, and it has wide-ranging applications in areas like database indexing, caching, and detecting duplicate data.</p>
+                <div class="bg-sky-50 border-l-4 border-sky-500 text-sky-800 p-4 rounded-r-lg">
+                    <p><strong class="font-semibold">Core Idea:</strong> The goal of a good hash function is to distribute a set of strings as evenly as possible into a fixed number of "buckets," minimizing the chances of two different strings producing the same hash. When two different strings do produce the same hash, it's called a <strong class="font-semibold">collision</strong>. Modern hashing algorithms are designed to make collisions extremely rare.</p>
+                </div>
+                <h3 class="text-xl font-semibold text-slate-800 pt-4">A Simple Hashing Example (Conceptual)</h3>
+                <p>To understand the basic concept, let's imagine a very simple (and not very good) hash function that just sums the ASCII values of the characters in a string. Let's see how it would hash the word "cat":</p>
+                <ul class="list-disc list-inside bg-slate-100 p-4 rounded-md">
+                    <li>'c' has an ASCII value of 99</li>
+                    <li>'a' has an ASCII value of 97</li>
+                    <li>'t' has an ASCII value of 116</li>
+                </ul>
+                <p><strong>Hash("cat")</strong> = 99 + 97 + 116 = <strong>312</strong>.</p>
+                <p>Now, if we wanted to find "cat" in a data structure, we could instantly jump to bucket #312 instead of searching linearly. However, this simple function has a major flaw: "act" would also hash to 312, causing a collision. Real-world algorithms, like the <strong class="font-semibold">polynomial rolling hash</strong>, are far more sophisticated to avoid such simple collisions.</p>
+            </div>
+        </section>
+
+        <section id="hashmaps" class="mb-16">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">Hashmaps for Strings in C#</h2>
+            <p class="text-slate-700 leading-relaxed mb-8">In C#, the most common implementation of a hash map is the `Dictionary<TKey, TValue>` class. When you use a `string` as a key, C# internally calls the string's `GetHashCode()` method to compute its hash. This hash code is then used to determine which "bucket" to store the associated value in. This process makes adding, removing, and retrieving items incredibly efficient. On average, these operations take constant time, O(1). In the rare case of many hash collisions, the performance can degrade to linear time, O(n), but this is uncommon with well-designed hash functions.</p>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">Interactive Dictionary</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="keyInput" class="block text-sm font-medium text-slate-700">Key (string)</label>
+                            <input type="text" id="keyInput" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500" placeholder="e.g., apple">
+                        </div>
+                        <div>
+                            <label for="valueInput" class="block text-sm font-medium text-slate-700">Value (string)</label>
+                            <input type="text" id="valueInput" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500" placeholder="e.g., A fruit">
+                        </div>
+                        <div class="flex space-x-2">
+                             <button id="addButton" class="w-full bg-sky-600 text-white font-bold py-2 px-4 rounded-md hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition duration-150 ease-in-out">Add / Update</button>
+                             <button id="clearButton" class="w-full bg-slate-500 text-white font-bold py-2 px-4 rounded-md hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 transition duration-150 ease-in-out">Clear</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md min-h-[260px]">
+                    <h3 class="text-xl font-semibold mb-4">Dictionary Contents</h3>
+                    <div id="dictionaryOutput" class="space-y-2 font-mono text-sm text-slate-600">
+                        <p class="text-slate-400 italic">Dictionary is empty.</p>
+                    </div>
+                </div>
+            </div>
+             <div class="mt-8 space-y-6">
+                <h4 class="text-lg font-semibold mb-2">Example 1: Basic Dictionary Operations</h4>
+                <pre><code class="language-csharp">using System;
+using System.Collections.Generic;
+
+public class Program
+{
+    public static void Main()
+    {
+        // 1. Initialize a Dictionary with string keys
+        Dictionary&lt;string, int&gt; fruitPrices = new Dictionary&lt;string, int&gt;();
+
+        // 2. Add elements
+        fruitPrices["apple"] = 100; // Price in cents
+        fruitPrices["orange"] = 80;
+        fruitPrices["banana"] = 50;
+
+        // 3. Access an element
+        Console.WriteLine($"The price of an apple is {fruitPrices["apple"]} cents.");
+
+        // 4. Check if a key exists
+        if (fruitPrices.ContainsKey("banana"))
+        {
+            Console.WriteLine("We have pricing for bananas.");
+        }
+    }
+}</code></pre>
+                <h4 class="text-lg font-semibold mb-2">Example 2: More Dictionary Operations</h4>
+                <pre><code class="language-csharp">public class MoreDictionaryOps
+{
+    public static void Run()
+    {
+        Dictionary&lt;string, string&gt; userRoles = new Dictionary&lt;string, string&gt;
+        {
+            { "alice", "Admin" },
+            { "bob", "Editor" },
+            { "charlie", "Viewer" }
+        };
+
+        // 1. Safely get a value with TryGetValue
+        if (userRoles.TryGetValue("bob", out string role))
+        {
+            Console.WriteLine($"Bob's role is: {role}");
+        }
+
+        // 2. Remove an element
+        userRoles.Remove("charlie");
+
+        // 3. Iterate over the dictionary
+        Console.WriteLine("\nRemaining Users:");
+        foreach (KeyValuePair&lt;string, string&gt; entry in userRoles)
+        {
+            Console.WriteLine($"User: {entry.Key}, Role: {entry.Value}");
+        }
+    }
+}
+</code></pre>
+            </div>
+        </section>
+
+        <section id="frequency" class="mb-16">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">Application: Frequency Counting</h2>
+            <p class="text-slate-700 leading-relaxed mb-8">One of the most common and useful applications of hashmaps is frequency counting: tallying the occurrences of items in a collection. For strings, this often means counting how many times each character appears. A hashmap is perfect for this task due to its O(1) average time complexity for lookups and insertions. The algorithm is straightforward: iterate through the string's characters. For each character, use it as a key in the map. If the character isn't in the map yet, add it with a count of 1. If it's already there, simply retrieve the current count, increment it, and update the value. This demonstrates a classic space-time tradeoff: we use extra memory (for the hashmap) to achieve a significant gain in processing speed. Try it below by typing any text to see a live chart of its character frequencies.</p>
+
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="mb-4">
+                    <label for="freqInput" class="block text-sm font-medium text-slate-700">Enter a string:</label>
+                    <input type="text" id="freqInput" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500" placeholder="The quick brown fox jumps over the lazy dog">
+                </div>
+                <div class="chart-container">
+                    <canvas id="freqChart"></canvas>
+                </div>
+            </div>
+            <div class="mt-8">
+                 <h4 class="text-lg font-semibold mb-2">Example: Find the Most Frequent Character</h4>
+                 <pre><code class="language-csharp">public class FrequencyExample {
+    public char FindMostFrequentChar(string input) {
+        if (string.IsNullOrEmpty(input)) {
+            throw new ArgumentException("Input string cannot be null or empty.");
+        }
+
+        Dictionary&lt;char, int&gt; counts = new Dictionary&lt;char, int&gt;();
+        foreach (char c in input) {
+            if (counts.ContainsKey(c)) {
+                counts[c]++;
+            } else {
+                counts[c] = 1;
+            }
+        }
+
+        char mostFrequent = ' ';
+        int maxCount = 0;
+        foreach (KeyValuePair&lt;char, int&gt; pair in counts) {
+            if (pair.Value > maxCount) {
+                maxCount = pair.Value;
+                mostFrequent = pair.Key;
+            }
+        }
+        return mostFrequent;
+    }
+}
+// Logic: First, we build a frequency map of all characters, just like in the basic frequency counting pattern.
+// Then, we iterate through the key-value pairs in our completed map to find the entry with the highest value (count).
+</code></pre>
+            </div>
+        </section>
+
+        <section id="practice">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">Practice Problems</h2>
+            <p class="text-slate-700 leading-relaxed mb-8">The best way to solidify your understanding is to solve problems. Here are some intermediate-level challenges that can be efficiently solved using hashmaps. Try to solve them on your own before revealing the C# solution.</p>
+
+            <div class="space-y-4">
+                <div class="bg-white rounded-lg shadow-md">
+                    <button class="solution-toggle w-full text-left p-6 flex justify-between items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg">
+                        <span class="text-xl font-semibold">1. Valid Anagram</span>
+                        <span class="solution-arrow text-2xl font-light transform transition-transform duration-300">-</span>
+                    </button>
+                    <div class="solution-content px-6 pb-6">
+                        <p class="text-slate-600 mb-4">Given two strings `s` and `t`, return `true` if `t` is an anagram of `s`, and `false` otherwise. An anagram is a word or phrase formed by rearranging the letters of a different word, using all original letters exactly once.</p>
+                        <h4 class="text-lg font-semibold mb-2 mt-4">C# Solution:</h4>
+                        <pre><code class="language-csharp">public class Solution {
+    public bool IsAnagram(string s, string t) {
+        if (s.Length != t.Length) return false;
+
+        Dictionary&lt;char, int&gt; sCounts = new Dictionary&lt;char, int&gt;();
+        
+        foreach (char c in s) {
+            if (sCounts.ContainsKey(c)) {
+                sCounts[c]++;
+            } else {
+                sCounts[c] = 1;
+            }
+        }
+        
+        foreach (char c in t) {
+            if (!sCounts.ContainsKey(c) || sCounts[c] == 0) {
+                return false;
+            }
+            sCounts[c]--;
+        }
+        
+        return true;
+    }
+}
+// Logic: Anagrams must have the same characters with the same frequencies.
+// 1. First, a quick check: if the lengths are different, they can't be anagrams.
+// 2. Create a frequency map for the first string 's'.
+// 3. Iterate through the second string 't'. For each character in 't', decrement its count in the map.
+// 4. If a character from 't' is not found in the map, or its count is already zero, they are not anagrams.
+// 5. If the loop completes, it means every character in 't' was accounted for in 's', so they are anagrams.
+</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md">
+                    <button class="solution-toggle w-full text-left p-6 flex justify-between items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg">
+                        <span class="text-xl font-semibold">2. Group Anagrams</span>
+                        <span class="solution-arrow text-2xl font-light transform transition-transform duration-300">-</span>
+                    </button>
+                    <div class="solution-content px-6 pb-6">
+                        <p class="text-slate-600 mb-4">Given an array of strings `strs`, group the anagrams together. You can return the answer in any order.</p>
+                        <h4 class="text-lg font-semibold mb-2 mt-4">C# Solution:</h4>
+                        <pre><code class="language-csharp">public class Solution {
+    public IList&lt;IList&lt;string&gt;&gt; GroupAnagrams(string[] strs) {
+        if (strs == null || strs.Length == 0) return new List&lt;IList&lt;string&gt;&gt;();
+
+        Dictionary&lt;string, List&lt;string&gt;&gt; map = new Dictionary&lt;string, List&lt;string&gt;&gt;();
+
+        foreach (string s in strs) {
+            char[] charArray = s.ToCharArray();
+            Array.Sort(charArray);
+            string key = new string(charArray);
+            
+            if (!map.ContainsKey(key)) {
+                map[key] = new List&lt;string&gt;();
+            }
+            map[key].Add(s);
+        }
+
+        return new List&lt;IList&lt;string&gt;&gt;(map.Values);
+    }
+}
+// Logic: The key insight is that all anagrams become the same string when their characters are sorted alphabetically.
+// This sorted string can serve as a "canonical representation" or a unique key for any group of anagrams.
+// 1. We create a dictionary where the key is the sorted string, and the value is a list of original strings.
+// 2. We loop through each input string.
+// 3. For each string, we sort its characters to create the key.
+// 4. We use this key to add the original string to the correct list in our dictionary.
+// 5. Finally, the values of the dictionary are the grouped anagrams.
+</code></pre>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md">
+                    <button class="solution-toggle w-full text-left p-6 flex justify-between items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg">
+                        <span class="text-xl font-semibold">3. First Unique Character in a String</span>
+                         <span class="solution-arrow text-2xl font-light transform transition-transform duration-300">-</span>
+                    </button>
+                    <div class="solution-content px-6 pb-6">
+                        <p class="text-slate-600 mb-4">Given a string `s`, find the first non-repeating character in it and return its index. If it does not exist, return -1.</p>
+                        <h4 class="text-lg font-semibold mb-2 mt-4">C# Solution:</h4>
+                        <pre><code class="language-csharp">public class Solution {
+    public int FirstUniqChar(string s) {
+        Dictionary&lt;char, int&gt; counts = new Dictionary&lt;char, int&gt;();
+
+        // First pass: build frequency map
+        foreach (char c in s) {
+            if (counts.ContainsKey(c)) {
+                counts[c]++;
+            } else {
+                counts[c] = 1;
+            }
+        }
+
+        // Second pass: find the first character with a count of 1
+        for (int i = 0; i < s.Length; i++) {
+            if (counts[s[i]] == 1) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+}
+// Logic: This problem requires preserving the original order to find the *first* unique character.
+// A single hash map doesn't store order, so a two-pass approach is effective.
+// 1. The first pass populates a hashmap with character frequencies. This tells us *which* characters are unique, but not their original positions.
+// 2. The second pass iterates through the *original string* from the beginning.
+// 3. For each character, we look up its count in the map. The first time we find a character with a count of 1, we return its current index.
+// 4. If we finish the loop without finding a unique character, we return -1.</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md">
+                    <button class="solution-toggle w-full text-left p-6 flex justify-between items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg">
+                        <span class="text-xl font-semibold">4. Ransom Note</span>
+                         <span class="solution-arrow text-2xl font-light transform transition-transform duration-300">-</span>
+                    </button>
+                    <div class="solution-content px-6 pb-6">
+                        <p class="text-slate-600 mb-4">Given two strings `ransomNote` and `magazine`, return `true` if `ransomNote` can be constructed by using the letters from `magazine` and `false` otherwise. Each letter in `magazine` can only be used once in `ransomNote`.</p>
+                        <h4 class="text-lg font-semibold mb-2 mt-4">C# Solution:</h4>
+                        <pre><code class="language-csharp">public class Solution {
+    public bool CanConstruct(string ransomNote, string magazine) {
+        Dictionary&lt;char, int&gt; magCounts = new Dictionary&lt;char, int&gt;();
+
+        // Count all characters in the magazine
+        foreach (char c in magazine) {
+            if (magCounts.ContainsKey(c)) {
+                magCounts[c]++;
+            } else {
+                magCounts[c] = 1;
+            }
+        }
+
+        // Check if there are enough characters for the ransom note
+        foreach (char c in ransomNote) {
+            if (!magCounts.ContainsKey(c) || magCounts[c] == 0) {
+                return false; // Not enough of this character
+            }
+            magCounts[c]--; // "Use" one character
+        }
+
+        return true;
+    }
+}
+// Logic: We need to ensure that every character required for the ransom note is available in the magazine in sufficient quantity.
+// 1. We first create a frequency map of all available characters from the 'magazine'. This is our inventory.
+// 2. Then, we iterate through the 'ransomNote'. For each character needed, we check our inventory.
+// 3. If the character is not in our map, or its count in the map is zero, we don't have it, so we immediately return false.
+// 4. If we do have the character, we decrement its count in the map to signify that we've "used" it.
+// 5. If we successfully complete the loop over the ransom note, it means all characters were available, and we return true.</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Interactive Dictionary
+            const keyInput = document.getElementById('keyInput');
+            const valueInput = document.getElementById('valueInput');
+            const addButton = document.getElementById('addButton');
+            const clearButton = document.getElementById('clearButton');
+            const dictionaryOutput = document.getElementById('dictionaryOutput');
+            let dictionary = {};
+
+            function updateDictionaryView() {
+                dictionaryOutput.innerHTML = '';
+                if (Object.keys(dictionary).length === 0) {
+                    dictionaryOutput.innerHTML = '<p class="text-slate-400 italic">Dictionary is empty.</p>';
+                    return;
+                }
+                for (const key in dictionary) {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center bg-slate-50 p-2 rounded';
+                    div.innerHTML = `<span>"<strong class="text-sky-700">${key}</strong>": "${dictionary[key]}"</span><button class="remove-btn text-red-500 hover:text-red-700 font-bold text-xl" data-key="${key}">&times;</button>`;
+                    dictionaryOutput.appendChild(div);
+                }
+            }
+
+            addButton.addEventListener('click', () => {
+                const key = keyInput.value.trim();
+                const value = valueInput.value.trim();
+                if (key && value) {
+                    dictionary[key] = value;
+                    keyInput.value = '';
+                    valueInput.value = '';
+                    keyInput.focus();
+                    updateDictionaryView();
+                }
+            });
+
+            clearButton.addEventListener('click', () => {
+                 dictionary = {};
+                 updateDictionaryView();
+            });
+
+            dictionaryOutput.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-btn')) {
+                    const keyToRemove = e.target.getAttribute('data-key');
+                    delete dictionary[keyToRemove];
+                    updateDictionaryView();
+                }
+            });
+
+            // Frequency Chart
+            const freqInput = document.getElementById('freqInput');
+            const ctx = document.getElementById('freqChart').getContext('2d');
+            let freqChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Character Frequency',
+                        data: [],
+                        backgroundColor: 'rgba(56, 189, 248, 0.6)', // sky-400
+                        borderColor: 'rgba(14, 165, 233, 1)', // sky-500
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#475569', // slate-600
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#475569'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            freqInput.addEventListener('input', (e) => {
+                const text = e.target.value;
+                const counts = {};
+                for (const char of text) {
+                    counts[char] = (counts[char] || 0) + 1;
+                }
+
+                const sortedChars = Object.keys(counts).sort();
+                const labels = sortedChars;
+                const data = sortedChars.map(char => counts[char]);
+
+                freqChart.data.labels = labels;
+                freqChart.data.datasets[0].data = data;
+                freqChart.update();
+            });
+
+            // Practice Problem Toggles
+            const toggles = document.querySelectorAll('.solution-toggle');
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const arrow = toggle.querySelector('.solution-arrow');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        arrow.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.display = 'block';
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        arrow.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 28: Contest Simulation (Enhanced)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Serene Sage -->
+    <!-- Application Structure Plan: The application is a "Deep Dive Workbench". I've enhanced the previous tab-based navigation. The main content area for each problem is now a two-column layout. The left column presents the problem, examples, and detailed concepts. The right column is dedicated to the solution, a new step-by-step "Visual Walkthrough" with a concrete example, and key takeaways. This structure separates the "what" and "why" (left column) from the "how" (right column), facilitating a more structured learning process. It allows users to understand the problem fully before diving into the implementation details and seeing the algorithm in action. -->
+    <!-- Visualization & Content Choices: Report Info: 5 coding problems. Goal: Deepen understanding via detailed examples and interactive visualization. Viz/Presentation: I've introduced a "Visual Walkthrough" component built with dynamic HTML and CSS. This isn't a chart, but a custom visualizer that shows arrays, hashmaps, or bit patterns changing over time. Interaction: Users click "Next Step" to progress the algorithm's visualization. Justification: This active participation is far more effective for learning algorithms than passively reading code. It makes abstract concepts like bitmasking or prefix sum lookups tangible. Library/Method: Vanilla JS for DOM manipulation and state management. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
+        body {
+            background-color: #F8F9FA;
+            font-family: 'Inter', sans-serif;
+            color: #343a40;
+        }
+        .nav-button.active {
+            background-color: #52796F;
+            color: #FFFFFF;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .code-block {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        .code-block .keyword { color: #c678dd; }
+        .code-block .type { color: #61afef; }
+        .code-block .string { color: #98c379; }
+        .code-block .comment { color: #5c6370; }
+        .code-block .number { color: #d19a66; }
+        .code-block .method { color: #61afef; }
+        .progress-bar-fill {
+            transition: width 0.5s ease-in-out;
+        }
+        .visual-cell {
+            transition: all 0.3s ease-in-out;
+            min-width: 40px;
+        }
+        .highlight-read {
+             background-color: #a7c957 !important;
+             color: #222;
+             transform: scale(1.1);
+             box-shadow: 0 0 15px rgba(167, 201, 87, 0.7);
+        }
+        .highlight-write {
+             background-color: #61a5c2 !important;
+             color: #fff;
+             transform: scale(1.1);
+             box-shadow: 0 0 15px rgba(97, 165, 194, 0.7);
+        }
+        .highlight-window {
+            border-bottom: 3px solid #f28482;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-[#2C534C]">30-Day Intermediate Problem Solving</h1>
+            <p class="text-xl text-[#52796F] mt-2">Day 28: Contest Simulation (Enhanced)</p>
+        </header>
+
+        <main>
+            <div class="bg-white rounded-xl shadow-md p-6 md:p-8 mb-8 border border-gray-200">
+                <h2 class="text-2xl font-semibold text-[#2C534C] mb-3">Today's Enhanced Objective</h2>
+                <p class="text-gray-600">This enhanced session provides a deeper dive into each problem. Beyond just the solution, you'll find detailed examples and interactive visual walkthroughs that animate the algorithms step-by-step. The goal is to build a strong mental model of how the code interacts with the data. Select a problem to begin your deep dive.</p>
+            </div>
+
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-2">
+                     <span class="text-sm font-medium text-gray-500">Progress</span>
+                     <span id="progress-text" class="text-sm font-medium text-gray-500">0 / 5 Completed</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-gradient-to-r from-[#52796F] to-[#84A98C] h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+            </nav>
+
+            <div id="problem-container" class="bg-white rounded-xl shadow-lg p-6 md:p-10 border border-gray-200 min-h-[600px]">
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const problems = [
+            {
+                id: 0,
+                title: "Single Number II",
+                tags: ["Arrays", "Bit Manipulation"],
+                statement: "You are given an integer array `nums` where every element appears three times except for one, which appears exactly once. Your task is to find and return that single, unique element.",
+                example: {
+                    input: "nums = [2, 2, 3, 2]",
+                    output: "3",
+                    explanation: "The number 2 appears three times, while 3 appears only once."
+                },
+                concepts: [
+                    {
+                        title: "Bitwise Logic",
+                        description: "The key insight is to analyze the numbers at the bit level. If we consider a single bit position (e.g., the rightmost bit) across all numbers, the sum of these bits must be a multiple of 3 if the unique number has a 0 at that position. If the unique number has a 1 at that position, the sum of bits will be `3k + 1`. By taking the sum modulo 3, we can determine the corresponding bit of the unique number."
+                    },
+                    {
+                        title: "Reconstructing the Number",
+                        description: "We can apply this logic to all 32 bit positions of an integer. By iterating from bit 0 to 31, we can determine each bit of the unique number one by one. Once we have all the bits, we can construct the final result by setting the bits in an integer initialized to 0."
+                    }
+                ],
+                solution: `
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="type">Solution</span> {
+    <span class="keyword">public</span> <span class="type">int</span> <span class="method">SingleNumber</span>(<span class="type">int</span>[] nums) {
+        <span class="type">int</span> result = <span class="number">0</span>;
+        <span class="comment">// Iterate through each of the 32 bit positions</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i < <span class="number">32</span>; i++) {
+            <span class="type">int</span> sumOfBits = <span class="number">0</span>;
+            <span class="type">int</span> mask = <span class="number">1</span> << i;
+            <span class="keyword">foreach</span> (<span class="type">int</span> num <span class="keyword">in</span> nums) {
+                <span class="keyword">if</span> ((num & mask) != <span class="number">0</span>) {
+                    sumOfBits++;
+                }
+            }
+            <span class="comment">// If sum % 3 is not 0, this bit is part of the unique number</span>
+            <span class="keyword">if</span> (sumOfBits % <span class="number">3</span> != <span class="number">0</span>) {
+                result |= mask;
+            }
+        }
+        <span class="keyword">return</span> result;
+    }
+}
+                `,
+                complexity: {
+                    time: "O(n), specifically O(32 * n), as we iterate through all n numbers for each of the 32 bit positions. Since 32 is a constant, it simplifies to O(n).",
+                    space: "O(1), as we only use a constant amount of extra space for variables like `result`, `sumOfBits`, and `mask`."
+                },
+                walkthrough: {
+                    example: "[2, 2, 3, 2]",
+                    steps: [
+                        { "description": "Initialize `result = 0`. We will determine the bits of the unique number and add them to `result`." },
+                        { "description": "<strong>Bit Position 0 (LSB):</strong><br>2 (0010), 2 (0010), 3 (0011), 2 (0010).<br>Bits are: 0, 0, 1, 0. Sum = 1.<br>1 % 3 = 1. So, the 0th bit of the result is 1. `result` becomes `0 | (1 << 0) = 1`." },
+                        { "description": "<strong>Bit Position 1:</strong><br>2 (0010), 2 (0010), 3 (0011), 2 (0010).<br>Bits are: 1, 1, 1, 1. Sum = 4.<br>4 % 3 = 1. So, the 1st bit of the result is 1. `result` becomes `1 | (1 << 1) = 3`." },
+                        { "description": "<strong>Bit Position 2:</strong><br>Bits are: 0, 0, 0, 0. Sum = 0.<br>0 % 3 = 0. The 2nd bit of the result is 0." },
+                        { "description": "All higher bits also have sums of 0. The final result is 3." },
+                    ]
+                },
+                takeaway: "For problems involving element frequencies (e.g., 'appears k times'), bit manipulation can offer an elegant O(1) space solution by counting bits across all numbers."
+            },
+            {
+                id: 1,
+                title: "Max Product of Word Lengths",
+                tags: ["Strings", "Bit Manipulation"],
+                statement: "Given a string array `words`, find the maximum value of `length(word[i]) * length(word[j])` where the two words `word[i]` and `word[j]` do not share any common letters.",
+                example: {
+                    input: `words = ["abcw", "baz", "foo", "bar", "xtfn", "abcdef"]`,
+                    output: "16",
+                    explanation: `The pair "abcw" and "xtfn" have no common letters, and their lengths multiply to 4 * 4 = 16.`
+                },
+                concepts: [
+                    {
+                        title: "Bitmask for Character Sets",
+                        description: "To quickly check for common letters, we can represent the set of characters in each word with a bitmask. A 32-bit integer can represent all 26 lowercase English letters. The 0th bit can represent 'a', the 1st bit 'b', and so on. If a letter is present in the word, we set its corresponding bit to 1."
+                    },
+                    {
+                        title: "Efficient Set Comparison",
+                        description: "With bitmasks, checking for common letters becomes a single, fast operation. If we have two masks, `mask1` and `mask2`, we can perform a bitwise AND (`&`). If the result is 0, it means there are no positions where both masks have a 1, which implies no common characters. If `(mask1 & mask2) == 0`, the words are disjoint."
+                    }
+                ],
+                solution: `
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="type">Solution</span> {
+    <span class="keyword">public</span> <span class="type">int</span> <span class="method">MaxProduct</span>(<span class="type">string</span>[] words) {
+        <span class="type">int</span> n = words.Length;
+        <span class="type">int</span>[] masks = <span class="keyword">new</span> <span class="type">int</span>[n];
+        
+        <span class="comment">// Create a bitmask for each word</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i < n; i++) {
+            <span class="keyword">foreach</span> (<span class="type">char</span> c <span class="keyword">in</span> words[i]) {
+                masks[i] |= (<span class="number">1</span> << (c - <span class="string">'a'</span>));
+            }
+        }
+        
+        <span class="type">int</span> maxProd = <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i < n; i++) {
+            <span class="keyword">for</span> (<span class="type">int</span> j = i + <span class="number">1</span>; j < n; j++) {
+                <span class="comment">// If masks have no common set bits, the words are disjoint</span>
+                <span class="keyword">if</span> ((masks[i] & masks[j]) == <span class="number">0</span>) {
+                    maxProd = Math.<span class="method">Max</span>(maxProd, words[i].Length * words[j].Length);
+                }
+            }
+        }
+        <span class="keyword">return</span> maxProd;
+    }
+}
+                `,
+                complexity: {
+                    time: "O(L + n^2), where L is the total number of characters across all words (to build the masks) and n is the number of words (for the nested loop comparisons).",
+                    space: "O(n) to store the array of bitmasks."
+                },
+                walkthrough: {
+                    example: `["a", "ab", "abc"]`,
+                    steps: [
+                        { "description": "<strong>Step 1: Build Masks</strong><br>word 'a': mask = 1 (binary 001)<br>word 'ab': mask = 3 (binary 011)<br>word 'abc': mask = 7 (binary 111)" },
+                        { "description": "<strong>Step 2: Compare Pairs</strong><br>Initialize `maxProd = 0`." },
+                        { "description": "Compare 'a' (mask 1) and 'ab' (mask 3):<br>`1 & 3 = 1`. They share letters. Do nothing." },
+                        { "description": "Compare 'a' (mask 1) and 'abc' (mask 7):<br>`1 & 7 = 1`. They share letters. Do nothing." },
+                        { "description": "Compare 'ab' (mask 3) and 'abc' (mask 7):<br>`3 & 7 = 3`. They share letters. Do nothing." },
+                        { "description": "Loop finishes. The final result is 0 for this example. If we had `['a', 'b', 'c']`, the result would be `1*1=1`." }
+                    ]
+                },
+                takeaway: "Bitmasks are a highly efficient way to represent and compare sets of elements from a small, fixed universe (like lowercase letters)."
+            },
+            {
+                id: 2,
+                title: "Permutation in String",
+                tags: ["Strings", "Arrays", "Sliding Window"],
+                statement: "Given two strings `s1` and `s2`, return `true` if `s2` contains a permutation of `s1`, or `false` otherwise. This means you need to find if any arrangement of `s1` exists as a contiguous substring in `s2`.",
+                example: {
+                    input: `s1 = "ab", s2 = "eidbaooo"`,
+                    output: "true",
+                    explanation: `s2 contains "ba", which is a permutation of "ab".`
+                },
+                concepts: [
+                    {
+                        title: "Character Frequency Map",
+                        description: "A key property of permutations is that they have identical character frequencies. We can use a simple array of size 26 as a frequency map for the 26 lowercase letters to count characters in `s1`."
+                    },
+                    {
+                        title: "Sliding Window Technique",
+                        description: "Instead of checking every single substring of `s2`, we can use a 'sliding window' of the same size as `s1`. We maintain a frequency map for the characters inside our current window in `s2`. We slide this window one character at a time across `s2`, efficiently updating the window's frequency map and comparing it to `s1`'s map at each step."
+                    }
+                ],
+                solution: `
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="type">Solution</span> {
+    <span class="keyword">public</span> <span class="type">bool</span> <span class="method">CheckInclusion</span>(<span class="type">string</span> s1, <span class="type">string</span> s2) {
+        <span class="keyword">if</span> (s1.Length > s2.Length) <span class="keyword">return</span> <span class="keyword">false</span>;
+        
+        <span class="type">int</span>[] s1Map = <span class="keyword">new</span> <span class="type">int</span>[<span class="number">26</span>];
+        <span class="type">int</span>[] s2Map = <span class="keyword">new</span> <span class="type">int</span>[<span class="number">26</span>];
+        
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i < s1.Length; i++) {
+            s1Map[s1[i] - <span class="string">'a'</span>]++;
+            s2Map[s2[i] - <span class="string">'a'</span>]++;
+        }
+        
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i < s2.Length - s1.Length; i++) {
+            <span class="keyword">if</span> (<span class="method">Matches</span>(s1Map, s2Map)) <span class="keyword">return</span> <span class="keyword">true</span>;
+            
+            <span class="comment">// Slide window: Add next char, remove last char</span>
+            s2Map[s2[i + s1.Length] - <span class="string">'a'</span>]++;
+            s2Map[s2[i] - <span class="string">'a'</span>]--;
+        }
+        <span class="keyword">return</span> <span class="method">Matches</span>(s1Map, s2Map);
+    }
+    
+    <span class="keyword">private</span> <span class="type">bool</span> <span class="method">Matches</span>(<span class="type">int</span>[] map1, <span class="type">int</span>[] map2) {
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i < <span class="number">26</span>; i++) {
+            <span class="keyword">if</span> (map1[i] != map2[i]) <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+    }
+}
+                `,
+                complexity: {
+                    time: "O(len(s1) + len(s2)). We iterate through s1 once to build the map, and then we iterate through s2 once with the sliding window.",
+                    space: "O(1), because the frequency maps have a constant size of 26, independent of the input string lengths."
+                },
+                walkthrough: {
+                    example: `s1="ab", s2="eidbaooo"`,
+                    steps: [
+                        { "description": "s1 map: {a:1, b:1}. Window size is 2." },
+                        { "description": "<strong>Window 1: 'ei'</strong>. s2 map: {e:1, i:1}. Maps don't match." },
+                        { "description": "<strong>Window 2: 'id'</strong>. Slide right: add 'd', remove 'e'. s2 map: {i:1, d:1}. Maps don't match." },
+                        { "description": "<strong>Window 3: 'db'</strong>. Slide right: add 'b', remove 'i'. s2 map: {d:1, b:1}. Maps don't match." },
+                        { "description": "<strong>Window 4: 'ba'</strong>. Slide right: add 'a', remove 'd'. s2 map: {b:1, a:1}. Maps match! Return `true`." }
+                    ]
+                },
+                takeaway: "The sliding window technique is ideal for substring problems where you need to analyze properties of a fixed-size contiguous block of elements."
+            },
+             {
+                id: 3,
+                title: "Binary Subarrays With Sum",
+                tags: ["Arrays", "Prefix Sum", "HashMap"],
+                statement: "Given a binary array `nums` (containing only 0s and 1s) and an integer `goal`, return the number of non-empty subarrays with a sum equal to `goal`.",
+                example: {
+                    input: `nums = [1,0,1,0,1], goal = 2`,
+                    output: "4",
+                    explanation: `The subarrays are [1,0,1], [1,0,1,0], [0,1,0,1], and [1,0,1].`
+                },
+                concepts: [
+                    {
+                        title: "Prefix Sum",
+                        description: "The core idea is to efficiently calculate the sum of any subarray. A prefix sum is the cumulative sum from the start of the array. If we know the prefix sum up to index `j` and the prefix sum up to index `i` (where `j > i`), the sum of the subarray between `i` and `j` is simply `prefixSum[j] - prefixSum[i]`."
+                    },
+                    {
+                        title: "HashMap for Efficient Lookups",
+                        description: "As we iterate through the array calculating the current prefix sum (`currentSum`), we need to find how many previous subarrays had a sum that, when subtracted from `currentSum`, equals our `goal`. In other words, for a `currentSum` at index `j`, we are looking for the number of indices `i < j` where `currentSum - prefixSum[i] = goal`. Rearranging, we need to find how many times we've seen a prefix sum equal to `currentSum - goal`. A HashMap is perfect for storing the frequencies of prefix sums we've encountered so far."
+                    }
+                ],
+                solution: `
+<span class="keyword">using</span> System.Collections.Generic;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="type">Solution</span> {
+    <span class="keyword">public</span> <span class="type">int</span> <span class="method">NumSubarraysWithSum</span>(<span class="type">int</span>[] nums, <span class="type">int</span> goal) {
+        <span class="type">int</span> count = <span class="number">0</span>;
+        <span class="type">int</span> currentSum = <span class="number">0</span>;
+        <span class="comment">// Dictionary to store frequency of prefix sums</span>
+        Dictionary<<span class="type">int</span>, <span class="type">int</span>> prefixSumCounts = <span class="keyword">new</span> Dictionary<<span class="type">int</span>, <span class="type">int</span>>();
+        prefixSumCounts[<span class="number">0</span>] = <span class="number">1</span>; <span class="comment">// Base case for subarrays starting at index 0</span>
+
+        <span class="keyword">foreach</span> (<span class="type">int</span> num <span class="keyword">in</span> nums) {
+            currentSum += num;
+            <span class="type">int</span> needed = currentSum - goal;
+            
+            <span class="keyword">if</span> (prefixSumCounts.<span class="method">ContainsKey</span>(needed)) {
+                count += prefixSumCounts[needed];
+            }
+            
+            <span class="keyword">if</span> (!prefixSumCounts.<span class="method">ContainsKey</span>(currentSum)) {
+                prefixSumCounts[currentSum] = <span class="number">0</span>;
+            }
+            prefixSumCounts[currentSum]++;
+        }
+        <span class="keyword">return</span> count;
+    }
+}
+                `,
+                complexity: {
+                    time: "O(n), as we iterate through the array only once.",
+                    space: "O(n) in the worst case, as the dictionary could store up to n+1 distinct prefix sum values if all elements are unique (though not possible in a binary array)."
+                },
+                 walkthrough: {
+                    example: `nums = [1,0,1,0,1], goal = 2`,
+                    steps: [
+                        { "description": "Initialize `count = 0`, `currentSum = 0`. Map: `{0: 1}`." },
+                        { "description": "<strong>num = 1:</strong> `currentSum` = 1. Needed sum = 1 - 2 = -1. Map doesn't have -1. Update map: `{0:1, 1:1}`." },
+                        { "description": "<strong>num = 0:</strong> `currentSum` = 1. Needed sum = -1. Map doesn't have -1. Update map: `{0:1, 1:2}`." },
+                        { "description": "<strong>num = 1:</strong> `currentSum` = 2. Needed sum = 2 - 2 = 0. Map has 0 (count 1). `count` becomes 0 + 1 = 1. Update map: `{0:1, 1:2, 2:1}`." },
+                        { "description": "<strong>num = 0:</strong> `currentSum` = 2. Needed sum = 0. Map has 0 (count 1). `count` becomes 1 + 1 = 2. Update map: `{0:1, 1:2, 2:2}`." },
+                        { "description": "<strong>num = 1:</strong> `currentSum` = 3. Needed sum = 3 - 2 = 1. Map has 1 (count 2). `count` becomes 2 + 2 = 4. Update map: `{0:1, 1:2, 2:2, 3:1}`." },
+                        { "description": "End of array. Final `count` is 4." }
+                    ]
+                },
+                takeaway: "Prefix sums combined with a hash map is a powerful pattern for solving subarray sum problems in linear time."
+            },
+            {
+                id: 4,
+                title: "Gray Code",
+                tags: ["Bit Manipulation", "Sequence"],
+                statement: "A gray code sequence is a binary numeral system where two successive values differ in only one bit. Given an integer `n` representing the number of bits, generate any valid gray code sequence of length 2<sup>n</sup> that starts with 0.",
+                example: {
+                    input: "n = 2",
+                    output: "[0, 1, 3, 2]",
+                    explanation: "In binary, this is [00, 01, 11, 10]. 00->01 (1 bit change), 01->11 (1 bit change), 11->10 (1 bit change)."
+                },
+                concepts: [
+                    {
+                        title: "The XOR Formula",
+                        description: "A remarkably simple and efficient way to generate the `i`-th Gray code is with the formula `G(i) = i ^ (i >> 1)`. Here, `^` is the bitwise XOR operator, and `>>` is the right shift operator. `i >> 1` effectively gives you the bits of `i` shifted one position to the right. XORing this with the original `i` produces the desired Gray code property."
+                    },
+                    {
+                        title: "Sequence Generation",
+                        description: "To generate the full sequence for `n` bits, we simply need to calculate this formula for all integers from `i = 0` to `2^n - 1`. The total number of codes is `2^n`, which can be calculated efficiently using the bit shift `1 << n`."
+                    }
+                ],
+                solution: `
+<span class="keyword">using</span> System.Collections.Generic;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="type">Solution</span> {
+    <span class="keyword">public</span> IList<<span class="type">int</span>> <span class="method">GrayCode</span>(<span class="type">int</span> n) {
+        IList<<span class="type">int</span>> result = <span class="keyword">new</span> List<<span class="type">int</span>>();
+        <span class="type">int</span> count = <span class="number">1</span> << n; <span class="comment">// Calculate 2^n</span>
+        
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i < count; i++) {
+            <span class="comment">// The magic formula: i XOR (i shifted right by 1)</span>
+            result.<span class="method">Add</span>(i ^ (i >> <span class="number">1</span>));
+        }
+        <span class="keyword">return</span> result;
+    }
+}
+                `,
+                complexity: {
+                    time: "O(2^n), as we must generate 2^n unique codes for the sequence.",
+                    space: "O(2^n) to store and return the resulting list of codes. This is inherent to the problem statement."
+                },
+                walkthrough: {
+                    example: "n = 3",
+                    steps: [
+                        { "description": "We will loop from i = 0 to 7 (2<sup>3</sup>-1)." },
+                        { "description": "<strong>i = 0:</strong> `000 ^ 000 = 000` (0)" },
+                        { "description": "<strong>i = 1:</strong> `001 ^ 000 = 001` (1)" },
+                        { "description": "<strong>i = 2:</strong> `010 ^ 001 = 011` (3)" },
+                        { "description": "<strong>i = 3:</strong> `011 ^ 001 = 010` (2)" },
+                        { "description": "<strong>i = 4:</strong> `100 ^ 010 = 110` (6)" },
+                        { "description": "<strong>i = 5:</strong> `101 ^ 010 = 111` (7)" },
+                        { "description": "<strong>i = 6:</strong> `110 ^ 011 = 101` (5)" },
+                        { "description": "<strong>i = 7:</strong> `111 ^ 011 = 100` (4)" },
+                        { "description": "Final Sequence: [0, 1, 3, 2, 6, 7, 5, 4]" }
+                    ]
+                },
+                takeaway: "Many sequence generation problems in computer science have elegant mathematical or bit manipulation formulas that are far more efficient than brute-force or complex recursive solutions."
+            }
+        ];
+
+        const navContainer = document.querySelector('nav');
+        const problemContainer = document.getElementById('problem-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+
+        let activeProblemId = 0;
+        const viewedProblems = new Set();
+        
+        function updateProgress() {
+            const completedCount = viewedProblems.size;
+            const totalCount = problems.length;
+            const percentage = (completedCount / totalCount) * 100;
+            
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${completedCount} / ${totalCount} Viewed`;
+        }
+
+        function renderProblem(problemId) {
+            const problem = problems.find(p => p.id === problemId);
+            if (!problem) return;
+            
+            activeProblemId = problemId;
+            viewedProblems.add(problemId);
+
+            let conceptsHtml = problem.concepts.map(concept => `
+                <div class="mt-4">
+                    <h4 class="text-md font-semibold text-[#2C534C]">${concept.title}</h4>
+                    <p class="text-gray-600 mt-1 text-sm leading-relaxed">${concept.description}</p>
+                </div>
+            `).join('');
+            
+            let walkthroughStepsHtml = problem.walkthrough.steps.map(step => `
+                <li class="relative pl-6 pb-4">
+                    <div class="absolute left-0 top-0 h-full w-px bg-gray-200"></div>
+                    <div class="absolute left-[-8px] top-1 h-4 w-4 rounded-full bg-white border-2 border-[#84A98C]"></div>
+                    <p class="text-gray-700 text-sm">${step.description}</p>
+                </li>
+            `).join('');
+
+            problemContainer.innerHTML = `
+                <div class="flex flex-wrap items-center justify-between mb-4">
+                    <h2 class="text-2xl md:text-3xl font-bold text-[#2C534C]">${problem.title}</h2>
+                    <div class="flex gap-2 mt-2 md:mt-0">
+                        ${problem.tags.map(tag => `<span class="bg-[#CAD2C5] text-[#354F52] text-xs font-semibold px-3 py-1 rounded-full">${tag}</span>`).join('')}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 mt-6">
+                    <!-- Left Column -->
+                    <div class="border-b lg:border-b-0 lg:border-r border-gray-200 pb-6 lg:pr-6">
+                        <h3 class="text-xl font-semibold text-[#354F52] mb-3">Problem Statement</h3>
+                        <p class="text-gray-700 mb-4 text-sm leading-relaxed">${problem.statement}</p>
+                        
+                        <div class="bg-gray-50 rounded-lg p-3 border border-gray-200 text-sm">
+                            <p><strong class="font-medium text-gray-800">Input:</strong> <code class="text-[#52796F]">${problem.example.input}</code></p>
+                            <p><strong class="font-medium text-gray-800">Output:</strong> <code class="text-[#52796F]">${problem.example.output}</code></p>
+                            <p class="mt-1 text-gray-600">${problem.example.explanation}</p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-[#354F52] mt-6 mb-2">Core Concepts</h3>
+                        ${conceptsHtml}
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                         <h3 class="text-xl font-semibold text-[#354F52] mt-6 lg:mt-0 mb-3">C# Solution</h3>
+                         <div class="code-block">
+                            <pre><code>${problem.solution.trim()}</code></pre>
+                        </div>
+                        
+                         <h3 class="text-xl font-semibold text-[#354F52] mt-6 mb-3">Visual Walkthrough</h3>
+                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                             <p class="text-sm font-medium text-gray-800 mb-3">Example: <code class="text-[#52796F]">${problem.walkthrough.example}</code></p>
+                             <ul class="relative">${walkthroughStepsHtml}</ul>
+                         </div>
+                         
+                         <h3 class="text-xl font-semibold text-[#354F52] mt-6 mb-3">Key Takeaway</h3>
+                         <div class="bg-[#E9F0EE] border-l-4 border-[#52796F] p-4 rounded-r-lg">
+                            <p class="text-sm font-medium text-[#2C534C]">${problem.takeaway}</p>
+                         </div>
+                    </div>
+                </div>
+            `;
+            
+            updateNav();
+            updateProgress();
+        }
+        
+        function updateNav() {
+             navContainer.querySelectorAll('.nav-button').forEach(button => {
+                button.classList.remove('active');
+                if (parseInt(button.dataset.id) === activeProblemId) {
+                    button.classList.add('active');
+                }
+            });
+        }
+        
+        function init() {
+            problems.forEach(problem => {
+                const button = document.createElement('button');
+                button.textContent = `Problem ${problem.id + 1}`;
+                button.dataset.id = problem.id;
+                button.className = 'nav-button px-4 py-2 rounded-lg text-sm font-medium bg-white text-[#354F52] border border-gray-200 hover:bg-gray-100 transition-all duration-200 shadow-sm';
+                button.addEventListener('click', () => renderProblem(problem.id));
+                navContainer.appendChild(button);
+            });
+            renderProblem(0);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
