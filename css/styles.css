@@ -41,7 +41,7 @@ a:hover {
     right: 1.5rem;
     border: 1px solid #d1d5db; /* gray-300 */
     padding: 0.5rem 1rem; /* py-2 px-4 */
-    border-radius: 9999px; /* rounded-full */
+    border-radius: 0.5rem; /* rounded-lg */
     font-size: 0.875rem; /* text-sm */
     font-weight: 500; /* font-medium */
     color: #374151; /* gray-700 */
