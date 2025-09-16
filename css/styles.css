@@ -29,3 +29,29 @@ a:hover {
     color: #047857; /* teal-700 */
     text-decoration: underline;
 }
+
+/* Styles for the header on individual day pages */
+.jules-header-container {
+    position: relative;
+}
+
+.jules-return-button {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    border: 1px solid #d1d5db; /* gray-300 */
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    border-radius: 9999px; /* rounded-full */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    color: #374151; /* gray-700 */
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    z-index: 10;
+}
+
+.jules-return-button:hover {
+    background-color: #f9fafb; /* gray-50 */
+    border-color: #9ca3af; /* gray-400 */
+}
