@@ -36,16 +36,18 @@
     <!-- Application Structure Plan: A tab-based single-page application is used to present the content in a structured, digestible manner. The navigation allows users to switch between three core learning modules: 'Debugging Techniques', 'Handling Corner Cases', and 'Practice Problems'. This structure mirrors a logical learning progression from theory to practical application. The interactive elements, such as toggles for problem/solution views and accordions for practice questions, are designed to engage the user and reinforce learning by encouraging active participation rather than passive reading. -->
     <!-- Visualization & Content Choices: The information is primarily textual and code-based. The presentation relies on structured HTML, Tailwind CSS, and icons for clarity. Goal: Explain Debugging -> Presentation: Side-by-side text and code blocks with icons -> Interaction: None, focus on readability. Goal: Compare good/bad practices for Corner Cases -> Presentation: Cards with code snippets -> Interaction: A toggle button to switch between the flawed and robust code, encouraging direct comparison. Goal: Test Knowledge with Practice Problems -> Presentation: Accordion layout -> Interaction: Click to expand a problem, then click a button to reveal the solution and explanation. This prevents spoilers and promotes critical thinking. No data charts are needed, so no charting libraries are used. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
 </head>
 <body>
-<header class="bg-stone-800 text-white shadow-md">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center max-w-5xl">
-        <h1 class="text-xl md:text-2xl font-bold">Problem Solving Roadmap</h1>
-        <a href="30_days_progress.html?week=1" class="text-sm md:text-base bg-stone-600 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded transition-colors duration-300">
-            &larr; Back to Roadmap
-        </a>
-    </div>
-</header>
+<div class="jules-header-container">
+    <a href="30_days_progress.html?week=1" class="jules-return-button">
+    &larr; Return to Homepage
+</a>
+    <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">C# Debugging & Edge Cases Guide</p>
+</div>
+</div>
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
         <div class="text-center mb-8">
             <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Day 4: Dry Runs & Edge Cases in C#</h1>
