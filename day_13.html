@@ -1,20 +1,25 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kadane's Algorithm Interactive Guide</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: A single-page, top-to-bottom educational walkthrough. This linear structure guides the user from the basic problem definition to advanced variations, mirroring a typical learning path. The core of the app is an interactive visualization, allowing users to actively engage with the algorithm, which is more effective for learning than passive reading. Sections are logically ordered: Problem -> Naive Solution -> Kadane's Concept -> Interactive Demo -> Code -> Variation -> Practice. This flow builds knowledge incrementally. -->
-    <!-- Visualization & Content Choices: Problem/Concept: Styled text and divs to inform. Interactive Demo: Report info (algorithm steps) is visualized to teach and engage. A dynamic array display (HTML/JS) shows the algorithm's focus, while a bar chart (Chart.js) tracks changing `current_max` and `global_max` states, offering a quantitative view of the process. This dual visualization is clearer than text alone. Code: Presented in styled `pre/code` blocks for clarity. Variation/Practice: Text and lists to explain and provide further learning paths. All choices support the educational goal without SVG/Mermaid. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Kadane's Algorithm Interactive Guide
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Warm Neutrals -->
+  <!-- Application Structure Plan: A single-page, top-to-bottom educational walkthrough. This linear structure guides the user from the basic problem definition to advanced variations, mirroring a typical learning path. The core of the app is an interactive visualization, allowing users to actively engage with the algorithm, which is more effective for learning than passive reading. Sections are logically ordered: Problem -> Naive Solution -> Kadane's Concept -> Interactive Demo -> Code -> Variation -> Practice. This flow builds knowledge incrementally. -->
+  <!-- Visualization & Content Choices: Problem/Concept: Styled text and divs to inform. Interactive Demo: Report info (algorithm steps) is visualized to teach and engage. A dynamic array display (HTML/JS) shows the algorithm's focus, while a bar chart (Chart.js) tracks changing `current_max` and `global_max` states, offering a quantitative view of the process. This dual visualization is clearer than text alone. Code: Presented in styled `pre/code` blocks for clarity. Variation/Practice: Text and lists to explain and provide further learning paths. All choices support the educational goal without SVG/Mermaid. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
             font-family: 'Poppins', sans-serif;
             background-color: #FDFBF8;
             color: #333;
@@ -63,107 +68,191 @@
                 max-height: 350px;
             }
         }
-    </style>
-
-</head>
-<body class="antialiased">
-
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=2" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=2">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 13: Kadane's Algorithm</p>
-</div>
-</div>
-
-    <main class="container mx-auto p-4 md:p-8 space-y-12">
-
-        <section id="problem">
-            <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">1. The Problem: Maximum Subarray Sum</h2>
-            <div class="bg-white p-6 rounded-lg shadow-md space-y-4 text-lg">
-                <p>Given an integer array, the goal is to find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.</p>
-                <p>For example, consider the array below. The subarray <span class="font-semibold text-[#8D7B68]">[4, -1, 2, 1]</span> has the largest sum of 6.</p>
-                <div class="flex flex-wrap justify-center items-center gap-2 p-4 bg-[#F1DEC9] rounded-lg">
-                    <span class="p-3 bg-gray-300 rounded-md">-2</span>
-                    <span class="p-3 bg-gray-300 rounded-md">1</span>
-                    <span class="p-3 bg-gray-300 rounded-md">-3</span>
-                    <div class="flex border-4 border-[#8D7B68] rounded-lg">
-                        <span class="p-3 bg-green-200 rounded-l-md">4</span>
-                        <span class="p-3 bg-green-200">-1</span>
-                        <span class="p-3 bg-green-200">2</span>
-                        <span class="p-3 bg-green-200 rounded-r-md">1</span>
-                    </div>
-                    <span class="p-3 bg-gray-300 rounded-md">-5</span>
-                    <span class="p-3 bg-gray-300 rounded-md">4</span>
-                </div>
-            </div>
-        </section>
-
-        <section id="naive">
-            <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">2. The Brute Force Approach</h2>
-            <div class="bg-white p-6 rounded-lg shadow-md space-y-4 text-lg">
-                <p>The simplest way to solve this is to check every possible subarray. We can use two nested loops to define the start and end of a subarray, and a third loop to calculate its sum. This approach has a time complexity of O(n³), which is very inefficient for large arrays.</p>
-                <p>A slight optimization is to calculate the sum in the second loop, reducing the complexity to O(n²). However, for large inputs, this is still too slow. This is where Kadane's Algorithm comes in, providing a brilliant O(n) solution.</p>
-            </div>
-        </section>
-
-        <section id="concept">
-            <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">3. Kadane's Algorithm: The Core Idea</h2>
-            <div class="bg-white p-6 rounded-lg shadow-md space-y-4 text-lg">
-                <p>Kadane's algorithm is a dynamic programming approach that solves this problem in a single pass. The key idea is to iterate through the array and, at each position, make a decision:</p>
-                <ol class="list-decimal list-inside space-y-2">
-                    <li>We maintain a <span class="font-semibold text-[#8D7B68]">`current_max`</span> sum, which is the maximum sum of a subarray ending at the current position.</li>
-                    <li>For each element, we either extend the previous subarray by adding the current element to `current_max`, OR we start a new subarray with just the current element. We choose whichever is larger.</li>
-                    <li>We also maintain a <span class="font-semibold text-[#8D7B68]">`global_max`</span> sum, which is the maximum sum found so far across the entire array. After calculating `current_max` at each step, we update `global_max` if `current_max` is larger.</li>
-                </ol>
-                <p class="pt-2">Essentially, if at any point the `current_max` becomes negative, it's better to discard the previous subarray and start a new one from the next element, because a negative prefix will only decrease the sum of any future subarray.</p>
-            </div>
-        </section>
-
-        <section id="interactive">
-            <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">4. Interactive Visualization</h2>
-            <div class="bg-white p-6 rounded-lg shadow-md space-y-6">
-                <div>
-                    <label for="arrayInput" class="block text-lg font-medium mb-2">Enter a comma-separated array of numbers:</label>
-                    <input type="text" id="arrayInput" class="w-full p-3 border border-gray-300 rounded-lg" value="-2, 1, -3, 4, -1, 2, 1, -5, 4">
-                </div>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <button id="visualizeBtn" class="btn-primary w-full sm:w-auto px-6 py-3 rounded-lg font-semibold">Visualize</button>
-                    <button id="nextStepBtn" class="btn-secondary w-full sm:w-auto px-6 py-3 rounded-lg font-semibold" disabled>Next Step</button>
-                    <button id="resetBtn" class="btn-secondary w-full sm:w-auto px-6 py-3 rounded-lg font-semibold" disabled>Reset</button>
-                </div>
-
-                <div id="visualizationArea" class="mt-6 space-y-4 hidden">
-                    <div id="arrayDisplay" class="flex flex-wrap justify-center items-center gap-2 p-4 bg-[#F1DEC9] rounded-lg"></div>
-                    <div id="explanationText" class="text-center text-lg italic p-4 bg-blue-50 rounded-lg"></div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                             <h3 class="text-xl font-semibold text-center mb-2">Algorithm State</h3>
-                             <div class="text-lg space-y-2">
-                                <p><strong>Current Max Ending Here:</strong> <span id="currentMaxVal" class="font-mono bg-yellow-200 px-2 py-1 rounded">0</span></p>
-                                <p><strong>Global Max So Far:</strong> <span id="globalMaxVal" class="font-mono bg-green-200 px-2 py-1 rounded">0</span></p>
-                             </div>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                             <h3 class="text-xl font-semibold text-center mb-2">Sum Tracker</h3>
-                            <div class="chart-container">
-                                <canvas id="sumChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="code">
-            <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">5. C# Implementation</h2>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <p class="text-lg mb-4">Here is a concise implementation of Kadane's algorithm in C#.</p>
-                <div class="code-block">
-<pre><code><span class="code-keyword">public</span> <span class="code-keyword">class</span> <span class="code-type">Solution</span> {
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Kadane's Algorithm Interactive Guide
+    </p>
+   </div>
+  </div>
+  <main class="container mx-auto p-4 md:p-8 space-y-12">
+   <section id="problem">
+    <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">
+     1. The Problem: Maximum Subarray Sum
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md space-y-4 text-lg">
+     <p>
+      Given an integer array, the goal is to find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
+     </p>
+     <p>
+      For example, consider the array below. The subarray
+      <span class="font-semibold text-[#8D7B68]">
+       [4, -1, 2, 1]
+      </span>
+      has the largest sum of 6.
+     </p>
+     <div class="flex flex-wrap justify-center items-center gap-2 p-4 bg-[#F1DEC9] rounded-lg">
+      <span class="p-3 bg-gray-300 rounded-md">
+       -2
+      </span>
+      <span class="p-3 bg-gray-300 rounded-md">
+       1
+      </span>
+      <span class="p-3 bg-gray-300 rounded-md">
+       -3
+      </span>
+      <div class="flex border-4 border-[#8D7B68] rounded-lg">
+       <span class="p-3 bg-green-200 rounded-l-md">
+        4
+       </span>
+       <span class="p-3 bg-green-200">
+        -1
+       </span>
+       <span class="p-3 bg-green-200">
+        2
+       </span>
+       <span class="p-3 bg-green-200 rounded-r-md">
+        1
+       </span>
+      </div>
+      <span class="p-3 bg-gray-300 rounded-md">
+       -5
+      </span>
+      <span class="p-3 bg-gray-300 rounded-md">
+       4
+      </span>
+     </div>
+    </div>
+   </section>
+   <section id="naive">
+    <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">
+     2. The Brute Force Approach
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md space-y-4 text-lg">
+     <p>
+      The simplest way to solve this is to check every possible subarray. We can use two nested loops to define the start and end of a subarray, and a third loop to calculate its sum. This approach has a time complexity of O(n&sup3;), which is very inefficient for large arrays.
+     </p>
+     <p>
+      A slight optimization is to calculate the sum in the second loop, reducing the complexity to O(n&sup2;). However, for large inputs, this is still too slow. This is where Kadane's Algorithm comes in, providing a brilliant O(n) solution.
+     </p>
+    </div>
+   </section>
+   <section id="concept">
+    <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">
+     3. Kadane's Algorithm: The Core Idea
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md space-y-4 text-lg">
+     <p>
+      Kadane's algorithm is a dynamic programming approach that solves this problem in a single pass. The key idea is to iterate through the array and, at each position, make a decision:
+     </p>
+     <ol class="list-decimal list-inside space-y-2">
+      <li>
+       We maintain a
+       <span class="font-semibold text-[#8D7B68]">
+        `current_max`
+       </span>
+       sum, which is the maximum sum of a subarray ending at the current position.
+      </li>
+      <li>
+       For each element, we either extend the previous subarray by adding the current element to `current_max`, OR we start a new subarray with just the current element. We choose whichever is larger.
+      </li>
+      <li>
+       We also maintain a
+       <span class="font-semibold text-[#8D7B68]">
+        `global_max`
+       </span>
+       sum, which is the maximum sum found so far across the entire array. After calculating `current_max` at each step, we update `global_max` if `current_max` is larger.
+      </li>
+     </ol>
+     <p class="pt-2">
+      Essentially, if at any point the `current_max` becomes negative, it's better to discard the previous subarray and start a new one from the next element, because a negative prefix will only decrease the sum of any future subarray.
+     </p>
+    </div>
+   </section>
+   <section id="interactive">
+    <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">
+     4. Interactive Visualization
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md space-y-6">
+     <div>
+      <label class="block text-lg font-medium mb-2" for="arrayInput">
+       Enter a comma-separated array of numbers:
+      </label>
+      <input class="w-full p-3 border border-gray-300 rounded-lg" id="arrayInput" type="text" value="-2, 1, -3, 4, -1, 2, 1, -5, 4">
+     </div>
+     <div class="flex flex-col sm:flex-row gap-4">
+      <button class="btn-primary w-full sm:w-auto px-6 py-3 rounded-lg font-semibold" id="visualizeBtn">
+       Visualize
+      </button>
+      <button class="btn-secondary w-full sm:w-auto px-6 py-3 rounded-lg font-semibold" disabled id="nextStepBtn">
+       Next Step
+      </button>
+      <button class="btn-secondary w-full sm:w-auto px-6 py-3 rounded-lg font-semibold" disabled id="resetBtn">
+       Reset
+      </button>
+     </div>
+     <div class="mt-6 space-y-4 hidden" id="visualizationArea">
+      <div class="flex flex-wrap justify-center items-center gap-2 p-4 bg-[#F1DEC9] rounded-lg" id="arrayDisplay">
+      </div>
+      <div class="text-center text-lg italic p-4 bg-blue-50 rounded-lg" id="explanationText">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+       <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-xl font-semibold text-center mb-2">
+         Algorithm State
+        </h3>
+        <div class="text-lg space-y-2">
+         <p>
+          <strong>
+           Current Max Ending Here:
+          </strong>
+          <span class="font-mono bg-yellow-200 px-2 py-1 rounded" id="currentMaxVal">
+           0
+          </span>
+         </p>
+         <p>
+          <strong>
+           Global Max So Far:
+          </strong>
+          <span class="font-mono bg-green-200 px-2 py-1 rounded" id="globalMaxVal">
+           0
+          </span>
+         </p>
+        </div>
+       </div>
+       <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-xl font-semibold text-center mb-2">
+         Sum Tracker
+        </h3>
+        <div class="chart-container">
+         <canvas id="sumChart">
+         </canvas>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="code">
+    <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">
+     5. C# Implementation
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+     <p class="text-lg mb-4">
+      Here is a concise implementation of Kadane's algorithm in C#.
+     </p>
+     <div class="code-block">
+      <pre><code><span class="code-keyword">public</span> <span class="code-keyword">class</span> <span class="code-type">Solution</span> {
     <span class="code-keyword">public</span> <span class="code-type">int</span> <span class="code-literal">MaxSubArray</span>(<span class="code-type">int</span>[] nums) {
         <span class="code-comment">// If the array is empty, there's no subarray</span>
         <span class="code-keyword">if</span> (nums == <span class="code-literal">null</span> || nums.Length == 0) {
@@ -180,7 +269,7 @@
             currentMax = Math.Max(nums[i], currentMax + nums[i]);
 
             <span class="code-comment">// Update the global max if the new current max is greater</span>
-            <span class="code-keyword">if</span> (currentMax > globalMax) {
+            <span class="code-keyword">if</span> (currentMax &gt; globalMax) {
                 globalMax = currentMax;
             }
         }
@@ -188,28 +277,46 @@
         <span class="code-keyword">return</span> globalMax;
     }
 }</code></pre>
-                </div>
-            </div>
-        </section>
-
-        <section id="variation">
-            <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">6. Variation: Maximum Circular Subarray Sum</h2>
-            <div class="bg-white p-6 rounded-lg shadow-md space-y-4 text-lg">
-                <p>A common variation is finding the maximum subarray sum in a circular array, where the end of the array connects to the beginning.</p>
-                <p>This problem has two cases:</p>
-                <ol class="list-decimal list-inside space-y-2">
-                    <li>The maximum subarray is a standard one (not wrapping around). This can be found with the normal Kadane's algorithm.</li>
-                    <li>The maximum subarray wraps around. This means the subarray consists of a prefix and a suffix of the array. The sum of this wrapping subarray is equal to the <span class="font-semibold">Total Sum of the Array</span> minus the sum of the non-wrapping minimum subarray in the middle.</li>
-                </ol>
-                <p class="pt-2">So, the strategy is:
-                    <br>1. Find the maximum subarray sum using Kadane's (Case 1).
-                    <br>2. Find the minimum subarray sum by inverting the signs of all array elements and running Kadane's again. Then calculate `Total Sum - Minimum Subarray Sum` (Case 2).
-                    <br>3. The answer is the maximum of these two cases. (A special edge case is when all numbers are negative; the answer is simply the largest number).
-                </p>
-
-                <h3 class="text-2xl font-semibold pt-4">C# Code for Circular Variation</h3>
-                <div class="code-block">
-<pre><code><span class="code-keyword">public</span> <span class="code-type">int</span> <span class="code-literal">MaxSubarraySumCircular</span>(<span class="code-type">int</span>[] nums) {
+     </div>
+    </div>
+   </section>
+   <section id="variation">
+    <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">
+     6. Variation: Maximum Circular Subarray Sum
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md space-y-4 text-lg">
+     <p>
+      A common variation is finding the maximum subarray sum in a circular array, where the end of the array connects to the beginning.
+     </p>
+     <p>
+      This problem has two cases:
+     </p>
+     <ol class="list-decimal list-inside space-y-2">
+      <li>
+       The maximum subarray is a standard one (not wrapping around). This can be found with the normal Kadane's algorithm.
+      </li>
+      <li>
+       The maximum subarray wraps around. This means the subarray consists of a prefix and a suffix of the array. The sum of this wrapping subarray is equal to the
+       <span class="font-semibold">
+        Total Sum of the Array
+       </span>
+       minus the sum of the non-wrapping minimum subarray in the middle.
+      </li>
+     </ol>
+     <p class="pt-2">
+      So, the strategy is:
+      <br>
+      1. Find the maximum subarray sum using Kadane's (Case 1).
+      <br>
+      2. Find the minimum subarray sum by inverting the signs of all array elements and running Kadane's again. Then calculate `Total Sum - Minimum Subarray Sum` (Case 2).
+      <br>
+      3. The answer is the maximum of these two cases. (A special edge case is when all numbers are negative; the answer is simply the largest number).
+     </p>
+     <h3 class="text-2xl font-semibold pt-4">
+      C# Code for Circular Variation
+     </h3>
+     <div class="code-block">
+      <pre><code><span class="code-keyword">public</span> <span class="code-type">int</span> <span class="code-literal">MaxSubarraySumCircular</span>(<span class="code-type">int</span>[] nums) {
     <span class="code-type">int</span> totalSum = 0;
     <span class="code-type">int</span> currentMax = 0;
     <span class="code-type">int</span> globalMax = <span class="code-type">int</span>.MinValue;
@@ -230,38 +337,55 @@
 
     <span class="code-comment">// If totalSum equals globalMin, it means all numbers are negative.</span>
     <span class="code-comment">// In this case, the non-circular max is the answer.</span>
-    <span class="code-keyword">if</span> (globalMax > 0) {
+    <span class="code-keyword">if</span> (globalMax &gt; 0) {
         <span class="code-keyword">return</span> Math.Max(globalMax, totalSum - globalMin);
     } <span class="code-keyword">else</span> {
         <span class="code-keyword">return</span> globalMax;
     }
 }</code></pre>
-                </div>
-            </div>
-        </section>
-
-        <section id="practice">
-            <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">7. Practice Problems</h2>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <p class="text-lg mb-4">Test your understanding with these classic problems:</p>
-                <ul class="list-disc list-inside space-y-3 text-lg">
-                    <li><a href="https://leetcode.com/problems/maximum-subarray/" target="_blank" class="text-blue-600 hover:underline">LeetCode 53: Maximum Subarray</a> (The classic problem)</li>
-                    <li><a href="https://leetcode.com/problems/maximum-sum-circular-subarray/" target="_blank" class="text-blue-600 hover:underline">LeetCode 918: Maximum Sum Circular Subarray</a> (The variation discussed)</li>
-                    <li><a href="https://leetcode.com/problems/maximum-product-subarray/" target="_blank" class="text-blue-600 hover:underline">LeetCode 152: Maximum Product Subarray</a> (A similar but trickier dynamic programming problem)</li>
-                </ul>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="bg-stone-800 text-white mt-12 py-6">
-        <div class="container mx-auto px-4 text-center max-w-5xl">
-            <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-        </div>
-    </footer>
-
-    <script>
-        const arrayInput = document.getElementById('arrayInput');
+     </div>
+    </div>
+   </section>
+   <section id="practice">
+    <h2 class="text-3xl font-bold text-[#8D7B68] mb-4">
+     7. Practice Problems
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+     <p class="text-lg mb-4">
+      Test your understanding with these classic problems:
+     </p>
+     <ul class="list-disc list-inside space-y-3 text-lg">
+      <li>
+       <a class="text-blue-600 hover:underline" href="https://leetcode.com/problems/maximum-subarray/" target="_blank">
+        LeetCode 53: Maximum Subarray
+       </a>
+       (The classic problem)
+      </li>
+      <li>
+       <a class="text-blue-600 hover:underline" href="https://leetcode.com/problems/maximum-sum-circular-subarray/" target="_blank">
+        LeetCode 918: Maximum Sum Circular Subarray
+       </a>
+       (The variation discussed)
+      </li>
+      <li>
+       <a class="text-blue-600 hover:underline" href="https://leetcode.com/problems/maximum-product-subarray/" target="_blank">
+        LeetCode 152: Maximum Product Subarray
+       </a>
+       (A similar but trickier dynamic programming problem)
+      </li>
+     </ul>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const arrayInput = document.getElementById('arrayInput');
         const visualizeBtn = document.getElementById('visualizeBtn');
         const nextStepBtn = document.getElementById('nextStepBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -452,7 +576,6 @@
             explanationText.innerHTML = explanation;
             updateUI();
         });
-
-    </script>
-</body>
+  </script>
+ </body>
 </html>

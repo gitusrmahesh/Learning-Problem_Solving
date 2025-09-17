@@ -1,13 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 12: Two Pointer Technique</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chosen Palette: Calm Neutrals -->
-    <!-- Application Structure Plan: A single-page, tab-based interactive tutorial. The structure flows from a high-level concept explanation to three distinct, interactive examples (Pair Sum, Triplet Sum, Remove Duplicates), each with a visualizer and corresponding C# code. This tabbed, example-driven structure is chosen to break down a complex algorithm into manageable, explorable parts, facilitating learning by doing. The user can focus on one problem at a time, see the algorithm in action, and then view the implementation, which is the most effective way to teach a programming technique. -->
-    <!-- Visualization & Content Choices:
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 12: Two Pointer Technique
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <!-- Chosen Palette: Calm Neutrals -->
+  <!-- Application Structure Plan: A single-page, tab-based interactive tutorial. The structure flows from a high-level concept explanation to three distinct, interactive examples (Pair Sum, Triplet Sum, Remove Duplicates), each with a visualizer and corresponding C# code. This tabbed, example-driven structure is chosen to break down a complex algorithm into manageable, explorable parts, facilitating learning by doing. The user can focus on one problem at a time, see the algorithm in action, and then view the implementation, which is the most effective way to teach a programming technique. -->
+  <!-- Visualization & Content Choices:
         - Report Info: Two Pointer Technique Explanation -> Goal: Inform -> Viz: Text + HTML/CSS diagram of pointers -> Interaction: None -> Justification: Provides foundational knowledge before interaction. A simple visual aids comprehension.
         - Report Info: Pair Sum Problem -> Goal: Teach -> Viz: Interactive HTML array visualization with animated pointers and a step-by-step text log -> Interaction: User can run the simulation -> Justification: Actively demonstrates the core two-pointer logic of converging from opposite ends. The log connects the visual movement to the decision-making process.
         - Report Info: Triplet Sum Problem -> Goal: Teach -> Viz: Similar interactive visualization, but with one 'fixed' pointer and two moving pointers -> Interaction: User runs simulation -> Justification: Shows how the base technique can be extended to solve more complex problems (N-sum).
@@ -15,9 +19,9 @@
         - Report Info: C# Code -> Goal: Reference -> Viz: Static code blocks -> Interaction: None -> Justification: Provides the concrete implementation for the user to study and use.
         - Library/Method: Vanilla JavaScript for all logic and DOM manipulation. Tailwind CSS for all styling.
      -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        .code-block {
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   .code-block {
             background-color: #2d3748;
             color: #e2e8f0;
             padding: 1rem;
@@ -110,89 +114,138 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-    </style>
-
-</head>
-<body class="bg-gray-50 text-gray-800 font-sans">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=2" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=2">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 12: Two Pointer Technique</p>
-</div>
-</div>
-    <div class="container mx-auto p-4 sm:p-6 md:p-8">
-
-        <main>
-            <section id="intro" class="mb-12 bg-white p-6 rounded-lg shadow-sm">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-900">What is the Two Pointer Technique?</h2>
-                <p class="mb-4 text-gray-700">The Two Pointer technique is an extremely common and efficient method for solving problems involving sorted arrays or linked lists. It involves using two pointers to iterate through the data structure, moving them based on certain conditions to find a solution. This approach can often reduce the time complexity from a brute-force O(n²) to a much more optimal O(n).</p>
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h3 class="font-semibold text-blue-800 mb-2">The Core Idea</h3>
-                    <div class="flex flex-col md:flex-row items-center justify-center gap-6">
-                        <div class="flex-1">
-                            <p class="text-blue-700">Instead of using nested loops, we initialize two pointers, often at opposite ends of a sorted array. We then move them towards each other or in the same direction, narrowing down the search space with each step until we find the solution or the pointers meet/cross.</p>
-                        </div>
-                        <div class="flex-1 w-full max-w-sm">
-                            <div class="array-container pt-12 pb-4">
-                                <div class="array-cell">2</div>
-                                <div class="array-cell">4</div>
-                                <div class="array-cell">6</div>
-                                <div class="array-cell">8</div>
-                                <div class="array-cell">10</div>
-                                <div class="pointer pointer-left" style="left: calc(50% - 2.5*44px);">&#9660; Left</div>
-                                <div class="pointer pointer-right" style="left: calc(50% + 1.5*44px);">&#9660; Right</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="problems" class="bg-white p-6 rounded-lg shadow-sm">
-                <h2 class="text-2xl font-semibold mb-6 text-gray-900 text-center">Interactive Problem Examples</h2>
-
-                <div class="border-b border-gray-200 mb-6">
-                    <nav class="-mb-px flex justify-center space-x-2 sm:space-x-4 md:space-x-8" aria-label="Tabs">
-                        <button class="tab-btn active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="pair-sum">Pair Sum</button>
-                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 border-transparent" data-tab="triplet-sum">Triplet Sum</button>
-                        <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 border-transparent" data-tab="remove-duplicates">Remove Duplicates</button>
-                    </nav>
-                </div>
-
-                <div id="tab-content">
-                    <!-- Pair Sum Content -->
-                    <div id="pair-sum" class="tab-panel">
-                        <h3 class="text-xl font-medium mb-2">Problem: Find a Pair with a Given Sum</h3>
-                        <p class="mb-4 text-gray-600">Given a sorted array of integers `nums` and an integer `target`, return `true` if there are two numbers in the array that add up to `target`, otherwise return `false`.</p>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div>
-                                <h4 class="font-semibold mb-4">Interactive Visualizer</h4>
-                                <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
-                                    <div>
-                                        <label for="pair-sum-array" class="block text-sm font-medium text-gray-700">Sorted Array (comma-separated)</label>
-                                        <input type="text" id="pair-sum-array" value="2, 4, 5, 7, 8, 11, 15" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                    </div>
-                                    <div>
-                                        <label for="pair-sum-target" class="block text-sm font-medium text-gray-700">Target Sum</label>
-                                        <input type="number" id="pair-sum-target" value="13" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                    </div>
-                                    <button id="run-pair-sum" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">Run Simulation</button>
-                                </div>
-                                <div id="pair-sum-viz-container" class="array-container mt-4"></div>
-                                <div class="mt-4">
-                                    <h5 class="font-semibold text-sm mb-1">Log:</h5>
-                                    <div id="pair-sum-log" class="log-area"></div>
-                                </div>
-                                <div id="pair-sum-result" class="mt-4 font-bold text-center"></div>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold mb-4">C# Solution</h4>
-                                <div class="code-block" id="code-pair-sum">public bool HasPairSum(int[] nums, int target)
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 12: Two Pointer Technique
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 md:p-8">
+   <main>
+    <section class="mb-12 bg-white p-6 rounded-lg shadow-sm" id="intro">
+     <h2 class="text-2xl font-semibold mb-4 text-gray-900">
+      What is the Two Pointer Technique?
+     </h2>
+     <p class="mb-4 text-gray-700">
+      The Two Pointer technique is an extremely common and efficient method for solving problems involving sorted arrays or linked lists. It involves using two pointers to iterate through the data structure, moving them based on certain conditions to find a solution. This approach can often reduce the time complexity from a brute-force O(n&sup2;) to a much more optimal O(n).
+     </p>
+     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <h3 class="font-semibold text-blue-800 mb-2">
+       The Core Idea
+      </h3>
+      <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+       <div class="flex-1">
+        <p class="text-blue-700">
+         Instead of using nested loops, we initialize two pointers, often at opposite ends of a sorted array. We then move them towards each other or in the same direction, narrowing down the search space with each step until we find the solution or the pointers meet/cross.
+        </p>
+       </div>
+       <div class="flex-1 w-full max-w-sm">
+        <div class="array-container pt-12 pb-4">
+         <div class="array-cell">
+          2
+         </div>
+         <div class="array-cell">
+          4
+         </div>
+         <div class="array-cell">
+          6
+         </div>
+         <div class="array-cell">
+          8
+         </div>
+         <div class="array-cell">
+          10
+         </div>
+         <div class="pointer pointer-left" style="left: calc(50% - 2.5*44px);">
+          ▼ Left
+         </div>
+         <div class="pointer pointer-right" style="left: calc(50% + 1.5*44px);">
+          ▼ Right
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="bg-white p-6 rounded-lg shadow-sm" id="problems">
+     <h2 class="text-2xl font-semibold mb-6 text-gray-900 text-center">
+      Interactive Problem Examples
+     </h2>
+     <div class="border-b border-gray-200 mb-6">
+      <nav aria-label="Tabs" class="-mb-px flex justify-center space-x-2 sm:space-x-4 md:space-x-8">
+       <button class="tab-btn active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="pair-sum">
+        Pair Sum
+       </button>
+       <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 border-transparent" data-tab="triplet-sum">
+        Triplet Sum
+       </button>
+       <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 border-transparent" data-tab="remove-duplicates">
+        Remove Duplicates
+       </button>
+      </nav>
+     </div>
+     <div id="tab-content">
+      <!-- Pair Sum Content -->
+      <div class="tab-panel" id="pair-sum">
+       <h3 class="text-xl font-medium mb-2">
+        Problem: Find a Pair with a Given Sum
+       </h3>
+       <p class="mb-4 text-gray-600">
+        Given a sorted array of integers `nums` and an integer `target`, return `true` if there are two numbers in the array that add up to `target`, otherwise return `false`.
+       </p>
+       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+         <h4 class="font-semibold mb-4">
+          Interactive Visualizer
+         </h4>
+         <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
+          <div>
+           <label class="block text-sm font-medium text-gray-700" for="pair-sum-array">
+            Sorted Array (comma-separated)
+           </label>
+           <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" id="pair-sum-array" type="text" value="2, 4, 5, 7, 8, 11, 15">
+          </div>
+          <div>
+           <label class="block text-sm font-medium text-gray-700" for="pair-sum-target">
+            Target Sum
+           </label>
+           <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" id="pair-sum-target" type="number" value="13">
+          </div>
+          <button class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" id="run-pair-sum">
+           Run Simulation
+          </button>
+         </div>
+         <div class="array-container mt-4" id="pair-sum-viz-container">
+         </div>
+         <div class="mt-4">
+          <h5 class="font-semibold text-sm mb-1">
+           Log:
+          </h5>
+          <div class="log-area" id="pair-sum-log">
+          </div>
+         </div>
+         <div class="mt-4 font-bold text-center" id="pair-sum-result">
+         </div>
+        </div>
+        <div>
+         <h4 class="font-semibold mb-4">
+          C# Solution
+         </h4>
+         <div class="code-block" id="code-pair-sum">
+          public bool HasPairSum(int[] nums, int target)
 {
-    if (nums == null || nums.Length < 2)
+    if (nums == null || nums.Length &lt; 2)
     {
         return false;
     }
@@ -200,7 +253,7 @@
     int left = 0;
     int right = nums.Length - 1;
 
-    while (left < right)
+    while (left &lt; right)
     {
         int currentSum = nums[left] + nums[right];
 
@@ -208,69 +261,92 @@
         {
             return true;
         }
-        else if (currentSum < target)
+        else if (currentSum &lt; target)
         {
             left++;
         }
-        else // currentSum > target
+        else // currentSum &gt; target
         {
             right--;
         }
     }
 
     return false;
-}</div>
-                                <button data-code-id="code-pair-sum" class="gemini-explain-btn mt-4 w-full flex items-center justify-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
-                                    <span>✨ Explain Code with Gemini</span>
-                                </button>
-                                <div id="explanation-code-pair-sum" class="gemini-explanation hidden"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Triplet Sum Content -->
-                    <div id="triplet-sum" class="tab-panel hidden">
-                         <h3 class="text-xl font-medium mb-2">Problem: Find a Triplet with a Given Sum</h3>
-                        <p class="mb-4 text-gray-600">Given a sorted array of integers `nums` and an integer `target`, return `true` if there are three numbers in the array that add up to `target`, otherwise return `false`.</p>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                             <div>
-                                <h4 class="font-semibold mb-4">Interactive Visualizer</h4>
-                                <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
-                                    <div>
-                                        <label for="triplet-sum-array" class="block text-sm font-medium text-gray-700">Sorted Array (comma-separated)</label>
-                                        <input type="text" id="triplet-sum-array" value="-1, 0, 1, 2, -1, -4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                    </div>
-                                    <div>
-                                        <label for="triplet-sum-target" class="block text-sm font-medium text-gray-700">Target Sum</label>
-                                        <input type="number" id="triplet-sum-target" value="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                    </div>
-                                    <button id="run-triplet-sum" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">Run Simulation</button>
-                                </div>
-                                <div id="triplet-sum-viz-container" class="array-container mt-4"></div>
-                                <div class="mt-4">
-                                    <h5 class="font-semibold text-sm mb-1">Log:</h5>
-                                    <div id="triplet-sum-log" class="log-area"></div>
-                                </div>
-                                <div id="triplet-sum-result" class="mt-4 font-bold text-center"></div>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold mb-4">C# Solution</h4>
-                                <div class="code-block" id="code-triplet-sum">public bool HasTripletSum(int[] nums, int target)
+}
+         </div>
+         <button class="gemini-explain-btn mt-4 w-full flex items-center justify-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors" data-code-id="code-pair-sum">
+          <span>
+           ✨ Explain Code with Gemini
+          </span>
+         </button>
+         <div class="gemini-explanation hidden" id="explanation-code-pair-sum">
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- Triplet Sum Content -->
+      <div class="tab-panel hidden" id="triplet-sum">
+       <h3 class="text-xl font-medium mb-2">
+        Problem: Find a Triplet with a Given Sum
+       </h3>
+       <p class="mb-4 text-gray-600">
+        Given a sorted array of integers `nums` and an integer `target`, return `true` if there are three numbers in the array that add up to `target`, otherwise return `false`.
+       </p>
+       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+         <h4 class="font-semibold mb-4">
+          Interactive Visualizer
+         </h4>
+         <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
+          <div>
+           <label class="block text-sm font-medium text-gray-700" for="triplet-sum-array">
+            Sorted Array (comma-separated)
+           </label>
+           <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" id="triplet-sum-array" type="text" value="-1, 0, 1, 2, -1, -4">
+          </div>
+          <div>
+           <label class="block text-sm font-medium text-gray-700" for="triplet-sum-target">
+            Target Sum
+           </label>
+           <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" id="triplet-sum-target" type="number" value="0">
+          </div>
+          <button class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" id="run-triplet-sum">
+           Run Simulation
+          </button>
+         </div>
+         <div class="array-container mt-4" id="triplet-sum-viz-container">
+         </div>
+         <div class="mt-4">
+          <h5 class="font-semibold text-sm mb-1">
+           Log:
+          </h5>
+          <div class="log-area" id="triplet-sum-log">
+          </div>
+         </div>
+         <div class="mt-4 font-bold text-center" id="triplet-sum-result">
+         </div>
+        </div>
+        <div>
+         <h4 class="font-semibold mb-4">
+          C# Solution
+         </h4>
+         <div class="code-block" id="code-triplet-sum">
+          public bool HasTripletSum(int[] nums, int target)
 {
-    if (nums == null || nums.Length < 3)
+    if (nums == null || nums.Length &lt; 3)
     {
         return false;
     }
 
     Array.Sort(nums);
 
-    for (int i = 0; i < nums.Length - 2; i++)
+    for (int i = 0; i &lt; nums.Length - 2; i++)
     {
         int left = i + 1;
         int right = nums.Length - 1;
         int newTarget = target - nums[i];
 
-        while (left < right)
+        while (left &lt; right)
         {
             int currentSum = nums[left] + nums[right];
 
@@ -278,7 +354,7 @@
             {
                 return true;
             }
-            else if (currentSum < newTarget)
+            else if (currentSum &lt; newTarget)
             {
                 left++;
             }
@@ -290,40 +366,60 @@
     }
 
     return false;
-}</div>
-                                <button data-code-id="code-triplet-sum" class="gemini-explain-btn mt-4 w-full flex items-center justify-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
-                                    <span>✨ Explain Code with Gemini</span>
-                                </button>
-                                <div id="explanation-code-triplet-sum" class="gemini-explanation hidden"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Remove Duplicates Content -->
-                    <div id="remove-duplicates" class="tab-panel hidden">
-                         <h3 class="text-xl font-medium mb-2">Problem: Remove Duplicates from Sorted Array</h3>
-                        <p class="mb-4 text-gray-600">Given a sorted array `nums`, remove the duplicates in-place such that each unique element appears only once. Return the new length of the array.</p>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div>
-                                <h4 class="font-semibold mb-4">Interactive Visualizer</h4>
-                                <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
-                                    <div>
-                                        <label for="duplicates-array" class="block text-sm font-medium text-gray-700">Sorted Array (comma-separated)</label>
-                                        <input type="text" id="duplicates-array" value="0, 0, 1, 1, 1, 2, 2, 3, 3, 4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                    </div>
-                                    <button id="run-duplicates" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">Run Simulation</button>
-                                </div>
-                                <div id="duplicates-viz-container" class="array-container mt-4"></div>
-                                 <div class="mt-4">
-                                    <h5 class="font-semibold text-sm mb-1">Log:</h5>
-                                    <div id="duplicates-log" class="log-area"></div>
-                                </div>
-                                <div id="duplicates-result" class="mt-4 font-bold text-center"></div>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold mb-4">C# Solution</h4>
-                                <div class="code-block" id="code-remove-duplicates">public int RemoveDuplicates(int[] nums)
+}
+         </div>
+         <button class="gemini-explain-btn mt-4 w-full flex items-center justify-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors" data-code-id="code-triplet-sum">
+          <span>
+           ✨ Explain Code with Gemini
+          </span>
+         </button>
+         <div class="gemini-explanation hidden" id="explanation-code-triplet-sum">
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- Remove Duplicates Content -->
+      <div class="tab-panel hidden" id="remove-duplicates">
+       <h3 class="text-xl font-medium mb-2">
+        Problem: Remove Duplicates from Sorted Array
+       </h3>
+       <p class="mb-4 text-gray-600">
+        Given a sorted array `nums`, remove the duplicates in-place such that each unique element appears only once. Return the new length of the array.
+       </p>
+       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+         <h4 class="font-semibold mb-4">
+          Interactive Visualizer
+         </h4>
+         <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
+          <div>
+           <label class="block text-sm font-medium text-gray-700" for="duplicates-array">
+            Sorted Array (comma-separated)
+           </label>
+           <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" id="duplicates-array" type="text" value="0, 0, 1, 1, 1, 2, 2, 3, 3, 4">
+          </div>
+          <button class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" id="run-duplicates">
+           Run Simulation
+          </button>
+         </div>
+         <div class="array-container mt-4" id="duplicates-viz-container">
+         </div>
+         <div class="mt-4">
+          <h5 class="font-semibold text-sm mb-1">
+           Log:
+          </h5>
+          <div class="log-area" id="duplicates-log">
+          </div>
+         </div>
+         <div class="mt-4 font-bold text-center" id="duplicates-result">
+         </div>
+        </div>
+        <div>
+         <h4 class="font-semibold mb-4">
+          C# Solution
+         </h4>
+         <div class="code-block" id="code-remove-duplicates">
+          public int RemoveDuplicates(int[] nums)
 {
     if (nums.Length == 0)
     {
@@ -334,7 +430,7 @@
     int i = 0;
 
     // 'j' is the fast-runner pointer
-    for (int j = 1; j < nums.Length; j++)
+    for (int j = 1; j &lt; nums.Length; j++)
     {
         if (nums[j] != nums[i])
         {
@@ -345,38 +441,48 @@
 
     // The new length is i + 1
     return i + 1;
-}</div>
-                                <button data-code-id="code-remove-duplicates" class="gemini-explain-btn mt-4 w-full flex items-center justify-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
-                                    <span>✨ Explain Code with Gemini</span>
-                                </button>
-                                <div id="explanation-code-remove-duplicates" class="gemini-explanation hidden"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="gemini-practice" class="mt-12 bg-white p-6 rounded-lg shadow-sm">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-900 text-center">Practice with Gemini</h2>
-                <p class="text-center text-gray-600 mb-6">Ready for a new challenge? Let Gemini generate a unique practice problem for you.</p>
-                <div class="max-w-2xl mx-auto">
-                    <button id="generate-problem-btn" class="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-bold py-3 px-4 rounded-md hover:bg-green-700 transition-colors">
-                        <span>✨ Generate a New Problem</span>
-                    </button>
-                    <div id="gemini-problem-container" class="gemini-explanation hidden mt-6"></div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <footer class="bg-stone-800 text-white mt-12 py-6">
-        <div class="container mx-auto px-4 text-center max-w-5xl">
-            <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
+}
+         </div>
+         <button class="gemini-explain-btn mt-4 w-full flex items-center justify-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors" data-code-id="code-remove-duplicates">
+          <span>
+           ✨ Explain Code with Gemini
+          </span>
+         </button>
+         <div class="gemini-explanation hidden" id="explanation-code-remove-duplicates">
+         </div>
         </div>
-    </footer>
-
-    <script>
-        // --- Existing Tab and Simulation Logic ---
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="mt-12 bg-white p-6 rounded-lg shadow-sm" id="gemini-practice">
+     <h2 class="text-2xl font-semibold mb-4 text-gray-900 text-center">
+      Practice with Gemini
+     </h2>
+     <p class="text-center text-gray-600 mb-6">
+      Ready for a new challenge? Let Gemini generate a unique practice problem for you.
+     </p>
+     <div class="max-w-2xl mx-auto">
+      <button class="w-full flex items-center justify-center gap-2 bg-green-600 text-white font-bold py-3 px-4 rounded-md hover:bg-green-700 transition-colors" id="generate-problem-btn">
+       <span>
+        ✨ Generate a New Problem
+       </span>
+      </button>
+      <div class="gemini-explanation hidden mt-6" id="gemini-problem-container">
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   // --- Existing Tab and Simulation Logic ---
         const tabs = document.querySelectorAll('.tab-btn');
         const tabPanels = document.querySelectorAll('.tab-panel');
 
@@ -730,7 +836,6 @@
             problemContainer.innerHTML = `<h5>✨ New Practice Problem</h5>${simpleMarkdownToHtml(problemText)}`;
             setButtonLoading(generateProblemBtn, false);
         });
-
-    </script>
-</body>
+  </script>
+ </body>
 </html>

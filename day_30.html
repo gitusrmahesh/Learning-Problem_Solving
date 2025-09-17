@@ -1,17 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive 30-Day Problem Solving Roadmap</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Harmony Neutrals -->
-    <!-- Application Structure Plan: The application is designed as a daily learning planner. It uses a persistent, collapsible sidebar for navigation, allowing users to easily jump between the 30 days, which are grouped by week. The main content area is dynamically updated. This structure was chosen because the source report is a curriculum, and this layout provides a clear, non-linear way to access daily lessons. Each day's content is presented in distinct cards for 'Concepts' and 'Practice Problems', with interactive 'Show/Hide Solution' toggles. This modular, interactive approach is superior to a static document for a learning-focused goal, as it encourages active engagement and self-assessment. -->
-    <!-- Visualization & Content Choices: The report is conceptual, focusing on algorithms and techniques rather than quantitative data. Therefore, complex charts are unnecessary. Instead, the focus is on clear textual explanations and code examples. Report Info: Kadane's Algorithm -> Goal: Explain the algorithm -> Viz/Presentation Method: A dedicated content card with a step-by-step text explanation of the logic. -> Interaction: An interactive "Maximum Subarray Sum" problem with a hidden solution. -> Justification: This approach makes abstract algorithms concrete and testable for the user. Similarly, concepts like Sliding Window are explained with text and an illustrative problem. This method supports the educational structure without needing graphical libraries. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Interactive 30-Day Problem Solving Roadmap
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Calm Harmony Neutrals -->
+  <!-- Application Structure Plan: The application is designed as a daily learning planner. It uses a persistent, collapsible sidebar for navigation, allowing users to easily jump between the 30 days, which are grouped by week. The main content area is dynamically updated. This structure was chosen because the source report is a curriculum, and this layout provides a clear, non-linear way to access daily lessons. Each day's content is presented in distinct cards for 'Concepts' and 'Practice Problems', with interactive 'Show/Hide Solution' toggles. This modular, interactive approach is superior to a static document for a learning-focused goal, as it encourages active engagement and self-assessment. -->
+  <!-- Visualization & Content Choices: The report is conceptual, focusing on algorithms and techniques rather than quantitative data. Therefore, complex charts are unnecessary. Instead, the focus is on clear textual explanations and code examples. Report Info: Kadane's Algorithm -> Goal: Explain the algorithm -> Viz/Presentation Method: A dedicated content card with a step-by-step text explanation of the logic. -> Interaction: An interactive "Maximum Subarray Sum" problem with a hidden solution. -> Justification: This approach makes abstract algorithms concrete and testable for the user. Similarly, concepts like Sliding Window are explained with text and an illustrative problem. This method supports the educational structure without needing graphical libraries. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
             font-family: 'Inter', sans-serif;
             background-color: #F8F7F4; 
             color: #3D3D3D;
@@ -64,48 +68,58 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #B6A99A;
         }
-    </style>
-
-</head>
-<body class="flex flex-col h-screen overflow-hidden">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=5" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=5">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Interactive 30-Day Problem Solving Roadmap</p>
-</div>
-</div>
-    <div class="bg-white shadow-sm z-30 border-b border-gray-200">
-        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-[#6D5B4F]">Intermediate Problem Solving Roadmap</h1>
-            <button id="menu-toggle" class="md:hidden p-2 rounded-md">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-        </div>
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Interactive 30-Day Problem Solving Roadmap
+    </p>
+   </div>
+  </div>
+  <div class="bg-white shadow-sm z-30 border-b border-gray-200">
+   <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-[#6D5B4F]">
+     Intermediate Problem Solving Roadmap
+    </h1>
+    <button class="md:hidden p-2 rounded-md" id="menu-toggle">
+     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      </path>
+     </svg>
+    </button>
+   </div>
+  </div>
+  <div class="flex flex-1 overflow-hidden">
+   <aside class="w-64 bg-white border-r border-gray-200 p-4 flex-shrink-0 h-full overflow-y-auto transition-transform duration-300 ease-in-out md:translate-x-0 -translate-x-full absolute md:relative z-20" id="sidebar">
+    <h2 class="text-xl font-bold text-[#6D5B4F] mb-6">
+     Daily Roadmap
+    </h2>
+    <nav class="space-y-4" id="roadmap-nav">
+    </nav>
+   </aside>
+   <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+    <div class="max-w-7xl mx-auto" id="content-area">
     </div>
-
-    <div class="flex flex-1 overflow-hidden">
-        <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 p-4 flex-shrink-0 h-full overflow-y-auto transition-transform duration-300 ease-in-out md:translate-x-0 -translate-x-full absolute md:relative z-20">
-            <h2 class="text-xl font-bold text-[#6D5B4F] mb-6">Daily Roadmap</h2>
-            <nav id="roadmap-nav" class="space-y-4">
-            </nav>
-        </aside>
-
-        <main class="flex-1 p-4 md:p-8 overflow-y-auto">
-            <div id="content-area" class="max-w-7xl mx-auto">
-            </div>
-        </main>
-    </div>
-    
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-    </div>
-</footer>
-    <script>
-        const roadmapData = {
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const roadmapData = {
             "Week 1: Foundations & Complexity": {
                 days: {
                     "Day 1": { title: "Introduction to Problem Solving", intro: "Today's focus is on deconstructing problems effectively. We'll learn how to analyze problem statements, identify core requirements, and differentiate between a quick solution and an efficient one.", 
@@ -341,8 +355,6 @@
         const firstDay = Object.keys(roadmapData[firstWeek].days)[0];
         renderContent(firstWeek, firstDay);
         updateActiveLink(firstWeek, firstDay);
-
-    </script>
-</body>
+  </script>
+ </body>
 </html>
-

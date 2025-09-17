@@ -1,18 +1,22 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 7: Review & Revision</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Neutrals -->
-    <!-- Application Structure Plan: The application is structured as a single-page, tabbed interface with three main sections: Complexity Analysis, Dry Runs, and Debugging. This non-linear, thematic structure was chosen to allow users to easily switch between core review topics without scrolling. It promotes focused learning on one concept at a time. User flow is driven by the main navigation, leading to interactive components within each section (code analyzers, a step-by-step simulator, and bug-fixing challenges) designed to actively engage the user in the learning process, which is more effective for a "review" day than passive reading. -->
-    <!-- Visualization & Content Choices: Report Info: C# examples for Complexity, Dry Runs, Debugging. -> Goal: Teach, Compare, and Demonstrate Process. -> Viz/Presentation Method: Interactive code blocks, step-through simulations with state tables, and hint/reveal challenges, all built with structured HTML/CSS. -> Interaction: Users click buttons to reveal analysis, step through code execution, and get hints for bugs. -> Justification: These interactive elements turn passive code examples into active learning exercises, reinforcing the concepts more effectively than static text. For instance, the dry-run simulator forces the user to trace logic step-by-step, mimicking the manual skill itself. -> Library/Method: Vanilla JavaScript for all interactions and DOM manipulation. No charts are needed, hence no charting libraries. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .tab-active {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 7: Review & Revision
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Calm Neutrals -->
+  <!-- Application Structure Plan: The application is structured as a single-page, tabbed interface with three main sections: Complexity Analysis, Dry Runs, and Debugging. This non-linear, thematic structure was chosen to allow users to easily switch between core review topics without scrolling. It promotes focused learning on one concept at a time. User flow is driven by the main navigation, leading to interactive components within each section (code analyzers, a step-by-step simulator, and bug-fixing challenges) designed to actively engage the user in the learning process, which is more effective for a "review" day than passive reading. -->
+  <!-- Visualization & Content Choices: Report Info: C# examples for Complexity, Dry Runs, Debugging. -> Goal: Teach, Compare, and Demonstrate Process. -> Viz/Presentation Method: Interactive code blocks, step-through simulations with state tables, and hint/reveal challenges, all built with structured HTML/CSS. -> Interaction: Users click buttons to reveal analysis, step through code execution, and get hints for bugs. -> Justification: These interactive elements turn passive code examples into active learning exercises, reinforcing the concepts more effectively than static text. For instance, the dry-run simulator forces the user to trace logic step-by-step, mimicking the manual skill itself. -> Library/Method: Vanilla JavaScript for all interactions and DOM manipulation. No charts are needed, hence no charting libraries. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   .tab-active {
             background-color: #0d9488;
             color: #ffffff;
             font-weight: 600;
@@ -45,44 +49,60 @@
         .btn-secondary:hover {
             background-color: #d1d5db;
         }
-    </style>
-
-</head>
-<body>
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=1" class="jules-return-button">
+  </style>
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=1">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 7: Review & Revision</p>
-</div>
-</div>
-    <div class="container mx-auto p-4 md:p-8">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-teal-700">30-Day Problem Solving Roadmap</h1>
-            <p class="text-xl mt-2 text-stone-600">Day 7: Review & Revision</p>
-        </div>
-
-        <nav class="flex justify-center mb-8 rounded-lg shadow-sm bg-white p-2 space-x-2">
-            <button id="nav-complexity" class="tab-button flex-1 py-3 px-4 rounded-md transition-colors duration-300 text-sm sm:text-base">Complexity Analysis</button>
-            <button id="nav-dryrun" class="tab-button flex-1 py-3 px-4 rounded-md transition-colors duration-300 text-sm sm:text-base">Dry Runs</button>
-            <button id="nav-debugging" class="tab-button flex-1 py-3 px-4 rounded-md transition-colors duration-300 text-sm sm:text-base">Debugging</button>
-        </nav>
-
-        <main id="content-container">
-            <!-- Complexity Analysis Section -->
-            <section id="content-complexity" class="content-section bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-semibold text-teal-800 mb-4">Understanding Complexity</h2>
-                <p class="mb-6 text-stone-700">Complexity analysis helps us predict how an algorithm's resource usage (like time or memory) scales with the size of the input. Choosing an efficient algorithm is often the most critical step in problem-solving. This section allows you to compare two different approaches to the same problem and see how their complexities differ dramatically.</p>
-
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h3 class="text-lg font-medium mb-2">Approach 1: Brute Force O(n²)</h3>
-                        <div class="code-block">
-<pre>public int[] TwoSum_BruteForce(int[] nums, int target) {
-  for (int i = 0; i < nums.Length; i++) {
-    for (int j = i + 1; j < nums.Length; j++) {
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 7: Review & Revision
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 md:p-8">
+   <div class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-teal-700">
+     30-Day Problem Solving Roadmap
+    </h1>
+    <p class="text-xl mt-2 text-stone-600">
+     Day 7: Review & Revision
+    </p>
+   </div>
+   <nav class="flex justify-center mb-8 rounded-lg shadow-sm bg-white p-2 space-x-2">
+    <button class="tab-button flex-1 py-3 px-4 rounded-md transition-colors duration-300 text-sm sm:text-base" id="nav-complexity">
+     Complexity Analysis
+    </button>
+    <button class="tab-button flex-1 py-3 px-4 rounded-md transition-colors duration-300 text-sm sm:text-base" id="nav-dryrun">
+     Dry Runs
+    </button>
+    <button class="tab-button flex-1 py-3 px-4 rounded-md transition-colors duration-300 text-sm sm:text-base" id="nav-debugging">
+     Debugging
+    </button>
+   </nav>
+   <main id="content-container">
+    <!-- Complexity Analysis Section -->
+    <section class="content-section bg-white p-6 rounded-lg shadow-md" id="content-complexity">
+     <h2 class="text-2xl font-semibold text-teal-800 mb-4">
+      Understanding Complexity
+     </h2>
+     <p class="mb-6 text-stone-700">
+      Complexity analysis helps us predict how an algorithm's resource usage (like time or memory) scales with the size of the input. Choosing an efficient algorithm is often the most critical step in problem-solving. This section allows you to compare two different approaches to the same problem and see how their complexities differ dramatically.
+     </p>
+     <div class="grid md:grid-cols-2 gap-6">
+      <div>
+       <h3 class="text-lg font-medium mb-2">
+        Approach 1: Brute Force O(n&sup2;)
+       </h3>
+       <div class="code-block">
+        <pre>public int[] TwoSum_BruteForce(int[] nums, int target) {
+  for (int i = 0; i &lt; nums.Length; i++) {
+    for (int j = i + 1; j &lt; nums.Length; j++) {
       if (nums[i] + nums[j] == target) {
         return new int[] { i, j };
       }
@@ -90,15 +110,19 @@
   }
   return null;
 }</pre>
-                        </div>
-                        <button onclick="showComplexity('n2')" class="btn mt-4 w-full">Analyze Complexity</button>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium mb-2">Approach 2: Optimized O(n)</h3>
-                        <div class="code-block">
-<pre>public int[] TwoSum_Optimized(int[] nums, int target) {
+       </div>
+       <button class="btn mt-4 w-full" onclick="showComplexity('n2')">
+        Analyze Complexity
+       </button>
+      </div>
+      <div>
+       <h3 class="text-lg font-medium mb-2">
+        Approach 2: Optimized O(n)
+       </h3>
+       <div class="code-block">
+        <pre>public int[] TwoSum_Optimized(int[] nums, int target) {
   var map = new Dictionary&lt;int, int&gt;();
-  for (int i = 0; i < nums.Length; i++) {
+  for (int i = 0; i &lt; nums.Length; i++) {
     int complement = target - nums[i];
     if (map.ContainsKey(complement)) {
       return new int[] { map[complement], i };
@@ -107,84 +131,126 @@
   }
   return null;
 }</pre>
-                        </div>
-                        <button onclick="showComplexity('n')" class="btn mt-4 w-full">Analyze Complexity</button>
-                    </div>
-                </div>
-
-                <div id="complexity-explanation" class="mt-6 p-4 bg-stone-100 rounded-lg hidden">
-                    <h4 id="explanation-title" class="font-semibold text-lg mb-2"></h4>
-                    <p id="explanation-text"></p>
-                </div>
-            </section>
-
-            <!-- Dry Run Section -->
-            <section id="content-dryrun" class="content-section hidden bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-semibold text-teal-800 mb-4">The Art of the Dry Run</h2>
-                <p class="mb-6 text-stone-700">A dry run is the process of manually tracing your code's execution with a specific input, step by step. This is an invaluable skill for verifying your logic before you even write code and for finding subtle bugs that are hard to spot. Use the simulator below to walk through an iterative function and observe how variables change at each step.</p>
-
-                <div class="grid md:grid-cols-2 gap-6 items-start">
-                    <div>
-                        <h3 class="text-lg font-medium mb-2">C# Function: Iterative Factorial</h3>
-                        <div id="dryrun-code" class="code-block">
-<pre>
+       </div>
+       <button class="btn mt-4 w-full" onclick="showComplexity('n')">
+        Analyze Complexity
+       </button>
+      </div>
+     </div>
+     <div class="mt-6 p-4 bg-stone-100 rounded-lg hidden" id="complexity-explanation">
+      <h4 class="font-semibold text-lg mb-2" id="explanation-title">
+      </h4>
+      <p id="explanation-text">
+      </p>
+     </div>
+    </section>
+    <!-- Dry Run Section -->
+    <section class="content-section hidden bg-white p-6 rounded-lg shadow-md" id="content-dryrun">
+     <h2 class="text-2xl font-semibold text-teal-800 mb-4">
+      The Art of the Dry Run
+     </h2>
+     <p class="mb-6 text-stone-700">
+      A dry run is the process of manually tracing your code's execution with a specific input, step by step. This is an invaluable skill for verifying your logic before you even write code and for finding subtle bugs that are hard to spot. Use the simulator below to walk through an iterative function and observe how variables change at each step.
+     </p>
+     <div class="grid md:grid-cols-2 gap-6 items-start">
+      <div>
+       <h3 class="text-lg font-medium mb-2">
+        C# Function: Iterative Factorial
+       </h3>
+       <div class="code-block" id="dryrun-code">
+        <pre>
 <span id="line-1">public int Factorial(int n) {</span>
 <span id="line-2">  int result = 1;</span>
-<span id="line-3">  for (int i = 1; i <= n; i++) {</span>
+<span id="line-3">  for (int i = 1; i &lt;= n; i++) {</span>
 <span id="line-4">    result = result * i;</span>
 <span id="line-5">  }</span>
 <span id="line-6">  return result;</span>
 <span id="line-7">}</span>
 </pre>
-                        </div>
-                        <div class="mt-4 flex space-x-2">
-                           <button id="dryrun-next" class="btn flex-1">Next Step</button>
-                           <button id="dryrun-reset" class="btn btn-secondary flex-1">Reset (Input = 4)</button>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium mb-2">Variable State</h3>
-                        <div class="p-4 bg-stone-100 rounded-lg">
-                             <p class="mb-2"><strong>Input:</strong> n = 4</p>
-                            <table class="w-full text-left">
-                                <thead class="border-b-2 border-stone-300">
-                                    <tr>
-                                        <th class="py-1">Variable</th>
-                                        <th class="py-1">Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td class="py-1">result</td><td id="var-result" class="font-mono">?</td></tr>
-                                    <tr><td class="py-1">i</td><td id="var-i" class="font-mono">?</td></tr>
-                                </tbody>
-                            </table>
-                            <h4 class="font-medium mt-4">Current Line</h4>
-                            <p id="current-line-text" class="text-stone-600">Not started</p>
-                        </div>
-                    </div>
-                </div>
-
-            </section>
-
-            <!-- Debugging Section -->
-            <section id="content-debugging" class="content-section hidden bg-white p-6 rounded-lg shadow-md">
-                 <h2 class="text-2xl font-semibold text-teal-800 mb-4">Systematic Debugging</h2>
-                <p class="mb-6 text-stone-700">Debugging isn't just about staring at code until you find the mistake. It's a systematic process of forming a hypothesis, testing it, and narrowing down the problem. Below are examples of common bugs. Analyze the code, try to spot the issue, and then use the buttons to get a hint or see the corrected version.</p>
-
-                <div id="bug-container">
-                    <!-- Bug examples will be injected here by JS -->
-                </div>
-            </section>
-        </main>
-    </div>
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-    </div>
-</footer>
-
-    <script>
-        const navButtons = {
+       </div>
+       <div class="mt-4 flex space-x-2">
+        <button class="btn flex-1" id="dryrun-next">
+         Next Step
+        </button>
+        <button class="btn btn-secondary flex-1" id="dryrun-reset">
+         Reset (Input = 4)
+        </button>
+       </div>
+      </div>
+      <div>
+       <h3 class="text-lg font-medium mb-2">
+        Variable State
+       </h3>
+       <div class="p-4 bg-stone-100 rounded-lg">
+        <p class="mb-2">
+         <strong>
+          Input:
+         </strong>
+         n = 4
+        </p>
+        <table class="w-full text-left">
+         <thead class="border-b-2 border-stone-300">
+          <tr>
+           <th class="py-1">
+            Variable
+           </th>
+           <th class="py-1">
+            Value
+           </th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="py-1">
+            result
+           </td>
+           <td class="font-mono" id="var-result">
+            ?
+           </td>
+          </tr>
+          <tr>
+           <td class="py-1">
+            i
+           </td>
+           <td class="font-mono" id="var-i">
+            ?
+           </td>
+          </tr>
+         </tbody>
+        </table>
+        <h4 class="font-medium mt-4">
+         Current Line
+        </h4>
+        <p class="text-stone-600" id="current-line-text">
+         Not started
+        </p>
+       </div>
+      </div>
+     </div>
+    </section>
+    <!-- Debugging Section -->
+    <section class="content-section hidden bg-white p-6 rounded-lg shadow-md" id="content-debugging">
+     <h2 class="text-2xl font-semibold text-teal-800 mb-4">
+      Systematic Debugging
+     </h2>
+     <p class="mb-6 text-stone-700">
+      Debugging isn't just about staring at code until you find the mistake. It's a systematic process of forming a hypothesis, testing it, and narrowing down the problem. Below are examples of common bugs. Analyze the code, try to spot the issue, and then use the buttons to get a hint or see the corrected version.
+     </p>
+     <div id="bug-container">
+      <!-- Bug examples will be injected here by JS -->
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const navButtons = {
             complexity: document.getElementById('nav-complexity'),
             dryrun: document.getElementById('nav-dryrun'),
             debugging: document.getElementById('nav-debugging')
@@ -387,6 +453,6 @@
             switchTab('complexity');
             resetDryRun();
         };
-    </script>
-</body>
+  </script>
+ </body>
 </html>

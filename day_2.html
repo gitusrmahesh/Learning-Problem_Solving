@@ -1,23 +1,28 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Complexity Interactive Guide</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Cool Slate & Blue -->
-    <!-- Application Structure Plan: The application is structured as a single-page interactive learning module. The design prioritizes a logical, educational flow over mirroring a linear report. It starts with a basic definition, then allows users to explore different Big O notations in a non-linear fashion via an interactive tabbed section. This is followed by a powerful visual comparison tool (a dynamic chart) to solidify understanding of relative performance. The module concludes with a hands-on practice section with immediate feedback. This structure was chosen because it facilitates self-paced, discovery-based learning, allowing users to compare concepts, visualize their impact, and then immediately apply their knowledge, which is a highly effective educational model. -->
-    <!-- Visualization & Content Choices:
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Time Complexity Interactive Guide
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Cool Slate & Blue -->
+  <!-- Application Structure Plan: The application is structured as a single-page interactive learning module. The design prioritizes a logical, educational flow over mirroring a linear report. It starts with a basic definition, then allows users to explore different Big O notations in a non-linear fashion via an interactive tabbed section. This is followed by a powerful visual comparison tool (a dynamic chart) to solidify understanding of relative performance. The module concludes with a hands-on practice section with immediate feedback. This structure was chosen because it facilitates self-paced, discovery-based learning, allowing users to compare concepts, visualize their impact, and then immediately apply their knowledge, which is a highly effective educational model. -->
+  <!-- Visualization & Content Choices:
         - Report Info: Core concepts of O(1), O(n), O(log n), O(n²). Goal: Inform & Compare. Viz/Presentation: Interactive tabs with text, C# code snippets, and individual Chart.js line charts. Interaction: Clicking tabs reveals relevant content and updates the chart. Justification: This breaks down complex topics into digestible chunks and provides immediate visual context for each. Library: Chart.js (Canvas).
         - Report Info: Relative performance of different complexities. Goal: Compare. Viz/Presentation: A single, large Chart.js line chart plotting all complexities. Interaction: A slider allows the user to adjust the input size 'n', dynamically updating plotted values and a summary table. Justification: This is the most effective way to demonstrate the dramatic differences in scalability. Library: Chart.js (Canvas).
         - Report Info: Practice problems. Goal: Engage & Test. Viz/Presentation: A series of cards with code snippets and multiple-choice buttons. Interaction: Users click a button to answer; immediate feedback and detailed explanations are revealed. Justification: Active recall and immediate feedback are proven methods for reinforcing learning. Method: HTML/CSS/JS.
     -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .code-block .keyword { color: #93c5fd; }
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   .code-block .keyword { color: #93c5fd; }
         .code-block .type { color: #86efac; }
         .code-block .comment { color: #9ca3af; }
         .code-block .string { color: #fde047; }
@@ -45,90 +50,128 @@
             color: white;
             border-color: #3b82f6;
         }
-    </style>
-
-</head>
-<body>
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=1" class="jules-return-button">
+  </style>
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=1">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Time Complexity Interactive Guide</p>
-</div>
-</div>
-
-    <div class="bg-white shadow-sm sticky top-0 z-10">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <h1 class="text-2xl font-bold text-slate-800">Time Complexity Guide</h1>
-                <div class="hidden md:flex items-center space-x-2">
-                    <a href="#introduction" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100">Introduction</a>
-                    <a href="#explorer" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100">Big O Explorer</a>
-                    <a href="#comparison" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100">Comparison</a>
-                    <a href="#practice" class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100">Practice</a>
-                </div>
-            </div>
-        </nav>
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Time Complexity Interactive Guide
+    </p>
+   </div>
+  </div>
+  <div class="bg-white shadow-sm sticky top-0 z-10">
+   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center py-4">
+     <h1 class="text-2xl font-bold text-slate-800">
+      Time Complexity Guide
+     </h1>
+     <div class="hidden md:flex items-center space-x-2">
+      <a class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100" href="#introduction">
+       Introduction
+      </a>
+      <a class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100" href="#explorer">
+       Big O Explorer
+      </a>
+      <a class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100" href="#comparison">
+       Comparison
+      </a>
+      <a class="nav-button px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100" href="#practice">
+       Practice
+      </a>
+     </div>
     </div>
-
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
-        <section id="introduction" class="mb-16 scroll-mt-24">
-            <div class="bg-white rounded-xl shadow-lg p-8">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">What is Time Complexity?</h2>
-                <p class="text-lg text-slate-600 mb-4">Time complexity isn't about measuring the exact time an algorithm takes to run. Instead, it's about how the runtime of an algorithm grows as the size of the input grows. We use a notation called **Big O** to describe this relationship.</p>
-                <p class="text-lg text-slate-600">Think of it like this: if you double the input data, does the time it takes to run the algorithm also double? Does it quadruple? Or does it barely change at all? Big O notation gives us a standardized way to talk about these growth rates, helping us compare the efficiency of different solutions to a problem.</p>
-            </div>
-        </section>
-
-        <section id="explorer" class="mb-16 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-center text-slate-900 mb-2">Big O Explorer</h2>
-            <p class="text-lg text-center text-slate-600 mb-8">Click on a complexity type to see how it works, its C# code, and a visual of its growth.</p>
-
-            <div class="flex justify-center flex-wrap gap-2 mb-8">
-                <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="o1">O(1) - Constant</button>
-                <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="on">O(n) - Linear</button>
-                <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="ologn">O(log n) - Logarithmic</button>
-                <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="on2">O(n²) - Quadratic</button>
-            </div>
-
-            <div id="explorer-content" class="bg-white rounded-xl shadow-lg p-6 md:p-8">
-            </div>
-        </section>
-
-        <section id="comparison" class="mb-16 scroll-mt-24">
-             <h2 class="text-3xl font-bold text-center text-slate-900 mb-2">Visual Growth Comparison</h2>
-            <p class="text-lg text-center text-slate-600 mb-8">Use the slider to see how the number of operations changes for each complexity as the input size ('n') increases.</p>
-            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
-                <div class="chart-container mb-8">
-                    <canvas id="comparisonChart"></canvas>
-                </div>
-                <div class="flex flex-col items-center">
-                    <label for="n-slider" class="font-medium mb-2">Input Size (n): <span id="n-value-label" class="font-bold text-blue-600">50</span></label>
-                    <input id="n-slider" type="range" min="1" max="100" value="50" class="w-full max-w-lg">
-                </div>
-                 <div id="comparison-table" class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                </div>
-            </div>
-        </section>
-
-        <section id="practice" class="scroll-mt-24">
-            <h2 class="text-3xl font-bold text-center text-slate-900 mb-2">Practice Problems</h2>
-            <p class="text-lg text-center text-slate-600 mb-8">Analyze the C# code snippets below and determine their time complexity.</p>
-            <div id="practice-container" class="space-y-8">
-            </div>
-        </section>
-    </main>
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
+   </nav>
+  </div>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+   <section class="mb-16 scroll-mt-24" id="introduction">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+     <h2 class="text-3xl font-bold text-slate-900 mb-4">
+      What is Time Complexity?
+     </h2>
+     <p class="text-lg text-slate-600 mb-4">
+      Time complexity isn't about measuring the exact time an algorithm takes to run. Instead, it's about how the runtime of an algorithm grows as the size of the input grows. We use a notation called **Big O** to describe this relationship.
+     </p>
+     <p class="text-lg text-slate-600">
+      Think of it like this: if you double the input data, does the time it takes to run the algorithm also double? Does it quadruple? Or does it barely change at all? Big O notation gives us a standardized way to talk about these growth rates, helping us compare the efficiency of different solutions to a problem.
+     </p>
     </div>
-</footer>
-
-    <script>
-        const contentData = {
+   </section>
+   <section class="mb-16 scroll-mt-24" id="explorer">
+    <h2 class="text-3xl font-bold text-center text-slate-900 mb-2">
+     Big O Explorer
+    </h2>
+    <p class="text-lg text-center text-slate-600 mb-8">
+     Click on a complexity type to see how it works, its C# code, and a visual of its growth.
+    </p>
+    <div class="flex justify-center flex-wrap gap-2 mb-8">
+     <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="o1">
+      O(1) - Constant
+     </button>
+     <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="on">
+      O(n) - Linear
+     </button>
+     <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="ologn">
+      O(log n) - Logarithmic
+     </button>
+     <button class="tab-button border border-slate-300 px-4 py-2 rounded-md font-medium text-slate-700 hover:bg-blue-500 hover:text-white" data-complexity="on2">
+      O(n&sup2;) - Quadratic
+     </button>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg p-6 md:p-8" id="explorer-content">
+    </div>
+   </section>
+   <section class="mb-16 scroll-mt-24" id="comparison">
+    <h2 class="text-3xl font-bold text-center text-slate-900 mb-2">
+     Visual Growth Comparison
+    </h2>
+    <p class="text-lg text-center text-slate-600 mb-8">
+     Use the slider to see how the number of operations changes for each complexity as the input size ('n') increases.
+    </p>
+    <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+     <div class="chart-container mb-8">
+      <canvas id="comparisonChart">
+      </canvas>
+     </div>
+     <div class="flex flex-col items-center">
+      <label class="font-medium mb-2" for="n-slider">
+       Input Size (n):
+       <span class="font-bold text-blue-600" id="n-value-label">
+        50
+       </span>
+      </label>
+      <input class="w-full max-w-lg" id="n-slider" max="100" min="1" type="range" value="50">
+     </div>
+     <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center" id="comparison-table">
+     </div>
+    </div>
+   </section>
+   <section class="scroll-mt-24" id="practice">
+    <h2 class="text-3xl font-bold text-center text-slate-900 mb-2">
+     Practice Problems
+    </h2>
+    <p class="text-lg text-center text-slate-600 mb-8">
+     Analyze the C# code snippets below and determine their time complexity.
+    </p>
+    <div class="space-y-8" id="practice-container">
+    </div>
+   </section>
+  </main>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const contentData = {
             o1: {
                 title: 'O(1) - Constant Time',
                 description: "An algorithm has constant time complexity if its execution time does not depend on the input size 'n'. No matter how large the input, the time it takes to run will always be the same. This is the most efficient complexity.",
@@ -479,7 +522,6 @@
             setupComparisonChart();
             setupPracticeProblems();
         });
-
-    </script>
-</body>
+  </script>
+ </body>
 </html>

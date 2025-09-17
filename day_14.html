@@ -1,16 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 14: Arrays Contest - Intermediate Problem Solving</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 14: Arrays Contest - Intermediate Problem Solving
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+   :root {
             --bg-color: #FDFCFB;
             --sidebar-bg: #F5F3EF;
             --border-color: #EAE8E2;
@@ -36,158 +41,330 @@
         .solution-content.open { max-height: 3000px; padding-top: 1.5rem; padding-bottom: 1.5rem; }
         .nav-link.active { background-color: var(--border-color); font-weight: 600; color: var(--text-primary); }
         .contest-mode .solution-details, .contest-mode .reveal-btn { display: none; }
-    </style>
-
-</head>
-<body class="antialiased">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=2" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=2">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 14: Arrays Contest</p>
-</div>
-</div>
-    <!-- Chosen Palette: Warm Earth Tones -->
-    <!-- Application Structure Plan: The app is a guided learning module with an optional "Contest Mode". A sticky sidebar provides navigation and progress tracking. The main content area features an introduction, a technique refresher, an accordion of four problems, and a final summary. Contest Mode adds a timer, a code editor, and initially hides solutions to simulate a test environment. A reset button appears after a mode is selected to provide an easy way back to the start. This structure allows for both guided learning and self-assessment, enhancing user engagement and skill retention. -->
-    <!-- Visualization & Content Choices:
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 14: Arrays Contest - Intermediate Problem Solving
+    </p>
+   </div>
+  </div>
+  <!-- Chosen Palette: Warm Earth Tones -->
+  <!-- Application Structure Plan: The app is a guided learning module with an optional "Contest Mode". A sticky sidebar provides navigation and progress tracking. The main content area features an introduction, a technique refresher, an accordion of four problems, and a final summary. Contest Mode adds a timer, a code editor, and initially hides solutions to simulate a test environment. A reset button appears after a mode is selected to provide an easy way back to the start. This structure allows for both guided learning and self-assessment, enhancing user engagement and skill retention. -->
+  <!-- Visualization & Content Choices:
         - Contest Mode: Inform/Engage -> Timer, code editor, & solution hiding -> JS -> Simulates a timed test for practice under pressure.
         - Progress Bar: Inform -> Dynamic sidebar bar -> JS on scroll -> Provides clear visual feedback on completion.
         - P1-P4 Visualizations: Compare/Change/Organize -> Interactive Charts/HTML nodes/Tables -> Chart.js & Vanilla JS -> Step-by-step visualizations clarify algorithm execution.
         - Summary Section: Inform -> Static text -> HTML/CSS -> Reinforces key takeaways from all problems in one place.
         - Reset Button: Navigation -> Reverts UI to initial state -> JS -> Allows users to easily restart or switch modes.
     -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <div id="app" class="flex flex-col md:flex-row min-h-screen">
-        <aside class="w-full md:w-72 bg-[--sidebar-bg] p-6 border-b md:border-r border-[--border-color] flex-shrink-0 md:sticky top-0 h-screen flex flex-col">
-            <h1 class="text-2xl font-bold text-[--text-primary]">Daily Roadmap</h1>
-            <p class="text-sm text-[--text-secondary] mb-6">Day 14: Arrays Contest</p>
-            <div class="mb-4">
-                <div class="w-full bg-gray-300 rounded-full h-2">
-                    <div id="progress-bar" class="bg-[--accent-primary] h-2 rounded-full" style="width: 0%"></div>
-                </div>
-            </div>
-            <nav class="flex-grow">
-                <ul class="space-y-2">
-                    <li><a href="#overview" class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block">Overview</a></li>
-                    <li><a href="#refresher" class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block">Technique Refresher</a></li>
-                    <li><a href="#problems-section" class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block">Contest Problems</a></li>
-                    <li><a href="#summary" class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block">Contest Summary</a></li>
-                </ul>
-            </nav>
-            <div id="timer-display" class="hidden text-center p-4 bg-[--border-color] rounded-lg">
-                <div class="text-lg font-bold text-[--text-primary]">Contest Timer</div>
-                <div id="timer" class="text-4xl font-mono font-bold text-[--accent-primary-hover]">20:00</div>
-            </div>
-        </aside>
-
-        <main id="main-content" class="flex-1 p-4 sm:p-6 md:p-10">
-            <div class="flex justify-end mb-4 h-10">
-                <button id="reset-btn" class="hidden bg-gray-500 text-white font-bold py-2 px-4 rounded hover:bg-gray-600 transition-colors">Reset to Home</button>
-            </div>
-            <section id="overview" class="scroll-mt-24">
-                <h2 class="text-3xl font-bold mb-4 text-[--text-primary]">Weekly Contest: Arrays Edition</h2>
-                <p class="text-lg text-[--text-secondary] mb-6 max-w-3xl">
-                    Welcome to Day 14. Today, you'll tackle a simulated contest focused on array manipulation techniques. This session is designed to test your ability to quickly identify and apply the correct algorithm: Prefix Sum, Sliding Window, or Two Pointers.
-                </p>
-                <div class="bg-white p-6 rounded-lg border border-[--border-color]">
-                    <h3 class="font-bold text-xl mb-3">Choose Your Mode</h3>
-                    <p class="mb-4 text-gray-600">Select "Study Mode" for a guided walkthrough with instant access to solutions. Choose "Contest Mode" for a 20-minute timed challenge to test your skills under pressure.</p>
-                    <div class="flex space-x-4">
-                        <button id="study-mode-btn" class="bg-[--accent-primary] text-white font-bold py-2 px-6 rounded hover:bg-[--accent-primary-hover] transition-colors">Study Mode</button>
-                        <button id="contest-mode-btn" class="bg-gray-200 text-gray-800 font-bold py-2 px-6 rounded hover:bg-gray-300 transition-colors">Start Contest Mode</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="refresher" class="scroll-mt-24 my-12">
-                 <h2 class="text-3xl font-bold mb-4">Technique Refresher</h2>
-                 <p class="text-lg text-gray-600 mb-6">A quick review of the core concepts before you begin the contest.</p>
-                 <div class="bg-white rounded-lg p-6 shadow-sm border border-[--border-color]/50">
-                    <div class="flex border-b border-[--border-color]">
-                        <button data-tab="prefixsum" class="tab-btn py-2 px-4 text-lg font-semibold border-b-2 border-[--accent-primary] text-[--text-primary]">Prefix Sum</button>
-                        <button data-tab="slidingwindow" class="tab-btn py-2 px-4 text-lg font-semibold border-b-2 border-transparent text-gray-500">Sliding Window</button>
-                        <button data-tab="twopointers" class="tab-btn py-2 px-4 text-lg font-semibold border-b-2 border-transparent text-gray-500">Two Pointers</button>
-                    </div>
-                    <div id="prefixsum" class="tab-content py-4"><h3 class="font-bold text-xl mb-2">Prefix Sum</h3><p class="mb-4">Create a new array where `prefix[i]` is the sum of all elements from `nums[0]` to `nums[i]`. Allows calculating any subarray sum in O(1) time. Ideal for frequent subarray sum queries.</p><div class="code-block"><pre><code><span class="keyword">public</span> <span class="keyword">int</span>[] <span class="method">BuildPrefixSum</span>(<span class="keyword">int</span>[] nums) {
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <div class="flex flex-col md:flex-row min-h-screen" id="app">
+   <aside class="w-full md:w-72 bg-[--sidebar-bg] p-6 border-b md:border-r border-[--border-color] flex-shrink-0 md:sticky top-0 h-screen flex flex-col">
+    <h1 class="text-2xl font-bold text-[--text-primary]">
+     Daily Roadmap
+    </h1>
+    <p class="text-sm text-[--text-secondary] mb-6">
+     Day 14: Arrays Contest
+    </p>
+    <div class="mb-4">
+     <div class="w-full bg-gray-300 rounded-full h-2">
+      <div class="bg-[--accent-primary] h-2 rounded-full" id="progress-bar" style="width: 0%">
+      </div>
+     </div>
+    </div>
+    <nav class="flex-grow">
+     <ul class="space-y-2">
+      <li>
+       <a class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block" href="#overview">
+        Overview
+       </a>
+      </li>
+      <li>
+       <a class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block" href="#refresher">
+        Technique Refresher
+       </a>
+      </li>
+      <li>
+       <a class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block" href="#problems-section">
+        Contest Problems
+       </a>
+      </li>
+      <li>
+       <a class="nav-link font-medium text-[--text-secondary] hover:text-[--text-primary] p-2 rounded-md block" href="#summary">
+        Contest Summary
+       </a>
+      </li>
+     </ul>
+    </nav>
+    <div class="hidden text-center p-4 bg-[--border-color] rounded-lg" id="timer-display">
+     <div class="text-lg font-bold text-[--text-primary]">
+      Contest Timer
+     </div>
+     <div class="text-4xl font-mono font-bold text-[--accent-primary-hover]" id="timer">
+      20:00
+     </div>
+    </div>
+   </aside>
+   <main class="flex-1 p-4 sm:p-6 md:p-10" id="main-content">
+    <div class="flex justify-end mb-4 h-10">
+     <button class="hidden bg-gray-500 text-white font-bold py-2 px-4 rounded hover:bg-gray-600 transition-colors" id="reset-btn">
+      Reset to Home
+     </button>
+    </div>
+    <section class="scroll-mt-24" id="overview">
+     <h2 class="text-3xl font-bold mb-4 text-[--text-primary]">
+      Weekly Contest: Arrays Edition
+     </h2>
+     <p class="text-lg text-[--text-secondary] mb-6 max-w-3xl">
+      Welcome to Day 14. Today, you'll tackle a simulated contest focused on array manipulation techniques. This session is designed to test your ability to quickly identify and apply the correct algorithm: Prefix Sum, Sliding Window, or Two Pointers.
+     </p>
+     <div class="bg-white p-6 rounded-lg border border-[--border-color]">
+      <h3 class="font-bold text-xl mb-3">
+       Choose Your Mode
+      </h3>
+      <p class="mb-4 text-gray-600">
+       Select "Study Mode" for a guided walkthrough with instant access to solutions. Choose "Contest Mode" for a 20-minute timed challenge to test your skills under pressure.
+      </p>
+      <div class="flex space-x-4">
+       <button class="bg-[--accent-primary] text-white font-bold py-2 px-6 rounded hover:bg-[--accent-primary-hover] transition-colors" id="study-mode-btn">
+        Study Mode
+       </button>
+       <button class="bg-gray-200 text-gray-800 font-bold py-2 px-6 rounded hover:bg-gray-300 transition-colors" id="contest-mode-btn">
+        Start Contest Mode
+       </button>
+      </div>
+     </div>
+    </section>
+    <section class="scroll-mt-24 my-12" id="refresher">
+     <h2 class="text-3xl font-bold mb-4">
+      Technique Refresher
+     </h2>
+     <p class="text-lg text-gray-600 mb-6">
+      A quick review of the core concepts before you begin the contest.
+     </p>
+     <div class="bg-white rounded-lg p-6 shadow-sm border border-[--border-color]/50">
+      <div class="flex border-b border-[--border-color]">
+       <button class="tab-btn py-2 px-4 text-lg font-semibold border-b-2 border-[--accent-primary] text-[--text-primary]" data-tab="prefixsum">
+        Prefix Sum
+       </button>
+       <button class="tab-btn py-2 px-4 text-lg font-semibold border-b-2 border-transparent text-gray-500" data-tab="slidingwindow">
+        Sliding Window
+       </button>
+       <button class="tab-btn py-2 px-4 text-lg font-semibold border-b-2 border-transparent text-gray-500" data-tab="twopointers">
+        Two Pointers
+       </button>
+      </div>
+      <div class="tab-content py-4" id="prefixsum">
+       <h3 class="font-bold text-xl mb-2">
+        Prefix Sum
+       </h3>
+       <p class="mb-4">
+        Create a new array where `prefix[i]` is the sum of all elements from `nums[0]` to `nums[i]`. Allows calculating any subarray sum in O(1) time. Ideal for frequent subarray sum queries.
+       </p>
+       <div class="code-block">
+        <pre><code><span class="keyword">public</span> <span class="keyword">int</span>[] <span class="method">BuildPrefixSum</span>(<span class="keyword">int</span>[] nums) {
     <span class="keyword">int</span> n = nums.Length,[] prefix = <span class="keyword">new</span> <span class="keyword">int</span>[n];
     prefix[<span class="number">0</span>] = nums[<span class="number">0</span>];
     <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;n; i++) prefix[i]=prefix[i-<span class="number">1</span>]+nums[i];
     <span class="keyword">return</span> prefix;
-}</span></code></pre></div></div>
-                    <div id="slidingwindow" class="tab-content hidden py-4"><h3 class="font-bold text-xl mb-2">Sliding Window</h3><p class="mb-4">Efficiently finds a subarray satisfying a condition by maintaining a "window" and sliding it through the array. Reduces time complexity from O(n²) to O(n) by avoiding redundant calculations.</p><div class="code-block"><pre><code><span class="keyword">public</span> <span class="keyword">int</span> <span class="method">FindMaxSum</span>(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k) {
+}</code></pre>
+       </div>
+      </div>
+      <div class="tab-content hidden py-4" id="slidingwindow">
+       <h3 class="font-bold text-xl mb-2">
+        Sliding Window
+       </h3>
+       <p class="mb-4">
+        Efficiently finds a subarray satisfying a condition by maintaining a "window" and sliding it through the array. Reduces time complexity from O(n&sup2;) to O(n) by avoiding redundant calculations.
+       </p>
+       <div class="code-block">
+        <pre><code><span class="keyword">public</span> <span class="keyword">int</span> <span class="method">FindMaxSum</span>(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k) {
     <span class="keyword">int</span> maxSum=0, windowSum=0;
     <span class="keyword">for</span>(int i=0; i&lt;k; i++) windowSum += nums[i];
     <span class="keyword">for</span>(int i=k; i&lt;nums.Length; i++) {
         windowSum += nums[i] - nums[i-k];
         maxSum = Math.<span class="method">Max</span>(maxSum, windowSum);
     } <span class="keyword">return</span> maxSum;
-}</code></pre></div></div>
-                    <div id="twopointers" class="tab-content hidden py-4"><h3 class="font-bold text-xl mb-2">Two Pointers</h3><p class="mb-4">Uses two pointers to iterate through an array, often from different directions on sorted data. Narrows the search space efficiently, providing O(n) solutions for problems that might otherwise take O(n²).</p><div class="code-block"><pre><code><span class="keyword">public</span> <span class="keyword">bool</span> <span class="method">HasPairWithSum</span>(<span class="keyword">int</span>[] sorted, <span class="keyword">int</span> target) {
+}</code></pre>
+       </div>
+      </div>
+      <div class="tab-content hidden py-4" id="twopointers">
+       <h3 class="font-bold text-xl mb-2">
+        Two Pointers
+       </h3>
+       <p class="mb-4">
+        Uses two pointers to iterate through an array, often from different directions on sorted data. Narrows the search space efficiently, providing O(n) solutions for problems that might otherwise take O(n&sup2;).
+       </p>
+       <div class="code-block">
+        <pre><code><span class="keyword">public</span> <span class="keyword">bool</span> <span class="method">HasPairWithSum</span>(<span class="keyword">int</span>[] sorted, <span class="keyword">int</span> target) {
     <span class="keyword">int</span> L=0, R=sorted.Length-1;
-    <span class="keyword">while</span> (L < R) {
+    <span class="keyword">while</span> (L &lt; R) {
         <span class="keyword">int</span> sum = sorted[L] + sorted[R];
         <span class="keyword">if</span> (sum == target) <span class="keyword">return</span> <span class="keyword">true</span>;
-        <span class="keyword">if</span> (sum < target) L++; <span class="keyword">else</span> R--;
+        <span class="keyword">if</span> (sum &lt; target) L++; <span class="keyword">else</span> R--;
     } <span class="keyword">return</span> <span class="keyword">false</span>;
-}</code></pre></div></div>
-                 </div>
-            </section>
-
-            <section id="problems-section" class="scroll-mt-24 my-12">
-                <h2 class="text-3xl font-bold mb-4">Contest Problems</h2>
-                <div id="problems-accordion" class="space-y-4"></div>
-            </section>
-
-            <section id="summary" class="scroll-mt-24 my-12">
-                <h2 class="text-3xl font-bold mb-4">Contest Summary</h2>
-                <div class="bg-white p-6 rounded-lg border border-[--border-color]">
-                    <p class="text-lg text-[--text-secondary] mb-6">Congratulations on completing the contest. This session highlighted how different array problems can be efficiently solved by recognizing the underlying pattern. Let's review the core principles:</p>
-                    <ul class="space-y-4">
-                        <li class="flex items-start"><span class="text-xl mr-3 text-[--accent-primary]">▸</span><div><strong class="font-semibold">Fixed-Size Sliding Window:</strong> Ideal for "max/min of subarray size k" problems. The key is constant-time window updates: add the new element, subtract the old.</div></li>
-                        <li class="flex items-start"><span class="text-xl mr-3 text-[--accent-primary]">▸</span><div><strong class="font-semibold">Variable-Size Sliding Window:</strong> Perfect for finding subarrays that meet a target value. The window expands and contracts dynamically, ensuring linear time complexity.</div></li>
-                        <li class="flex items-start"><span class="text-xl mr-3 text-[--accent-primary]">▸</span><div><strong class="font-semibold">Two Pointers on Sorted Arrays:</strong> Unbeatable for finding pairs that sum to a target. By moving pointers from opposite ends, you intelligently eliminate half the search space in each step.</div></li>
-                        <li class="flex items-start"><span class="text-xl mr-3 text-[--accent-primary]">▸</span><div><strong class="font-semibold">Prefix Sums with Hashing:</strong> The go-to for complex subarray sum problems, especially those involving divisibility. It transforms the problem into finding pairs of indices with specific prefix sum properties.</div></li>
-                    </ul>
-                </div>
-            </section>
-
-
-            <div id="problem-template" class="hidden">
-                <div class="bg-white rounded-lg border border-[--border-color]/80 overflow-hidden">
-                    <button class="accordion-header w-full text-left p-6 flex justify-between items-center transition-colors hover:bg-gray-50/50">
-                        <div class="flex flex-col"><h3 class="text-xl md:text-2xl font-bold problem-title"></h3><div class="flex items-center space-x-4 mt-2"><span class="problem-difficulty-badge inline-block px-3 py-1 text-sm font-semibold rounded-full"></span><span class="problem-tags text-sm font-medium text-gray-500"></span></div></div>
-                        <span class="accordion-icon text-3xl font-light transform transition-transform">+</span>
-                    </button>
-                    <div class="solution-content px-6"><div class="border-t border-[--border-color] py-6">
-                        <p class="text-base text-gray-700 mb-6 problem-statement"></p>
-                        <div class="mb-6"><p class="font-semibold text-gray-800">Input: <code class="problem-input-display bg-gray-100 p-1 rounded font-mono"></code></p></div>
-                        <div class="code-editor-container hidden mb-6">
-                             <h4 class="text-xl font-semibold mb-2">Your Code Editor</h4>
-                             <textarea class="code-editor w-full h-64 p-3 font-mono text-sm bg-[--code-bg] text-gray-200 border border-gray-600 rounded-md focus:ring-2 focus:ring-[--accent-primary] focus:outline-none">public class Solution { ... }</textarea>
-                        </div>
-                        <button class="reveal-btn bg-[--accent-primary] text-white font-bold py-2 px-4 rounded hover:bg-[--accent-primary-hover]">Reveal Solution</button>
-                        <div class="solution-details hidden"><div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
-                            <div><h4 class="text-xl font-semibold mb-2">Explanation</h4><div class="problem-explanation space-y-3 text-gray-700 text-sm leading-relaxed"></div></div>
-                            <div><h4 class="text-xl font-semibold mb-2">C# Solution</h4><div class="problem-code"></div></div>
-                        </div>
-                        <div class="mt-8"><h4 class="text-xl font-semibold mb-4 text-center">Interactive Visualization</h4><div class="problem-visualization-container min-h-[300px]"></div></div>
-                        <div class="mt-8 pt-6 border-t border-[--border-color]"><h4 class="text-xl font-semibold mb-3">Key Takeaways</h4><div class="problem-takeaways grid grid-cols-1 md:grid-cols-3 gap-4 text-center"></div></div>
-                    </div></div></div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <footer class="bg-stone-800 text-white mt-12 py-6">
-        <div class="container mx-auto px-4 text-center max-w-5xl">
-            <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
+}</code></pre>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="scroll-mt-24 my-12" id="problems-section">
+     <h2 class="text-3xl font-bold mb-4">
+      Contest Problems
+     </h2>
+     <div class="space-y-4" id="problems-accordion">
+     </div>
+    </section>
+    <section class="scroll-mt-24 my-12" id="summary">
+     <h2 class="text-3xl font-bold mb-4">
+      Contest Summary
+     </h2>
+     <div class="bg-white p-6 rounded-lg border border-[--border-color]">
+      <p class="text-lg text-[--text-secondary] mb-6">
+       Congratulations on completing the contest. This session highlighted how different array problems can be efficiently solved by recognizing the underlying pattern. Let's review the core principles:
+      </p>
+      <ul class="space-y-4">
+       <li class="flex items-start">
+        <span class="text-xl mr-3 text-[--accent-primary]">
+         &rtrif;
+        </span>
+        <div>
+         <strong class="font-semibold">
+          Fixed-Size Sliding Window:
+         </strong>
+         Ideal for "max/min of subarray size k" problems. The key is constant-time window updates: add the new element, subtract the old.
         </div>
-    </footer>
-
-    <script>
-        const problems = [
+       </li>
+       <li class="flex items-start">
+        <span class="text-xl mr-3 text-[--accent-primary]">
+         &rtrif;
+        </span>
+        <div>
+         <strong class="font-semibold">
+          Variable-Size Sliding Window:
+         </strong>
+         Perfect for finding subarrays that meet a target value. The window expands and contracts dynamically, ensuring linear time complexity.
+        </div>
+       </li>
+       <li class="flex items-start">
+        <span class="text-xl mr-3 text-[--accent-primary]">
+         &rtrif;
+        </span>
+        <div>
+         <strong class="font-semibold">
+          Two Pointers on Sorted Arrays:
+         </strong>
+         Unbeatable for finding pairs that sum to a target. By moving pointers from opposite ends, you intelligently eliminate half the search space in each step.
+        </div>
+       </li>
+       <li class="flex items-start">
+        <span class="text-xl mr-3 text-[--accent-primary]">
+         &rtrif;
+        </span>
+        <div>
+         <strong class="font-semibold">
+          Prefix Sums with Hashing:
+         </strong>
+         The go-to for complex subarray sum problems, especially those involving divisibility. It transforms the problem into finding pairs of indices with specific prefix sum properties.
+        </div>
+       </li>
+      </ul>
+     </div>
+    </section>
+    <div class="hidden" id="problem-template">
+     <div class="bg-white rounded-lg border border-[--border-color]/80 overflow-hidden">
+      <button class="accordion-header w-full text-left p-6 flex justify-between items-center transition-colors hover:bg-gray-50/50">
+       <div class="flex flex-col">
+        <h3 class="text-xl md:text-2xl font-bold problem-title">
+        </h3>
+        <div class="flex items-center space-x-4 mt-2">
+         <span class="problem-difficulty-badge inline-block px-3 py-1 text-sm font-semibold rounded-full">
+         </span>
+         <span class="problem-tags text-sm font-medium text-gray-500">
+         </span>
+        </div>
+       </div>
+       <span class="accordion-icon text-3xl font-light transform transition-transform">
+        +
+       </span>
+      </button>
+      <div class="solution-content px-6">
+       <div class="border-t border-[--border-color] py-6">
+        <p class="text-base text-gray-700 mb-6 problem-statement">
+        </p>
+        <div class="mb-6">
+         <p class="font-semibold text-gray-800">
+          Input:
+          <code class="problem-input-display bg-gray-100 p-1 rounded font-mono">
+          </code>
+         </p>
+        </div>
+        <div class="code-editor-container hidden mb-6">
+         <h4 class="text-xl font-semibold mb-2">
+          Your Code Editor
+         </h4>
+         <textarea class="code-editor w-full h-64 p-3 font-mono text-sm bg-[--code-bg] text-gray-200 border border-gray-600 rounded-md focus:ring-2 focus:ring-[--accent-primary] focus:outline-none">public class Solution { ... }</textarea>
+        </div>
+        <button class="reveal-btn bg-[--accent-primary] text-white font-bold py-2 px-4 rounded hover:bg-[--accent-primary-hover]">
+         Reveal Solution
+        </button>
+        <div class="solution-details hidden">
+         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+          <div>
+           <h4 class="text-xl font-semibold mb-2">
+            Explanation
+           </h4>
+           <div class="problem-explanation space-y-3 text-gray-700 text-sm leading-relaxed">
+           </div>
+          </div>
+          <div>
+           <h4 class="text-xl font-semibold mb-2">
+            C# Solution
+           </h4>
+           <div class="problem-code">
+           </div>
+          </div>
+         </div>
+         <div class="mt-8">
+          <h4 class="text-xl font-semibold mb-4 text-center">
+           Interactive Visualization
+          </h4>
+          <div class="problem-visualization-container min-h-[300px]">
+          </div>
+         </div>
+         <div class="mt-8 pt-6 border-t border-[--border-color]">
+          <h4 class="text-xl font-semibold mb-3">
+           Key Takeaways
+          </h4>
+          <div class="problem-takeaways grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const problems = [
              {
                 id: 'problem1', title: 'Maximum Sum of a Fixed-Size Subarray', difficulty: 'Easy', difficultyColor: 'bg-green-100 text-green-800', tags: 'Sliding Window',
                 statement: 'Given an array of integers `nums` and an integer `k`, find the maximum sum of a contiguous subarray of size `k`.',
@@ -408,6 +585,6 @@
             contentEl.addEventListener('scroll', updateScroll);
             updateScroll();
         });
-    </script>
-</body>
+  </script>
+ </body>
 </html>

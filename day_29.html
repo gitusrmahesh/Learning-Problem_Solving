@@ -1,16 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 29: C# Revision Roadmap</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chosen Palette: Developer Focus -->
-    <!-- Application Structure Plan: The application uses a tabbed navigation system to structure the day's tasks: 'Weak Area Review', 'Tricky Problem Solver', and 'Deep Dive Research'. This thematic separation allows the user to focus on one activity at a time (self-assessment, active problem-solving, or deep learning) without the distraction of a long, scrolling page. This task-oriented design is more effective for a revision session than a linear layout, promoting focused engagement with each type of content. User flow is simple: select a tab, then interact with the content within that self-contained section. -->
-    <!-- Visualization & Content Choices: Report Info: Review weak areas -> Goal: Organize/Inform -> Viz/Presentation: Interactive accordion list of C# topics -> Interaction: Click topic to reveal detailed explanation and code -> Justification: Allows users to self-identify and explore only the topics they need, preventing information overload. | Report Info: Re-solve tricky problems -> Goal: Challenge/Organize -> Viz/Presentation: Problem cards with toggleable solutions -> Interaction: Click button to reveal solution -> Justification: Encourages active problem-solving before viewing the answer. | Report Info: Deep research -> Goal: Inform -> Viz/Presentation: Formatted text and code blocks -> Interaction: None (static content) -> Justification: Provides a clean, readable format for in-depth study. A simple HTML/CSS progress bar is used to visually track progress through the 30-day plan. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 29: C# Revision Roadmap
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <!-- Chosen Palette: Developer Focus -->
+  <!-- Application Structure Plan: The application uses a tabbed navigation system to structure the day's tasks: 'Weak Area Review', 'Tricky Problem Solver', and 'Deep Dive Research'. This thematic separation allows the user to focus on one activity at a time (self-assessment, active problem-solving, or deep learning) without the distraction of a long, scrolling page. This task-oriented design is more effective for a revision session than a linear layout, promoting focused engagement with each type of content. User flow is simple: select a tab, then interact with the content within that self-contained section. -->
+  <!-- Visualization & Content Choices: Report Info: Review weak areas -> Goal: Organize/Inform -> Viz/Presentation: Interactive accordion list of C# topics -> Interaction: Click topic to reveal detailed explanation and code -> Justification: Allows users to self-identify and explore only the topics they need, preventing information overload. | Report Info: Re-solve tricky problems -> Goal: Challenge/Organize -> Viz/Presentation: Problem cards with toggleable solutions -> Interaction: Click button to reveal solution -> Justification: Encourages active problem-solving before viewing the answer. | Report Info: Deep research -> Goal: Inform -> Viz/Presentation: Formatted text and code blocks -> Interaction: None (static content) -> Justification: Provides a clean, readable format for in-depth study. A simple HTML/CSS progress bar is used to visually track progress through the 30-day plan. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
             background-color: #f8fafc; 
         }
         .tab-btn {
@@ -44,81 +48,129 @@
         .code-block .string { color: #d69d85; }
         .code-block .comment { color: #6a9955; }
         .code-block .method { color: #dcdcaa; }
-    </style>
-
-</head>
-<body class="font-sans antialiased text-gray-800">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=5" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=5">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 29: C# Revision Roadmap</p>
-</div>
-</div>
-
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
-
-        <div class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">30-Day Problem Solving Roadmap</h1>
-            <p class="text-xl text-blue-600 mt-2">Day 29: Intermediate C# Revision</p>
-        </div>
-
-        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-8">
-            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 96.66%"></div>
-            <p class="text-right text-sm text-gray-600 mt-1">Day 29 of 30 Complete</p>
-        </div>
-        
-        <main>
-            <div class="border-b border-gray-200 mb-6">
-                <nav class="-mb-px flex justify-center space-x-4 md:space-x-8" aria-label="Tabs">
-                    <button id="tab-review" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                        Weak Area Review
-                    </button>
-                    <button id="tab-problems" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                        Tricky Problem Solver
-                    </button>
-                    <button id="tab-research" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                        Deep Dive Research
-                    </button>
-                </nav>
-            </div>
-
-            <div id="content-review" class="tab-content">
-                <div class="text-center p-4 bg-blue-50 border border-blue-200 rounded-lg mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-900 mb-2">Identify & Strengthen Your Weak Spots</h2>
-                    <p class="text-gray-700">This section helps you pinpoint common intermediate C# topics that can be challenging. Click on a topic below to get a concise explanation and a practical, full-fledged code example to solidify your understanding.</p>
-                </div>
-                <div id="topics-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6"></div>
-                <div id="topic-details-container" class="bg-white p-6 rounded-lg shadow-md min-h-[400px]">
-                    <p class="text-gray-500 text-center flex items-center justify-center h-full">Select a topic above to see details here.</p>
-                </div>
-            </div>
-
-            <div id="content-problems" class="tab-content hidden">
-                 <div class="text-center p-4 bg-green-50 border border-green-200 rounded-lg mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-900 mb-2">Sharpen Your Skills</h2>
-                    <p class="text-gray-700">Theory is one thing, but application is another. Try to solve these tricky problems first, then click the button to see a detailed, commented solution. This is a great way to test your problem-solving process.</p>
-                </div>
-                <div id="problems-container" class="space-y-6"></div>
-            </div>
-
-            <div id="content-research" class="tab-content hidden">
-                 <div class="text-center p-4 bg-purple-50 border border-purple-200 rounded-lg mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-900 mb-2">Explore Advanced Concepts</h2>
-                    <p class="text-gray-700">This section provides a deeper look into complex but powerful C# features. Understanding these concepts is key to writing efficient, robust, and modern C# code. Today's focus is on Memory Management and Advanced LINQ.</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md space-y-6">
-                    <div>
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Deep Dive 1: Memory Management (Stack vs. Heap & GC)</h3>
-                        <p class="mb-4">In C#, understanding how memory is managed is crucial for writing high-performance applications. Memory is primarily divided into two places: the <strong>Stack</strong> and the <strong>Heap</strong>.</p>
-                        <ul class="list-disc list-inside space-y-2 mb-4">
-                            <li><strong>The Stack:</strong> A highly efficient, LIFO (Last-In, First-Out) data structure. It stores value types (like `int`, `double`, `bool`, `struct`) and pointers/references to objects on the heap. Memory allocation and deallocation on the stack is extremely fast because it's just a matter of moving a pointer. When a method finishes, its entire frame on the stack is cleared.</li>
-                            <li><strong>The Heap:</strong> A large pool of memory used for dynamic allocation of reference types (like `class` instances, `string`, arrays). The .NET Garbage Collector (GC) is responsible for managing the heap, automatically freeing up memory that is no longer referenced by the application.</li>
-                        </ul>
-                        <p class="mb-4">The <strong>Garbage Collector (GC)</strong> works by periodically checking for objects on the heap that are no longer accessible. It's a complex process involving "generations" (Gen 0, 1, 2) to optimize collections, assuming that newer objects have shorter lifetimes. While the GC is automatic, developers can influence its behavior and must be mindful of creating unnecessary allocations, especially in performance-critical code.</p>
-                        <pre class="code-block"><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="type">GarbageCollectionExample</span>
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 29: C# Revision Roadmap
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+   <div class="text-center mb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+     30-Day Problem Solving Roadmap
+    </h1>
+    <p class="text-xl text-blue-600 mt-2">
+     Day 29: Intermediate C# Revision
+    </p>
+   </div>
+   <div class="w-full bg-gray-200 rounded-full h-2.5 mb-8">
+    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 96.66%">
+    </div>
+    <p class="text-right text-sm text-gray-600 mt-1">
+     Day 29 of 30 Complete
+    </p>
+   </div>
+   <main>
+    <div class="border-b border-gray-200 mb-6">
+     <nav aria-label="Tabs" class="-mb-px flex justify-center space-x-4 md:space-x-8">
+      <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-review">
+       Weak Area Review
+      </button>
+      <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-problems">
+       Tricky Problem Solver
+      </button>
+      <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-research">
+       Deep Dive Research
+      </button>
+     </nav>
+    </div>
+    <div class="tab-content" id="content-review">
+     <div class="text-center p-4 bg-blue-50 border border-blue-200 rounded-lg mb-6">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+       Identify & Strengthen Your Weak Spots
+      </h2>
+      <p class="text-gray-700">
+       This section helps you pinpoint common intermediate C# topics that can be challenging. Click on a topic below to get a concise explanation and a practical, full-fledged code example to solidify your understanding.
+      </p>
+     </div>
+     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6" id="topics-container">
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md min-h-[400px]" id="topic-details-container">
+      <p class="text-gray-500 text-center flex items-center justify-center h-full">
+       Select a topic above to see details here.
+      </p>
+     </div>
+    </div>
+    <div class="tab-content hidden" id="content-problems">
+     <div class="text-center p-4 bg-green-50 border border-green-200 rounded-lg mb-6">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+       Sharpen Your Skills
+      </h2>
+      <p class="text-gray-700">
+       Theory is one thing, but application is another. Try to solve these tricky problems first, then click the button to see a detailed, commented solution. This is a great way to test your problem-solving process.
+      </p>
+     </div>
+     <div class="space-y-6" id="problems-container">
+     </div>
+    </div>
+    <div class="tab-content hidden" id="content-research">
+     <div class="text-center p-4 bg-purple-50 border border-purple-200 rounded-lg mb-6">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+       Explore Advanced Concepts
+      </h2>
+      <p class="text-gray-700">
+       This section provides a deeper look into complex but powerful C# features. Understanding these concepts is key to writing efficient, robust, and modern C# code. Today's focus is on Memory Management and Advanced LINQ.
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md space-y-6">
+      <div>
+       <h3 class="text-2xl font-bold text-gray-800 mb-2">
+        Deep Dive 1: Memory Management (Stack vs. Heap & GC)
+       </h3>
+       <p class="mb-4">
+        In C#, understanding how memory is managed is crucial for writing high-performance applications. Memory is primarily divided into two places: the
+        <strong>
+         Stack
+        </strong>
+        and the
+        <strong>
+         Heap
+        </strong>
+        .
+       </p>
+       <ul class="list-disc list-inside space-y-2 mb-4">
+        <li>
+         <strong>
+          The Stack:
+         </strong>
+         A highly efficient, LIFO (Last-In, First-Out) data structure. It stores value types (like `int`, `double`, `bool`, `struct`) and pointers/references to objects on the heap. Memory allocation and deallocation on the stack is extremely fast because it's just a matter of moving a pointer. When a method finishes, its entire frame on the stack is cleared.
+        </li>
+        <li>
+         <strong>
+          The Heap:
+         </strong>
+         A large pool of memory used for dynamic allocation of reference types (like `class` instances, `string`, arrays). The .NET Garbage Collector (GC) is responsible for managing the heap, automatically freeing up memory that is no longer referenced by the application.
+        </li>
+       </ul>
+       <p class="mb-4">
+        The
+        <strong>
+         Garbage Collector (GC)
+        </strong>
+        works by periodically checking for objects on the heap that are no longer accessible. It's a complex process involving "generations" (Gen 0, 1, 2) to optimize collections, assuming that newer objects have shorter lifetimes. While the GC is automatic, developers can influence its behavior and must be mindful of creating unnecessary allocations, especially in performance-critical code.
+       </p>
+       <pre class="code-block"><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="type">GarbageCollectionExample</span>
 {
     <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="method">Main</span>()
     {
@@ -141,18 +193,40 @@
     <span class="keyword">public</span> <span class="type">string</span> Name;
     <span class="keyword">public</span> <span class="method">MyClass</span>(<span class="type">string</span> name) { <span class="keyword">this</span>.Name = name; }
 }</code></pre>
-                    </div>
-                    <hr>
-                    <div>
-                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Deep Dive 2: Advanced LINQ - Deferred Execution</h3>
-                        <p class="mb-4">One of LINQ's most powerful but sometimes confusing features is <strong>Deferred Execution</strong>. This means that a LINQ query is not actually executed when it is defined, but rather when its results are enumerated (e.g., in a `foreach` loop, or by calling methods like `.ToList()`, `.ToArray()`, `.First()`, `.Count()`).</p>
-                        <p class="mb-4">This has significant benefits:</p>
-                        <ul class="list-disc list-inside space-y-2 mb-4">
-                            <li><strong>Efficiency:</strong> If you build a complex query but only need the first few results, you don't waste resources processing the entire data source.</li>
-                            <li><strong>Fresh Data:</strong> The query is executed against the data source at the moment of enumeration. If the underlying data changes between query definition and execution, the query will use the updated data.</li>
-                        </ul>
-                        <p class="mb-4">Methods that cause immediate execution are typically those that return a single value or a concrete collection, like `.Count()`, `.First()`, `.ToList()`. Methods that return `IEnumerable&lt;T&gt;`, like `.Where()` and `.Select()`, typically use deferred execution.</p>
-                        <pre class="code-block"><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="type">DeferredExecutionExample</span>
+      </div>
+      <hr>
+      <div>
+       <h3 class="text-2xl font-bold text-gray-800 mb-2">
+        Deep Dive 2: Advanced LINQ - Deferred Execution
+       </h3>
+       <p class="mb-4">
+        One of LINQ's most powerful but sometimes confusing features is
+        <strong>
+         Deferred Execution
+        </strong>
+        . This means that a LINQ query is not actually executed when it is defined, but rather when its results are enumerated (e.g., in a `foreach` loop, or by calling methods like `.ToList()`, `.ToArray()`, `.First()`, `.Count()`).
+       </p>
+       <p class="mb-4">
+        This has significant benefits:
+       </p>
+       <ul class="list-disc list-inside space-y-2 mb-4">
+        <li>
+         <strong>
+          Efficiency:
+         </strong>
+         If you build a complex query but only need the first few results, you don't waste resources processing the entire data source.
+        </li>
+        <li>
+         <strong>
+          Fresh Data:
+         </strong>
+         The query is executed against the data source at the moment of enumeration. If the underlying data changes between query definition and execution, the query will use the updated data.
+        </li>
+       </ul>
+       <p class="mb-4">
+        Methods that cause immediate execution are typically those that return a single value or a concrete collection, like `.Count()`, `.First()`, `.ToList()`. Methods that return `IEnumerable&lt;T&gt;`, like `.Where()` and `.Select()`, typically use deferred execution.
+       </p>
+       <pre class="code-block"><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="type">DeferredExecutionExample</span>
 {
     <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="method">Main</span>()
     {
@@ -160,7 +234,7 @@
 
         <span class="comment">// 1. Define the LINQ query. </span>
         <span class="comment">// NO execution happens here. 'highNumbersQuery' just holds the query definition.</span>
-        <span class="keyword">var</span> highNumbersQuery = numbers.<span class="method">Where</span>(n => n > 5);
+        <span class="keyword">var</span> highNumbersQuery = numbers.<span class="method">Where</span>(n =&gt; n &gt; 5);
 
         Console.<span class="method">WriteLine</span>(<span class="string">"Query defined. Now modifying the source list..."</span>);
         
@@ -177,24 +251,24 @@
         }
         
         <span class="comment">// Example of immediate execution</span>
-        <span class="type">int</span> count = numbers.<span class="method">Where</span>(n => n > 5).<span class="method">Count</span>(); <span class="comment">// Query executes immediately</span>
+        <span class="type">int</span> count = numbers.<span class="method">Where</span>(n =&gt; n &gt; 5).<span class="method">Count</span>(); <span class="comment">// Query executes immediately</span>
         Console.<span class="method">WriteLine</span>(<span class="string">"\nImmediate count: "</span> + count); <span class="comment">// count is 5</span>
     }
 }</code></pre>
-                    </div>
-                </div>
-            </div>
-        </main>
+      </div>
+     </div>
     </div>
-
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-    </div>
-</footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   document.addEventListener('DOMContentLoaded', () => {
 
             const weakAreasData = [
                 {
@@ -777,7 +851,6 @@ public class ExtensionMethodDemo
             switchTab(tabs[0].btn);
 
         });
-    </script>
-</body>
+  </script>
+ </body>
 </html>
-
