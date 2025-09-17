@@ -1,23 +1,28 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 25: String Pattern Matching</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Slate & Amber -->
-    <!-- Application Structure Plan: The application is an interactive learning dashboard. Its task-oriented design features an "Algorithm Explorer" with tabs for focused learning and visualization of each algorithm (Naive, KMP, Rabin-Karp). This promotes active learning. The structure is enhanced with a comprehensive "Algorithm at a Glance" section that now includes both a theoretical complexity chart and a new "Live Performance Test." This allows users to directly compare the algorithms' performance in practice, bridging theory with empirical results. The user flow is: learn/visualize -> compare theory -> compare practice -> solve problems. This is a highly effective educational structure. -->
-    <!-- Visualization & Content Choices: 
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 25: String Pattern Matching
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Slate & Amber -->
+  <!-- Application Structure Plan: The application is an interactive learning dashboard. Its task-oriented design features an "Algorithm Explorer" with tabs for focused learning and visualization of each algorithm (Naive, KMP, Rabin-Karp). This promotes active learning. The structure is enhanced with a comprehensive "Algorithm at a Glance" section that now includes both a theoretical complexity chart and a new "Live Performance Test." This allows users to directly compare the algorithms' performance in practice, bridging theory with empirical results. The user flow is: learn/visualize -> compare theory -> compare practice -> solve problems. This is a highly effective educational structure. -->
+  <!-- Visualization & Content Choices:
         - Naive/KMP/Rabin-Karp Visualizers: Report Info -> Core algorithm logic. Goal -> Demonstrate step-by-step execution. Viz -> Interactive, animated text displays showing comparisons, window sliding, and state changes (e.g., KMP's LPS array, RK's hash values). Interaction -> User provides input and runs visualization. Justification -> Makes abstract algorithms tangible and easy to follow. Method -> HTML/CSS/JS.
         - Performance Comparison: Report Info -> Algorithm complexities and practical efficiency. Goal -> Synthesize and compare. Viz -> 1) Bar chart for theoretical worst-case complexities. 2) A new dynamic results table for a practical, live comparison on user-defined inputs. Interaction -> User inputs text/pattern and runs a "compare all" test, which populates the table with execution time and operation counts. Justification -> Connects abstract Big-O notation with tangible performance differences. Library -> Chart.js for the chart; HTML/CSS/JS for the live test table.
     -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body { font-family: 'Inter', sans-serif; }
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body { font-family: 'Inter', sans-serif; }
         pre, code { font-family: 'Source Code Pro', monospace; }
         .tab-active { border-color: #f59e0b; color: #f59e0b; }
         .tab-inactive { border-color: transparent; color: #64748b; }
@@ -27,123 +32,159 @@
         .highlight-window { background-color: #e0f2fe; border-radius: 2px; }
         .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
         @media (min-width: 768px) { .chart-container { height: 350px; } }
-    </style>
-
-</head>
-<body class="bg-slate-50 text-slate-800">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=4" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=4">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">30-Day Problem Solving Roadmap</p>
-</div>
-</div>
-
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <div class="text-center mb-10">
-            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">30-Day Problem Solving Roadmap</h1>
-            <p class="text-lg sm:text-xl text-amber-600 font-semibold mt-1">Day 25: String Pattern Matching</p>
-        </header>
-
-        <main>
-            <section id="intro" class="mb-12 max-w-4xl mx-auto text-center">
-                <h2 class="text-2xl font-bold mb-4 text-slate-900">Welcome to the Algorithm Explorer</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    String pattern matching is a fundamental problem in computer science: finding all occurrences of a given pattern within a larger text. Today, we'll explore three key algorithms, from the simple brute-force method to more optimized techniques. This interactive guide will help you visualize how they work, understand their trade-offs, and see their C# implementations.
-                </p>
-            </section>
-            
-            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
-                <!-- Tabs -->
-                <div class="border-b border-slate-200 mb-6">
-                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
-                        <button id="tab-naive" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base tab-active">Naive Approach</button>
-                        <button id="tab-kmp" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base tab-inactive">KMP Algorithm</button>
-                        <button id="tab-rabin-karp" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base tab-inactive">Rabin-Karp</button>
-                    </nav>
-                </div>
-
-                <!-- Content Panels -->
-                <div id="content-naive" class="content-panel">
-                    <!-- Naive Panel Content -->
-                </div>
-                <div id="content-kmp" class="content-panel hidden">
-                    <!-- KMP Panel Content -->
-                </div>
-                <div id="content-rabin-karp" class="content-panel hidden">
-                    <!-- Rabin-Karp Panel Content -->
-                </div>
-            </div>
-
-            <section id="comparison" class="mt-12">
-                <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 text-slate-900">Algorithm at a Glance</h2>
-                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
-                        <h3 class="text-xl font-semibold mb-2 text-slate-800">Theoretical Complexity</h3>
-                        <p class="text-slate-600 mb-6 text-sm">A look at the worst-case time complexities. 'N' is the length of the text and 'M' is the length of the pattern.</p>
-                        <div class="chart-container">
-                            <canvas id="complexityChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
-                        <h3 class="text-xl font-semibold mb-2 text-slate-800">Live Performance Test</h3>
-                        <p class="text-slate-600 mb-6 text-sm">Run all three algorithms on the same input to compare their real-world performance. Results show execution time and total character comparisons.</p>
-                        <div class="space-y-4">
-                            <div>
-                                <label for="compare-text-input" class="block text-sm font-medium text-slate-700">Text</label>
-                                <textarea id="compare-text-input" rows="4" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">ababababaabaaababaabaababaaababaababaabaababaabaabaababaaababaabaabaabaababaabaabaababaababaabaaababaababaabaabaaababaabaababaaababaababaabaababaabaabaababaaababaabaabaabaababaabaabaababaababaabaaababaabaabaaababaabaababaaababaababaabaababaabaabaababaaababaabaabaabaababaabaabaababaababaabaaababaabaabaaababaabaababaaababaababaabaababaabaabaababaaababaabaabaabaababaabaabaababaababaabaaababa</textarea>
-                            </div>
-                            <div>
-                                <label for="compare-pattern-input" class="block text-sm font-medium text-slate-700">Pattern</label>
-                                <input type="text" id="compare-pattern-input" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm" value="aababaababaabaa">
-                            </div>
-                        </div>
-                        <button id="run-comparison-btn" class="mt-6 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
-                            Run Comparison
-                        </button>
-                        <div id="comparison-results" class="mt-6">
-                             <p class="text-center text-sm text-slate-500">Results will appear here.</p>
-                        </div>
-                    </div>
-                 </div>
-            </section>
-
-             <section id="practice" class="mt-12">
-                <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 text-slate-900">Practice Problems</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                        <h3 class="font-semibold text-lg text-slate-800">1. Implement strStr()</h3>
-                        <p class="text-slate-600 mt-2 text-sm">Return the index of the first occurrence of a pattern in a text, or -1 if the pattern is not part of the text. This is a classic implementation problem.</p>
-                        <a href="https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/" target="_blank" rel="noopener noreferrer" class="text-amber-600 hover:text-amber-700 font-medium text-sm mt-4 inline-block">Solve Now &rarr;</a>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                        <h3 class="font-semibold text-lg text-slate-800">2. Repeated Substring Pattern</h3>
-                        <p class="text-slate-600 mt-2 text-sm">Given a string, check if it can be constructed by taking a substring of it and appending multiple copies of the substring together.</p>
-                        <a href="https://leetcode.com/problems/repeated-substring-pattern/" target="_blank" rel="noopener noreferrer" class="text-amber-600 hover:text-amber-700 font-medium text-sm mt-4 inline-block">Solve Now &rarr;</a>
-                    </div>
-                     <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-                        <h3 class="font-semibold text-lg text-slate-800">3. Find All Anagrams in a String</h3>
-                        <p class="text-slate-600 mt-2 text-sm">Given a text and a pattern, return an array of all the start indices of the pattern's anagrams in the text. A variation of the sliding window problem.</p>
-                        <a href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank" rel="noopener noreferrer" class="text-amber-600 hover:text-amber-700 font-medium text-sm mt-4 inline-block">Solve Now &rarr;</a>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-        
-        </main>
-
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 25: String Pattern Matching
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+   <main>
+    <section class="mb-12 max-w-4xl mx-auto text-center" id="intro">
+     <h2 class="text-2xl font-bold mb-4 text-slate-900">
+      Welcome to the Algorithm Explorer
+     </h2>
+     <p class="text-slate-600 leading-relaxed">
+      String pattern matching is a fundamental problem in computer science: finding all occurrences of a given pattern within a larger text. Today, we'll explore three key algorithms, from the simple brute-force method to more optimized techniques. This interactive guide will help you visualize how they work, understand their trade-offs, and see their C# implementations.
+     </p>
+    </section>
+    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
+     <!-- Tabs -->
+     <div class="border-b border-slate-200 mb-6">
+      <nav aria-label="Tabs" class="-mb-px flex space-x-6">
+       <button class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base tab-active" id="tab-naive">
+        Naive Approach
+       </button>
+       <button class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base tab-inactive" id="tab-kmp">
+        KMP Algorithm
+       </button>
+       <button class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base tab-inactive" id="tab-rabin-karp">
+        Rabin-Karp
+       </button>
+      </nav>
+     </div>
+     <!-- Content Panels -->
+     <div class="content-panel" id="content-naive">
+      <!-- Naive Panel Content -->
+     </div>
+     <div class="content-panel hidden" id="content-kmp">
+      <!-- KMP Panel Content -->
+     </div>
+     <div class="content-panel hidden" id="content-rabin-karp">
+      <!-- Rabin-Karp Panel Content -->
+     </div>
     </div>
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-    </div>
-</footer>
-    
-    <script>
-        const ALGORITHM_DATA = {
+    <section class="mt-12" id="comparison">
+     <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 text-slate-900">
+      Algorithm at a Glance
+     </h2>
+     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
+       <h3 class="text-xl font-semibold mb-2 text-slate-800">
+        Theoretical Complexity
+       </h3>
+       <p class="text-slate-600 mb-6 text-sm">
+        A look at the worst-case time complexities. 'N' is the length of the text and 'M' is the length of the pattern.
+       </p>
+       <div class="chart-container">
+        <canvas id="complexityChart">
+        </canvas>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
+       <h3 class="text-xl font-semibold mb-2 text-slate-800">
+        Live Performance Test
+       </h3>
+       <p class="text-slate-600 mb-6 text-sm">
+        Run all three algorithms on the same input to compare their real-world performance. Results show execution time and total character comparisons.
+       </p>
+       <div class="space-y-4">
+        <div>
+         <label class="block text-sm font-medium text-slate-700" for="compare-text-input">
+          Text
+         </label>
+         <textarea class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm" id="compare-text-input" rows="4">ababababaabaaababaabaababaaababaababaabaababaabaabaababaaababaabaabaabaababaabaabaababaababaabaaababaababaabaabaaababaabaababaaababaababaabaababaabaabaababaaababaabaabaabaababaabaabaababaababaabaaababaabaabaaababaabaababaaababaababaabaababaabaabaababaaababaabaabaabaababaabaabaababaababaabaaababaabaabaaababaabaababaaababaababaabaababaabaabaababaaababaabaabaabaababaabaabaababaababaabaaababa</textarea>
+        </div>
+        <div>
+         <label class="block text-sm font-medium text-slate-700" for="compare-pattern-input">
+          Pattern
+         </label>
+         <input class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm" id="compare-pattern-input" type="text" value="aababaababaabaa">
+        </div>
+       </div>
+       <button class="mt-6 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500" id="run-comparison-btn">
+        Run Comparison
+       </button>
+       <div class="mt-6" id="comparison-results">
+        <p class="text-center text-sm text-slate-500">
+         Results will appear here.
+        </p>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="mt-12" id="practice">
+     <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 text-slate-900">
+      Practice Problems
+     </h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+       <h3 class="font-semibold text-lg text-slate-800">
+        1. Implement strStr()
+       </h3>
+       <p class="text-slate-600 mt-2 text-sm">
+        Return the index of the first occurrence of a pattern in a text, or -1 if the pattern is not part of the text. This is a classic implementation problem.
+       </p>
+       <a class="text-amber-600 hover:text-amber-700 font-medium text-sm mt-4 inline-block" href="https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/" rel="noopener noreferrer" target="_blank">
+        Solve Now &rarr;
+       </a>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+       <h3 class="font-semibold text-lg text-slate-800">
+        2. Repeated Substring Pattern
+       </h3>
+       <p class="text-slate-600 mt-2 text-sm">
+        Given a string, check if it can be constructed by taking a substring of it and appending multiple copies of the substring together.
+       </p>
+       <a class="text-amber-600 hover:text-amber-700 font-medium text-sm mt-4 inline-block" href="https://leetcode.com/problems/repeated-substring-pattern/" rel="noopener noreferrer" target="_blank">
+        Solve Now &rarr;
+       </a>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+       <h3 class="font-semibold text-lg text-slate-800">
+        3. Find All Anagrams in a String
+       </h3>
+       <p class="text-slate-600 mt-2 text-sm">
+        Given a text and a pattern, return an array of all the start indices of the pattern's anagrams in the text. A variation of the sliding window problem.
+       </p>
+       <a class="text-amber-600 hover:text-amber-700 font-medium text-sm mt-4 inline-block" href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" rel="noopener noreferrer" target="_blank">
+        Solve Now &rarr;
+       </a>
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const ALGORITHM_DATA = {
             naive: {
                 title: 'Naive (Brute-Force) Approach',
                 description: 'The naive algorithm is the most straightforward method. It checks for the pattern at every possible starting position in the text by sliding a window of the pattern\'s length one character at a time. While simple to understand, it can be inefficient if the text and pattern have many overlapping partial matches.',
@@ -863,7 +904,6 @@
                 }, 50); 
             });
         });
-    </script>
-</body>
+  </script>
+ </body>
 </html>
-

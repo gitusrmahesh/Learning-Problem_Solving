@@ -1,24 +1,29 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 10: Sliding Window (Fixed Size)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Harmony -->
-    <!-- Application Structure Plan: A tutorial-style single-page application with an interactive visualization. The structure guides the user from the basic problem definition, through a naive brute-force solution, to the optimized sliding window technique. An interactive demo allows users to control the algorithm's execution step-by-step, solidifying their understanding. The page concludes with C# code, complexity analysis via a chart, and practice problems. This educational flow was chosen to build knowledge progressively and make an abstract algorithm tangible and easy to grasp. -->
-    <!-- Visualization & Content Choices:
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 10: Sliding Window (Fixed Size)
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Calm Harmony -->
+  <!-- Application Structure Plan: A tutorial-style single-page application with an interactive visualization. The structure guides the user from the basic problem definition, through a naive brute-force solution, to the optimized sliding window technique. An interactive demo allows users to control the algorithm's execution step-by-step, solidifying their understanding. The page concludes with C# code, complexity analysis via a chart, and practice problems. This educational flow was chosen to build knowledge progressively and make an abstract algorithm tangible and easy to grasp. -->
+  <!-- Visualization & Content Choices:
         1. Report Info: Sliding window algorithm steps -> Goal: Demonstrate the algorithm -> Viz/Method: Interactive HTML/CSS diagram of an array with a sliding 'window' -> Interaction: User-controlled 'Next Step' button to advance the window and see calculations update in real-time -> Justification: A dynamic, user-controlled visualization is superior to static text for teaching an algorithm's state changes and logic -> Library/Method: Vanilla JS + Tailwind CSS.
         2. Report Info: Time complexity of Naive vs. Sliding Window -> Goal: Compare O(n*k) vs O(n) -> Viz/Method: Line Chart -> Interaction: Static chart, tooltips on hover -> Justification: A visual chart immediately and clearly communicates the significant performance improvement of the optimized algorithm -> Library/Method: Chart.js.
     -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .highlight-window {
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   .highlight-window {
             box-shadow: 0 0 0 3px #3b82f6;
             transition: left 0.5s ease-in-out;
         }
@@ -49,103 +54,133 @@
                 height: 350px;
             }
         }
-    </style>
-
-</head>
-<body>
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=2" class="jules-return-button">
+  </style>
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=2">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 10: Sliding Window (Fixed Size)</p>
-</div>
-</div>
-    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
-
-        <main>
-            <section id="problem" class="mb-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">The Problem: Max Sum of a Subarray of Size K</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    Given an array of integers and a number 'k', our goal is to find the maximum sum of any contiguous subarray of size 'k'. A "subarray" is a sequence of connected elements from the array. For example, in the array `[2, 1, 5, 1, 3, 2]`, if k=3, one possible subarray is `[1, 5, 1]`, and its sum is 7. We need to find the subarray of size 3 that has the largest possible sum.
-                </p>
-            </section>
-
-            <section id="naive" class="mb-12">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Approach 1: The Brute-Force Method</h2>
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-                    <p class="text-gray-700 leading-relaxed mb-4">
-                        The most straightforward way to solve this is to consider every possible subarray of size 'k'. We can use a loop to determine the starting point of our subarray, and then an inner loop to sum up the next 'k' elements. We would keep track of the maximum sum found so far and update it whenever we find a larger sum.
-                    </p>
-                    <div class="code-block text-sm">
-                        <pre><code><span class="comment">// C# Brute-Force Example</span>
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 10: Sliding Window (Fixed Size)
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
+   <main>
+    <section class="mb-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200" id="problem">
+     <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+      The Problem: Max Sum of a Subarray of Size K
+     </h2>
+     <p class="text-gray-700 leading-relaxed">
+      Given an array of integers and a number 'k', our goal is to find the maximum sum of any contiguous subarray of size 'k'. A "subarray" is a sequence of connected elements from the array. For example, in the array `[2, 1, 5, 1, 3, 2]`, if k=3, one possible subarray is `[1, 5, 1]`, and its sum is 7. We need to find the subarray of size 3 that has the largest possible sum.
+     </p>
+    </section>
+    <section class="mb-12" id="naive">
+     <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">
+      Approach 1: The Brute-Force Method
+     </h2>
+     <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+      <p class="text-gray-700 leading-relaxed mb-4">
+       The most straightforward way to solve this is to consider every possible subarray of size 'k'. We can use a loop to determine the starting point of our subarray, and then an inner loop to sum up the next 'k' elements. We would keep track of the maximum sum found so far and update it whenever we find a larger sum.
+      </p>
+      <div class="code-block text-sm">
+       <pre><code><span class="comment">// C# Brute-Force Example</span>
 <span class="keyword">public int</span> <span class="function">FindMaxSumSubarray_BruteForce</span>(<span class="type">int</span>[] arr, <span class="type">int</span> k) {
     <span class="type">int</span> maxSum = <span class="number">0</span>;
-    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i <= arr.Length - k; i++) {
+    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= arr.Length - k; i++) {
         <span class="type">int</span> windowSum = <span class="number">0</span>;
-        <span class="keyword">for</span> (<span class="type">int</span> j = i; j < i + k; j++) {
+        <span class="keyword">for</span> (<span class="type">int</span> j = i; j &lt; i + k; j++) {
             windowSum += arr[j];
         }
         maxSum = Math.Max(maxSum, windowSum);
     }
     <span class="keyword">return</span> maxSum;
 }</code></pre>
-                    </div>
-                    <p class="mt-4 text-gray-700">While this works, it's inefficient. Notice that for each step, we are recalculating the sum of elements that were already part of the previous subarray. This repeated work becomes very costly as the array size grows.</p>
-                </div>
-            </section>
-
-            <section id="interactive-demo" class="mb-12 text-center">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Approach 2: The Sliding Window Technique</h2>
-                 <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-                    <p class="text-gray-700 leading-relaxed mb-6">
-                        A much more efficient approach is the "Sliding Window". Instead of recalculating the sum for each subarray, we maintain a "window" of size 'k'. As we move from one subarray to the next, we simply subtract the element that is leaving the window and add the new element that is entering it. This avoids redundant calculations. Let's visualize this process.
-                    </p>
-                    <div class="mb-6">
-                        <p class="text-lg">Array: <code class="bg-gray-200 text-gray-800 rounded px-2 py-1">[2, 1, 5, 1, 3, 2]</code>, k = <code class="bg-gray-200 text-gray-800 rounded px-2 py-1">3</code></p>
-                    </div>
-
-                    <div id="visualization-container" class="relative flex justify-center items-center h-24 mb-6">
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-6">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <p class="text-sm text-blue-800 font-semibold">Current Sum</p>
-                            <p id="current-sum" class="text-2xl font-bold text-blue-900">0</p>
-                        </div>
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <p class="text-sm text-green-800 font-semibold">Max Sum So Far</p>
-                            <p id="max-sum" class="text-2xl font-bold text-green-900">0</p>
-                        </div>
-                         <div class="bg-gray-100 p-4 rounded-lg">
-                            <p class="text-sm text-gray-600 font-semibold">Step</p>
-                            <p id="step-counter" class="text-2xl font-bold text-gray-800">0 / 5</p>
-                        </div>
-                    </div>
-
-                    <div id="explanation-text" class="min-h-[60px] p-4 bg-gray-50 rounded-lg text-gray-700 text-center mb-6 flex items-center justify-center">
-                        Click 'Start' to begin the visualization.
-                    </div>
-
-                    <div>
-                        <button id="step-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-colors mr-2">Start</button>
-                        <button id="reset-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">Reset</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="code" class="mb-12">
-                 <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">C# Implementation</h2>
-                 <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-                    <p class="text-gray-700 leading-relaxed mb-4">
-                        The code for the sliding window approach is much cleaner and more efficient. We initialize the window sum with the first 'k' elements. Then, we iterate through the rest of the array, sliding the window one element at a time by subtracting the outgoing element and adding the incoming one.
-                    </p>
-                     <div class="relative">
-                        <div class="code-block text-sm" id="code-to-copy">
-                            <pre><code><span class="comment">// C# Sliding Window Example</span>
+      </div>
+      <p class="mt-4 text-gray-700">
+       While this works, it's inefficient. Notice that for each step, we are recalculating the sum of elements that were already part of the previous subarray. This repeated work becomes very costly as the array size grows.
+      </p>
+     </div>
+    </section>
+    <section class="mb-12 text-center" id="interactive-demo">
+     <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+      Approach 2: The Sliding Window Technique
+     </h2>
+     <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+      <p class="text-gray-700 leading-relaxed mb-6">
+       A much more efficient approach is the "Sliding Window". Instead of recalculating the sum for each subarray, we maintain a "window" of size 'k'. As we move from one subarray to the next, we simply subtract the element that is leaving the window and add the new element that is entering it. This avoids redundant calculations. Let's visualize this process.
+      </p>
+      <div class="mb-6">
+       <p class="text-lg">
+        Array:
+        <code class="bg-gray-200 text-gray-800 rounded px-2 py-1">
+         [2, 1, 5, 1, 3, 2]
+        </code>
+        , k =
+        <code class="bg-gray-200 text-gray-800 rounded px-2 py-1">
+         3
+        </code>
+       </p>
+      </div>
+      <div class="relative flex justify-center items-center h-24 mb-6" id="visualization-container">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-6">
+       <div class="bg-blue-50 p-4 rounded-lg">
+        <p class="text-sm text-blue-800 font-semibold">
+         Current Sum
+        </p>
+        <p class="text-2xl font-bold text-blue-900" id="current-sum">
+         0
+        </p>
+       </div>
+       <div class="bg-green-50 p-4 rounded-lg">
+        <p class="text-sm text-green-800 font-semibold">
+         Max Sum So Far
+        </p>
+        <p class="text-2xl font-bold text-green-900" id="max-sum">
+         0
+        </p>
+       </div>
+       <div class="bg-gray-100 p-4 rounded-lg">
+        <p class="text-sm text-gray-600 font-semibold">
+         Step
+        </p>
+        <p class="text-2xl font-bold text-gray-800" id="step-counter">
+         0 / 5
+        </p>
+       </div>
+      </div>
+      <div class="min-h-[60px] p-4 bg-gray-50 rounded-lg text-gray-700 text-center mb-6 flex items-center justify-center" id="explanation-text">
+       Click 'Start' to begin the visualization.
+      </div>
+      <div>
+       <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-colors mr-2" id="step-btn">
+        Start
+       </button>
+       <button class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg transition-colors" id="reset-btn">
+        Reset
+       </button>
+      </div>
+     </div>
+    </section>
+    <section class="mb-12" id="code">
+     <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">
+      C# Implementation
+     </h2>
+     <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+      <p class="text-gray-700 leading-relaxed mb-4">
+       The code for the sliding window approach is much cleaner and more efficient. We initialize the window sum with the first 'k' elements. Then, we iterate through the rest of the array, sliding the window one element at a time by subtracting the outgoing element and adding the incoming one.
+      </p>
+      <div class="relative">
+       <div class="code-block text-sm" id="code-to-copy">
+        <pre><code><span class="comment">// C# Sliding Window Example</span>
 <span class="keyword">public int</span> <span class="function">FindMaxSumSubarray</span>(<span class="type">int</span>[] arr, <span class="type">int</span> k) {
-    <span class="keyword">if</span> (arr.Length < k) {
+    <span class="keyword">if</span> (arr.Length &lt; k) {
         <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// Or throw an exception</span>
     }
 
@@ -153,11 +188,11 @@
     <span class="type">int</span> maxSum = <span class="number">0</span>;
     <span class="type">int</span> windowStart = <span class="number">0</span>;
 
-    <span class="keyword">for</span> (<span class="type">int</span> windowEnd = <span class="number">0</span>; windowEnd < arr.Length; windowEnd++) {
+    <span class="keyword">for</span> (<span class="type">int</span> windowEnd = <span class="number">0</span>; windowEnd &lt; arr.Length; windowEnd++) {
         windowSum += arr[windowEnd]; <span class="comment">// Add the next element</span>
 
         <span class="comment">// Slide the window when we hit the size 'k'</span>
-        <span class="keyword">if</span> (windowEnd >= k - <span class="number">1</span>) {
+        <span class="keyword">if</span> (windowEnd &gt;= k - <span class="number">1</span>) {
             maxSum = Math.Max(maxSum, windowSum); <span class="comment">// Update max sum</span>
             windowSum -= arr[windowStart]; <span class="comment">// Subtract the element leaving</span>
             windowStart++; <span class="comment">// Slide window forward</span>
@@ -165,62 +200,89 @@
     }
     <span class="keyword">return</span> maxSum;
 }</code></pre>
-                        </div>
-                        <button id="copy-btn" class="absolute top-4 right-4 bg-gray-700 hover:bg-gray-600 text-white text-xs font-semibold py-1 px-3 rounded-md">Copy</button>
-                    </div>
-                 </div>
-            </section>
-
-             <section id="complexity" class="mb-12">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Complexity Analysis</h2>
-                 <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-                    <p class="text-gray-700 leading-relaxed mb-6">
-                        The performance difference between the two approaches is significant. The sliding window technique avoids the nested loop, allowing us to process the array in a single pass.
-                    </p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-                        <div class="text-center">
-                            <h3 class="text-lg font-semibold text-gray-800">Brute-Force</h3>
-                            <p class="text-2xl font-bold text-red-600">O(N * K)</p>
-                             <p class="text-gray-600">Time complexity is high because for each of the N-K+1 windows, we perform K additions.</p>
-                        </div>
-                        <div class="text-center">
-                             <h3 class="text-lg font-semibold text-gray-800">Sliding Window</h3>
-                            <p class="text-2xl font-bold text-green-600">O(N)</p>
-                            <p class="text-gray-600">Time complexity is linear because we iterate through the array only once.</p>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="complexityChart"></canvas>
-                    </div>
-                 </div>
-            </section>
-
-             <section id="practice">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Practice Problems</h2>
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-                    <p class="text-gray-700 leading-relaxed mb-6">
-                        This technique is fundamental for solving many array and string-based problems. Here are a few classic examples to practice:
-                    </p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-700">
-                        <li>Find the average of all contiguous subarrays of size 'K'.</li>
-                        <li>Find the smallest subarray with a given sum (this is a variable-size window, a topic for another day!).</li>
-                        <li>Given a string, find the length of the longest substring with no more than 'K' distinct characters.</li>
-                        <li>Find all anagrams of a pattern in a given string.</li>
-                        <li>Maximum number of vowels in a substring of given length.</li>
-                    </ul>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <footer class="bg-stone-800 text-white mt-12 py-6">
-        <div class="container mx-auto px-4 text-center max-w-5xl">
-            <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-        </div>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+       </div>
+       <button class="absolute top-4 right-4 bg-gray-700 hover:bg-gray-600 text-white text-xs font-semibold py-1 px-3 rounded-md" id="copy-btn">
+        Copy
+       </button>
+      </div>
+     </div>
+    </section>
+    <section class="mb-12" id="complexity">
+     <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">
+      Complexity Analysis
+     </h2>
+     <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+      <p class="text-gray-700 leading-relaxed mb-6">
+       The performance difference between the two approaches is significant. The sliding window technique avoids the nested loop, allowing us to process the array in a single pass.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+       <div class="text-center">
+        <h3 class="text-lg font-semibold text-gray-800">
+         Brute-Force
+        </h3>
+        <p class="text-2xl font-bold text-red-600">
+         O(N * K)
+        </p>
+        <p class="text-gray-600">
+         Time complexity is high because for each of the N-K+1 windows, we perform K additions.
+        </p>
+       </div>
+       <div class="text-center">
+        <h3 class="text-lg font-semibold text-gray-800">
+         Sliding Window
+        </h3>
+        <p class="text-2xl font-bold text-green-600">
+         O(N)
+        </p>
+        <p class="text-gray-600">
+         Time complexity is linear because we iterate through the array only once.
+        </p>
+       </div>
+      </div>
+      <div class="chart-container">
+       <canvas id="complexityChart">
+       </canvas>
+      </div>
+     </div>
+    </section>
+    <section id="practice">
+     <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">
+      Practice Problems
+     </h2>
+     <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+      <p class="text-gray-700 leading-relaxed mb-6">
+       This technique is fundamental for solving many array and string-based problems. Here are a few classic examples to practice:
+      </p>
+      <ul class="list-disc list-inside space-y-2 text-gray-700">
+       <li>
+        Find the average of all contiguous subarrays of size 'K'.
+       </li>
+       <li>
+        Find the smallest subarray with a given sum (this is a variable-size window, a topic for another day!).
+       </li>
+       <li>
+        Given a string, find the length of the longest substring with no more than 'K' distinct characters.
+       </li>
+       <li>
+        Find all anagrams of a pattern in a given string.
+       </li>
+       <li>
+        Maximum number of vowels in a substring of given length.
+       </li>
+      </ul>
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   document.addEventListener('DOMContentLoaded', () => {
             const arr = [2, 1, 5, 1, 3, 2];
             const k = 3;
 
@@ -427,6 +489,6 @@
 
             initializeState();
         });
-    </script>
-</body>
+  </script>
+ </body>
 </html>

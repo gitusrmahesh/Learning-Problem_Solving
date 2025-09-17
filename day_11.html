@@ -1,20 +1,25 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 11: Sliding Window (Variable Size)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Harmony -->
-    <!-- Application Structure Plan: The application is structured as an interactive educational module. It begins with a conceptual overview, followed by two distinct, interactive problem-solving sections. Each problem section includes a description, an interactive visualization where users can step through the algorithm, and a detailed C# code explanation. This thematic, step-by-step approach was chosen because it mirrors a typical learning process: understand the theory, then apply it to guided examples. The interactive element is crucial for building intuition about how the window expands and shrinks, which is the core of the technique. A final section provides further practice problems to solidify learning. -->
-    <!-- Visualization & Content Choices: Report Info: Explain variable-size sliding window. Goal: Teach the algorithm's mechanics. Viz/Method: Interactive bar chart (using Chart.js) with a colored overlay representing the window. Interaction: A "Next Step" button allows users to manually advance the algorithm, seeing the window pointers, current sum/char count, and result update in real-time. Justification: This manual, step-by-step interaction is more effective for learning than a passive animation, as it forces the user to think about why the window is changing. The bar chart provides a clear visual representation of the array/string being processed. The code is presented in styled blocks with a copy feature for ease of use. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 11: Sliding Window (Variable Size)
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Calm Harmony -->
+  <!-- Application Structure Plan: The application is structured as an interactive educational module. It begins with a conceptual overview, followed by two distinct, interactive problem-solving sections. Each problem section includes a description, an interactive visualization where users can step through the algorithm, and a detailed C# code explanation. This thematic, step-by-step approach was chosen because it mirrors a typical learning process: understand the theory, then apply it to guided examples. The interactive element is crucial for building intuition about how the window expands and shrinks, which is the core of the technique. A final section provides further practice problems to solidify learning. -->
+  <!-- Visualization & Content Choices: Report Info: Explain variable-size sliding window. Goal: Teach the algorithm's mechanics. Viz/Method: Interactive bar chart (using Chart.js) with a colored overlay representing the window. Interaction: A "Next Step" button allows users to manually advance the algorithm, seeing the window pointers, current sum/char count, and result update in real-time. Justification: This manual, step-by-step interaction is more effective for learning than a passive animation, as it forces the user to think about why the window is changing. The bar chart provides a clear visual representation of the array/string being processed. The code is presented in styled blocks with a copy feature for ease of use. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
             font-family: 'Inter', sans-serif;
             background-color: #f8f7f4;
             color: #4a4a4a;
@@ -90,96 +95,185 @@
             font-weight: bold;
             white-space: nowrap;
         }
-
-    </style>
-
-</head>
-<body class="antialiased">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=2" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=2">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 11: Sliding Window (Variable Size)</p>
-</div>
-</div>
-    <div class="container mx-auto px-4 py-8 md:py-12">
-
-        <main>
-            <!-- Navigation Tabs -->
-            <div class="mb-8 border-b border-gray-200">
-                <nav class="flex flex-wrap -mb-px" id="tabs-container">
-                    <button data-tab="intro" class="tab tab-active text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600">Introduction</button>
-                    <button data-tab="problem1" class="tab text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600">Problem 1: Smallest Subarray</button>
-                    <button data-tab="problem2" class="tab text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600">Problem 2: Longest Substring</button>
-                    <button data-tab="practice" class="tab text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600">Practice</button>
-                </nav>
-            </div>
-
-            <!-- Content Sections -->
-            <div id="tab-content">
-                <div id="intro-content" class="space-y-6">
-                    <h2 class="text-3xl font-bold text-gray-800">The Variable-Size Sliding Window Technique</h2>
-                    <p class="text-lg text-gray-700">The variable-size sliding window technique is a powerful approach for solving problems that involve finding a subarray or substring that satisfies a certain condition. Unlike the fixed-size window, the size of this window (the distance between the start and end pointers) changes dynamically as we iterate through the data.</p>
-                    <div class="grid md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <div>
-                            <h3 class="text-2xl font-semibold text-gray-800 mb-3">Core Idea</h3>
-                            <p class="text-gray-700">The general idea is to use two pointers, `start` and `end`, to define the current "window". We expand the window by moving the `end` pointer to the right. Once the window satisfies a certain condition, we try to shrink it from the left by moving the `start` pointer to the right, seeking a more optimal solution (e.g., a smaller subarray or a longer substring).</p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-md border">
-                            <h4 class="text-xl font-semibold text-gray-700 mb-2">General Algorithm Template</h4>
-                            <ol class="list-decimal list-inside space-y-2 text-gray-600">
-                                <li>Initialize `start = 0`, `end = 0`, and other necessary variables.</li>
-                                <li>Iterate with the `end` pointer from left to right to expand the window.</li>
-                                <li>Update state based on the element at `end`.</li>
-                                <li>Enter a `while` loop to shrink the window from the left as long as a condition is met.</li>
-                                <li>Inside the `while` loop:
-                                    <ul class="list-disc list-inside ml-4 mt-1">
-                                      <li>Update the answer (e.g., min length, max length).</li>
-                                      <li>Remove the effect of the element at `start`.</li>
-                                      <li>Increment `start`.</li>
-                                    </ul>
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="problem1-content" class="hidden space-y-6">
-                    <h2 class="text-3xl font-bold text-gray-800">Problem 1: Smallest Subarray with Sum ≥ Target</h2>
-                    <p class="text-lg text-gray-700">Given an array of positive integers and a positive integer `target`, find the length of the smallest contiguous subarray whose sum is greater than or equal to `target`. If there is no such subarray, return 0.</p>
-
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h3 class="text-2xl font-semibold text-center text-gray-800 mb-4">Interactive Visualization</h3>
-                        <div class="flex flex-col md:flex-row gap-4 items-center justify-center mb-4">
-                            <div><label for="p1-array-input" class="font-medium">Array (comma-separated):</label> <input type="text" id="p1-array-input" value="2, 1, 5, 2, 3, 2" class="p-2 border rounded-md"></div>
-                            <div><label for="p1-target-input" class="font-medium">Target:</label> <input type="number" id="p1-target-input" value="7" class="p-2 border rounded-md w-20"></div>
-                            <button id="p1-start-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Start/Reset</button>
-                            <button id="p1-step-btn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition" disabled>Next Step</button>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="p1-chart"></canvas>
-                             <div id="p1-window" class="window-overlay" style="display: none;">
-                                 <div id="p1-start-label" class="pointer-label"></div>
-                                 <div id="p1-end-label" class="pointer-label"></div>
-                             </div>
-                        </div>
-                        <div class="text-center mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-lg">
-                            <div class="bg-gray-100 p-3 rounded-md"><strong>Start:</strong> <span id="p1-start-val">N/A</span></div>
-                            <div class="bg-gray-100 p-3 rounded-md"><strong>End:</strong> <span id="p1-end-val">N/A</span></div>
-                            <div class="bg-indigo-100 p-3 rounded-md"><strong>Current Sum:</strong> <span id="p1-sum-val">N/A</span></div>
-                            <div class="bg-green-100 p-3 rounded-md"><strong>Min Length:</strong> <span id="p1-min-len-val">N/A</span></div>
-                        </div>
-                        <p id="p1-status" class="text-center text-lg mt-4 font-medium text-gray-700 h-6"></p>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">C# Implementation & Explanation</h3>
-                        <p class="text-gray-700 mb-4">We iterate through the array with the `end` pointer, adding each element to `windowSum`. Once `windowSum` is at least `target`, we enter a `while` loop. Inside this loop, we record the current window's length if it's the smallest we've seen, then we shrink the window by subtracting the `start` element's value and incrementing `start`. We repeat this shrinking process until the `windowSum` is less than the `target` again, at which point we continue expanding with the `end` pointer.</p>
-                        <div class="code-block">
-                            <button class="copy-btn" onclick="copyCode('p1-code')">Copy</button>
-                            <pre><code id="p1-code">public class Solution {
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 11: Sliding Window (Variable Size)
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto px-4 py-8 md:py-12">
+   <main>
+    <!-- Navigation Tabs -->
+    <div class="mb-8 border-b border-gray-200">
+     <nav class="flex flex-wrap -mb-px" id="tabs-container">
+      <button class="tab tab-active text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600" data-tab="intro">
+       Introduction
+      </button>
+      <button class="tab text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600" data-tab="problem1">
+       Problem 1: Smallest Subarray
+      </button>
+      <button class="tab text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600" data-tab="problem2">
+       Problem 2: Longest Substring
+      </button>
+      <button class="tab text-lg font-medium p-4 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-600" data-tab="practice">
+       Practice
+      </button>
+     </nav>
+    </div>
+    <!-- Content Sections -->
+    <div id="tab-content">
+     <div class="space-y-6" id="intro-content">
+      <h2 class="text-3xl font-bold text-gray-800">
+       The Variable-Size Sliding Window Technique
+      </h2>
+      <p class="text-lg text-gray-700">
+       The variable-size sliding window technique is a powerful approach for solving problems that involve finding a subarray or substring that satisfies a certain condition. Unlike the fixed-size window, the size of this window (the distance between the start and end pointers) changes dynamically as we iterate through the data.
+      </p>
+      <div class="grid md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+       <div>
+        <h3 class="text-2xl font-semibold text-gray-800 mb-3">
+         Core Idea
+        </h3>
+        <p class="text-gray-700">
+         The general idea is to use two pointers, `start` and `end`, to define the current "window". We expand the window by moving the `end` pointer to the right. Once the window satisfies a certain condition, we try to shrink it from the left by moving the `start` pointer to the right, seeking a more optimal solution (e.g., a smaller subarray or a longer substring).
+        </p>
+       </div>
+       <div class="bg-gray-50 p-4 rounded-md border">
+        <h4 class="text-xl font-semibold text-gray-700 mb-2">
+         General Algorithm Template
+        </h4>
+        <ol class="list-decimal list-inside space-y-2 text-gray-600">
+         <li>
+          Initialize `start = 0`, `end = 0`, and other necessary variables.
+         </li>
+         <li>
+          Iterate with the `end` pointer from left to right to expand the window.
+         </li>
+         <li>
+          Update state based on the element at `end`.
+         </li>
+         <li>
+          Enter a `while` loop to shrink the window from the left as long as a condition is met.
+         </li>
+         <li>
+          Inside the `while` loop:
+          <ul class="list-disc list-inside ml-4 mt-1">
+           <li>
+            Update the answer (e.g., min length, max length).
+           </li>
+           <li>
+            Remove the effect of the element at `start`.
+           </li>
+           <li>
+            Increment `start`.
+           </li>
+          </ul>
+         </li>
+        </ol>
+       </div>
+      </div>
+     </div>
+     <div class="hidden space-y-6" id="problem1-content">
+      <h2 class="text-3xl font-bold text-gray-800">
+       Problem 1: Smallest Subarray with Sum &ge; Target
+      </h2>
+      <p class="text-lg text-gray-700">
+       Given an array of positive integers and a positive integer `target`, find the length of the smallest contiguous subarray whose sum is greater than or equal to `target`. If there is no such subarray, return 0.
+      </p>
+      <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+       <h3 class="text-2xl font-semibold text-center text-gray-800 mb-4">
+        Interactive Visualization
+       </h3>
+       <div class="flex flex-col md:flex-row gap-4 items-center justify-center mb-4">
+        <div>
+         <label class="font-medium" for="p1-array-input">
+          Array (comma-separated):
+         </label>
+         <input class="p-2 border rounded-md" id="p1-array-input" type="text" value="2, 1, 5, 2, 3, 2">
+        </div>
+        <div>
+         <label class="font-medium" for="p1-target-input">
+          Target:
+         </label>
+         <input class="p-2 border rounded-md w-20" id="p1-target-input" type="number" value="7">
+        </div>
+        <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition" id="p1-start-btn">
+         Start/Reset
+        </button>
+        <button class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition" disabled id="p1-step-btn">
+         Next Step
+        </button>
+       </div>
+       <div class="chart-container">
+        <canvas id="p1-chart">
+        </canvas>
+        <div class="window-overlay" id="p1-window" style="display: none;">
+         <div class="pointer-label" id="p1-start-label">
+         </div>
+         <div class="pointer-label" id="p1-end-label">
+         </div>
+        </div>
+       </div>
+       <div class="text-center mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-lg">
+        <div class="bg-gray-100 p-3 rounded-md">
+         <strong>
+          Start:
+         </strong>
+         <span id="p1-start-val">
+          N/A
+         </span>
+        </div>
+        <div class="bg-gray-100 p-3 rounded-md">
+         <strong>
+          End:
+         </strong>
+         <span id="p1-end-val">
+          N/A
+         </span>
+        </div>
+        <div class="bg-indigo-100 p-3 rounded-md">
+         <strong>
+          Current Sum:
+         </strong>
+         <span id="p1-sum-val">
+          N/A
+         </span>
+        </div>
+        <div class="bg-green-100 p-3 rounded-md">
+         <strong>
+          Min Length:
+         </strong>
+         <span id="p1-min-len-val">
+          N/A
+         </span>
+        </div>
+       </div>
+       <p class="text-center text-lg mt-4 font-medium text-gray-700 h-6" id="p1-status">
+       </p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+       <h3 class="text-2xl font-semibold text-gray-800 mb-3">
+        C# Implementation & Explanation
+       </h3>
+       <p class="text-gray-700 mb-4">
+        We iterate through the array with the `end` pointer, adding each element to `windowSum`. Once `windowSum` is at least `target`, we enter a `while` loop. Inside this loop, we record the current window's length if it's the smallest we've seen, then we shrink the window by subtracting the `start` element's value and incrementing `start`. We repeat this shrinking process until the `windowSum` is less than the `target` again, at which point we continue expanding with the `end` pointer.
+       </p>
+       <div class="code-block">
+        <button class="copy-btn" onclick="copyCode('p1-code')">
+         Copy
+        </button>
+        <pre><code id="p1-code">public class Solution {
     public int MinSubArrayLen(int target, int[] nums) {
         if (nums == null || nums.Length == 0) {
             return 0;
@@ -189,10 +283,10 @@
         int windowSum = 0;
         int windowStart = 0;
 
-        for (int windowEnd = 0; windowEnd < nums.Length; windowEnd++) {
+        for (int windowEnd = 0; windowEnd &lt; nums.Length; windowEnd++) {
             windowSum += nums[windowEnd];
 
-            while (windowSum >= target) {
+            while (windowSum &gt;= target) {
                 minLength = Math.Min(minLength, windowEnd - windowStart + 1);
                 windowSum -= nums[windowStart];
                 windowStart++;
@@ -202,45 +296,101 @@
         return minLength == int.MaxValue ? 0 : minLength;
     }
 }</code></pre>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="problem2-content" class="hidden space-y-6">
-                     <h2 class="text-3xl font-bold text-gray-800">Problem 2: Longest Substring with K Unique Characters</h2>
-                    <p class="text-lg text-gray-700">Given a string, find the length of the longest substring that contains no more than `K` distinct characters.</p>
-
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h3 class="text-2xl font-semibold text-center text-gray-800 mb-4">Interactive Visualization</h3>
-                         <div class="flex flex-col md:flex-row gap-4 items-center justify-center mb-4">
-                            <div><label for="p2-string-input" class="font-medium">String:</label> <input type="text" id="p2-string-input" value="araaci" class="p-2 border rounded-md"></div>
-                            <div><label for="p2-k-input" class="font-medium">K:</label> <input type="number" id="p2-k-input" value="2" class="p-2 border rounded-md w-20"></div>
-                            <button id="p2-start-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Start/Reset</button>
-                            <button id="p2-step-btn" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition" disabled>Next Step</button>
-                        </div>
-                        <div class="chart-container">
-                             <canvas id="p2-chart"></canvas>
-                             <div id="p2-window" class="window-overlay" style="display: none;">
-                                <div id="p2-start-label" class="pointer-label"></div>
-                                <div id="p2-end-label" class="pointer-label"></div>
-                            </div>
-                        </div>
-                        <div class="text-center mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-lg">
-                            <div class="bg-gray-100 p-3 rounded-md"><strong>Start:</strong> <span id="p2-start-val">N/A</span></div>
-                            <div class="bg-gray-100 p-3 rounded-md"><strong>End:</strong> <span id="p2-end-val">N/A</span></div>
-                            <div class="bg-indigo-100 p-3 rounded-md"><strong>Unique Chars:</strong> <span id="p2-unique-val">N/A</span></div>
-                            <div class="bg-green-100 p-3 rounded-md"><strong>Max Length:</strong> <span id="p2-max-len-val">N/A</span></div>
-                        </div>
-                        <div id="p2-freq-map" class="text-center mt-4 font-mono"></div>
-                        <p id="p2-status" class="text-center text-lg mt-4 font-medium text-gray-700 h-6"></p>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">C# Implementation & Explanation</h3>
-                        <p class="text-gray-700 mb-4">We use a dictionary (hash map) to keep track of the frequency of characters in the current window. We expand the window with `end`, adding characters to the map. If the number of unique characters in the map exceeds `K`, we enter a `while` loop to shrink the window from the left. In the loop, we decrement the count of the `start` character. If its count becomes zero, we remove it from the map. We continue shrinking until the map's size is back to `K`. At each valid step (map size ≤ K), we update our `maxLength`.</p>
-                        <div class="code-block">
-                            <button class="copy-btn" onclick="copyCode('p2-code')">Copy</button>
-                            <pre><code id="p2-code">public class Solution {
+       </div>
+      </div>
+     </div>
+     <div class="hidden space-y-6" id="problem2-content">
+      <h2 class="text-3xl font-bold text-gray-800">
+       Problem 2: Longest Substring with K Unique Characters
+      </h2>
+      <p class="text-lg text-gray-700">
+       Given a string, find the length of the longest substring that contains no more than `K` distinct characters.
+      </p>
+      <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+       <h3 class="text-2xl font-semibold text-center text-gray-800 mb-4">
+        Interactive Visualization
+       </h3>
+       <div class="flex flex-col md:flex-row gap-4 items-center justify-center mb-4">
+        <div>
+         <label class="font-medium" for="p2-string-input">
+          String:
+         </label>
+         <input class="p-2 border rounded-md" id="p2-string-input" type="text" value="araaci">
+        </div>
+        <div>
+         <label class="font-medium" for="p2-k-input">
+          K:
+         </label>
+         <input class="p-2 border rounded-md w-20" id="p2-k-input" type="number" value="2">
+        </div>
+        <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition" id="p2-start-btn">
+         Start/Reset
+        </button>
+        <button class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition" disabled id="p2-step-btn">
+         Next Step
+        </button>
+       </div>
+       <div class="chart-container">
+        <canvas id="p2-chart">
+        </canvas>
+        <div class="window-overlay" id="p2-window" style="display: none;">
+         <div class="pointer-label" id="p2-start-label">
+         </div>
+         <div class="pointer-label" id="p2-end-label">
+         </div>
+        </div>
+       </div>
+       <div class="text-center mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-lg">
+        <div class="bg-gray-100 p-3 rounded-md">
+         <strong>
+          Start:
+         </strong>
+         <span id="p2-start-val">
+          N/A
+         </span>
+        </div>
+        <div class="bg-gray-100 p-3 rounded-md">
+         <strong>
+          End:
+         </strong>
+         <span id="p2-end-val">
+          N/A
+         </span>
+        </div>
+        <div class="bg-indigo-100 p-3 rounded-md">
+         <strong>
+          Unique Chars:
+         </strong>
+         <span id="p2-unique-val">
+          N/A
+         </span>
+        </div>
+        <div class="bg-green-100 p-3 rounded-md">
+         <strong>
+          Max Length:
+         </strong>
+         <span id="p2-max-len-val">
+          N/A
+         </span>
+        </div>
+       </div>
+       <div class="text-center mt-4 font-mono" id="p2-freq-map">
+       </div>
+       <p class="text-center text-lg mt-4 font-medium text-gray-700 h-6" id="p2-status">
+       </p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+       <h3 class="text-2xl font-semibold text-gray-800 mb-3">
+        C# Implementation & Explanation
+       </h3>
+       <p class="text-gray-700 mb-4">
+        We use a dictionary (hash map) to keep track of the frequency of characters in the current window. We expand the window with `end`, adding characters to the map. If the number of unique characters in the map exceeds `K`, we enter a `while` loop to shrink the window from the left. In the loop, we decrement the count of the `start` character. If its count becomes zero, we remove it from the map. We continue shrinking until the map's size is back to `K`. At each valid step (map size &le; K), we update our `maxLength`.
+       </p>
+       <div class="code-block">
+        <button class="copy-btn" onclick="copyCode('p2-code')">
+         Copy
+        </button>
+        <pre><code id="p2-code">public class Solution {
     public int LengthOfLongestSubstringKDistinct(string s, int k) {
         if (string.IsNullOrEmpty(s) || k == 0) {
             return 0;
@@ -250,14 +400,14 @@
         int windowStart = 0;
         Dictionary&lt;char, int&gt; charFrequency = new Dictionary&lt;char, int&gt;();
 
-        for (int windowEnd = 0; windowEnd < s.Length; windowEnd++) {
+        for (int windowEnd = 0; windowEnd &lt; s.Length; windowEnd++) {
             char rightChar = s[windowEnd];
             if (!charFrequency.ContainsKey(rightChar)) {
                 charFrequency[rightChar] = 0;
             }
             charFrequency[rightChar]++;
 
-            while (charFrequency.Count > k) {
+            while (charFrequency.Count &gt; k) {
                 char leftChar = s[windowStart];
                 charFrequency[leftChar]--;
                 if (charFrequency[leftChar] == 0) {
@@ -272,44 +422,63 @@
         return maxLength;
     }
 }</code></pre>
-                        </div>
-                    </div>
-                </div>
-
-                 <div id="practice-content" class="hidden space-y-6">
-                    <h2 class="text-3xl font-bold text-gray-800">Practice Problems</h2>
-                    <p class="text-lg text-gray-700">The best way to master a technique is to practice. Try applying the variable-size sliding window pattern to these problems. They offer slight variations that will challenge and solidify your understanding.</p>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                            <h3 class="text-xl font-semibold text-indigo-600">LeetCode 904. Fruit Into Baskets</h3>
-                            <p class="mt-2 text-gray-600">This is essentially "Longest Substring with K=2 Unique Characters". A great starting point to reinforce the pattern.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                            <h3 class="text-xl font-semibold text-indigo-600">LeetCode 3. Longest Substring Without Repeating Characters</h3>
-                            <p class="mt-2 text-gray-600">Here, your condition for shrinking is finding a duplicate character within the window. The goal is to maximize length with all unique characters.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                             <h3 class="text-xl font-semibold text-indigo-600">LeetCode 76. Minimum Window Substring</h3>
-                            <p class="mt-2 text-gray-600">A more advanced version where you need to find the smallest window in one string that contains all characters of another string. You'll need two frequency maps for this.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                             <h3 class="text-xl font-semibold text-indigo-600">LeetCode 424. Longest Repeating Character Replacement</h3>
-                            <p class="mt-2 text-gray-600">This problem is tricky. The window's validity condition is `windowLength - maxFrequency <= k`. You shrink when this condition is violated.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+       </div>
+      </div>
+     </div>
+     <div class="hidden space-y-6" id="practice-content">
+      <h2 class="text-3xl font-bold text-gray-800">
+       Practice Problems
+      </h2>
+      <p class="text-lg text-gray-700">
+       The best way to master a technique is to practice. Try applying the variable-size sliding window pattern to these problems. They offer slight variations that will challenge and solidify your understanding.
+      </p>
+      <div class="grid md:grid-cols-2 gap-6">
+       <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h3 class="text-xl font-semibold text-indigo-600">
+         LeetCode 904. Fruit Into Baskets
+        </h3>
+        <p class="mt-2 text-gray-600">
+         This is essentially "Longest Substring with K=2 Unique Characters". A great starting point to reinforce the pattern.
+        </p>
+       </div>
+       <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h3 class="text-xl font-semibold text-indigo-600">
+         LeetCode 3. Longest Substring Without Repeating Characters
+        </h3>
+        <p class="mt-2 text-gray-600">
+         Here, your condition for shrinking is finding a duplicate character within the window. The goal is to maximize length with all unique characters.
+        </p>
+       </div>
+       <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h3 class="text-xl font-semibold text-indigo-600">
+         LeetCode 76. Minimum Window Substring
+        </h3>
+        <p class="mt-2 text-gray-600">
+         A more advanced version where you need to find the smallest window in one string that contains all characters of another string. You'll need two frequency maps for this.
+        </p>
+       </div>
+       <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h3 class="text-xl font-semibold text-indigo-600">
+         LeetCode 424. Longest Repeating Character Replacement
+        </h3>
+        <p class="mt-2 text-gray-600">
+         This problem is tricky. The window's validity condition is `windowLength - maxFrequency &lt;= k`. You shrink when this condition is violated.
+        </p>
+       </div>
+      </div>
+     </div>
     </div>
-
-    <footer class="bg-stone-800 text-white mt-12 py-6">
-        <div class="container mx-auto px-4 text-center max-w-5xl">
-            <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-        </div>
-    </footer>
-
-    <script>
-        const tabsContainer = document.getElementById('tabs-container');
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const tabsContainer = document.getElementById('tabs-container');
         const tabContent = document.getElementById('tab-content');
 
         tabsContainer.addEventListener('click', (e) => {
@@ -618,6 +787,6 @@
 
         p2StartBtn.addEventListener('click', setupP2);
         p2StepBtn.addEventListener('click', stepP2);
-    </script>
-</body>
+  </script>
+ </body>
 </html>

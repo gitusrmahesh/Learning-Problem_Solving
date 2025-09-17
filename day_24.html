@@ -1,16 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 24: Substring & Subsequence Problems</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chosen Palette: Calm Harmony -->
-    <!-- Application Structure Plan: A tab-based interactive learning module. Users select a problem (Longest Substring or LCS). Each section provides a conceptual explanation, a step-by-step interactive visualizer allowing users to input their own data, and the C# code implementation. This structure was chosen to transform passive learning from a static report into an active, exploratory experience, which is more effective for understanding algorithms. -->
-    <!-- Visualization & Content Choices: Longest Substring -> Goal: Demonstrate Sliding Window -> Method: Interactive string display with moving start/end pointers and highlighted substring -> Interaction: User input, step-through controls -> Justification: Directly visualizes the core algorithm mechanics. Longest Common Subsequence -> Goal: Explain Dynamic Programming -> Method: Dynamically generated and populated HTML grid representing the DP table -> Interaction: User inputs, watches the table build and the result path traced -> Justification: Demystifies the DP approach by showing the process, not just the result. Both use vanilla JS and DOM manipulation. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 24: Substring & Subsequence Problems
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <!-- Chosen Palette: Calm Harmony -->
+  <!-- Application Structure Plan: A tab-based interactive learning module. Users select a problem (Longest Substring or LCS). Each section provides a conceptual explanation, a step-by-step interactive visualizer allowing users to input their own data, and the C# code implementation. This structure was chosen to transform passive learning from a static report into an active, exploratory experience, which is more effective for understanding algorithms. -->
+  <!-- Visualization & Content Choices: Longest Substring -> Goal: Demonstrate Sliding Window -> Method: Interactive string display with moving start/end pointers and highlighted substring -> Interaction: User input, step-through controls -> Justification: Directly visualizes the core algorithm mechanics. Longest Common Subsequence -> Goal: Explain Dynamic Programming -> Method: Dynamically generated and populated HTML grid representing the DP table -> Interaction: User inputs, watches the table build and the result path traced -> Justification: Demystifies the DP approach by showing the process, not just the result. Both use vanilla JS and DOM manipulation. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
             background-color: #f8fafc; 
             font-family: 'Inter', sans-serif;
         }
@@ -107,83 +111,113 @@
         .dp-cell-final {
             background-color: #bbf7d0;
         }
-    </style>
-
-</head>
-<body class="text-gray-800">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=4" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=4">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">30-Day Daily Roadmap: Problem Solving</p>
-</div>
-</div>
-
-    <div class="container mx-auto p-4 md:p-8">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">30-Day Daily Roadmap: Problem Solving</h1>
-            <p class="text-lg text-indigo-600 font-semibold mt-1">Day 24 – Substring & Subsequence Problems</p>
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 24: Substring & Subsequence Problems
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 md:p-8">
+   <div class="max-w-5xl mx-auto">
+    <div class="flex justify-center border-b border-gray-200 mb-8">
+     <button class="tab-button tab-active text-sm md:text-base font-medium py-3 px-6 rounded-t-lg focus:outline-none transition-colors duration-300" id="tab-ls">
+      Longest Substring Without Repeating Characters
+     </button>
+     <button class="tab-button tab-inactive text-sm md:text-base font-medium py-3 px-6 rounded-t-lg focus:outline-none transition-colors duration-300" id="tab-lcs">
+      Longest Common Subsequence
+     </button>
+    </div>
+    <main>
+     <!-- Problem 1: Longest Substring Without Repeating Characters -->
+     <div class="space-y-8" id="content-ls">
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h2 class="text-2xl font-bold mb-3 text-gray-900">
+        Longest Substring Without Repeating Characters
+       </h2>
+       <p class="text-gray-600 leading-relaxed">
+        This section introduces a classic string manipulation problem: finding the length of the longest substring within a given string that does not contain any repeating characters. We will explore the highly efficient "Sliding Window" technique to solve this. The interactive visualizer below will help you understand how the window expands and contracts to find the optimal solution.
+       </p>
+      </section>
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h3 class="text-xl font-bold mb-4">
+        Interactive Visualizer
+       </h3>
+       <div class="flex flex-col sm:flex-row gap-4 mb-6">
+        <input class="flex-grow p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" id="ls-input" placeholder="Enter a string (e.g., abca-bcbb)" type="text" value="abca-bcbb">
+        <button class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-300" id="ls-visualize-btn">
+         Visualize
+        </button>
+       </div>
+       <div class="min-h-[10rem] bg-gray-50 p-4 rounded-md mb-4 overflow-x-auto" id="ls-visualizer-area">
+        <div class="flex items-center pb-8 whitespace-nowrap" id="ls-string-container">
         </div>
-
-        <div class="max-w-5xl mx-auto">
-            <div class="flex justify-center border-b border-gray-200 mb-8">
-                <button id="tab-ls" class="tab-button tab-active text-sm md:text-base font-medium py-3 px-6 rounded-t-lg focus:outline-none transition-colors duration-300">Longest Substring Without Repeating Characters</button>
-                <button id="tab-lcs" class="tab-button tab-inactive text-sm md:text-base font-medium py-3 px-6 rounded-t-lg focus:outline-none transition-colors duration-300">Longest Common Subsequence</button>
-            </div>
-
-            <main>
-                <!-- Problem 1: Longest Substring Without Repeating Characters -->
-                <div id="content-ls" class="space-y-8">
-                    <section class="bg-white p-6 rounded-lg shadow-md">
-                        <h2 class="text-2xl font-bold mb-3 text-gray-900">Longest Substring Without Repeating Characters</h2>
-                        <p class="text-gray-600 leading-relaxed">This section introduces a classic string manipulation problem: finding the length of the longest substring within a given string that does not contain any repeating characters. We will explore the highly efficient "Sliding Window" technique to solve this. The interactive visualizer below will help you understand how the window expands and contracts to find the optimal solution.</p>
-                    </section>
-                
-                    <section class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold mb-4">Interactive Visualizer</h3>
-                        <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                            <input type="text" id="ls-input" class="flex-grow p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter a string (e.g., abca-bcbb)" value="abca-bcbb">
-                            <button id="ls-visualize-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-300">Visualize</button>
-                        </div>
-                
-                        <div id="ls-visualizer-area" class="min-h-[10rem] bg-gray-50 p-4 rounded-md mb-4 overflow-x-auto">
-                           <div id="ls-string-container" class="flex items-center pb-8 whitespace-nowrap"></div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
-                            <div class="bg-indigo-50 p-4 rounded-md">
-                                <p class="text-sm text-gray-500">Current Max Length</p>
-                                <p id="ls-max-length" class="text-2xl font-bold text-indigo-700">0</p>
-                            </div>
-                            <div class="bg-green-50 p-4 rounded-md">
-                                <p class="text-sm text-gray-500">Longest Substring Found</p>
-                                <p id="ls-longest-substring" class="text-2xl font-bold text-green-700 font-code">-</p>
-                            </div>
-                        </div>
-                         <div id="ls-explanation-text" class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md text-center min-h-[3rem]"></div>
-                    </section>
-
-                    <section class="bg-white p-6 rounded-lg shadow-md">
-                         <h3 class="text-xl font-bold mb-2">The Sliding Window Approach</h3>
-                         <p class="text-gray-600 mb-4 leading-relaxed">
-                             The sliding window is an algorithmic technique that involves maintaining a "window" (a sub-array or sub-string) over a larger data structure. For this problem, we use two pointers, `start` and `end`, to define the current window.
-                         </p>
-                         <ol class="list-decimal list-inside space-y-2 text-gray-600">
-                             <li>Initialize a `start` pointer at the beginning of the string and an empty set to store characters in the current window.</li>
-                             <li>Iterate through the string with an `end` pointer.</li>
-                             <li>If the character at `end` is not in our set, add it. The window is valid. Update the maximum length found so far.</li>
-                             <li>If the character at `end` is already in the set, it means we have a repeat. We must shrink the window from the left by moving the `start` pointer forward and removing characters from the set until the repeating character is gone.</li>
-                             <li>Continue this process until the `end` pointer reaches the end of the string.</li>
-                         </ol>
-                     </section>
-                
-                    <section class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold mb-2">C# Implementation</h3>
-                        <div class="code-block">
-                            <button class="copy-btn" onclick="copyCode('ls-code')">Copy</button>
-                            <pre><code id="ls-code" class="font-code text-sm">public class Solution {
+       </div>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+        <div class="bg-indigo-50 p-4 rounded-md">
+         <p class="text-sm text-gray-500">
+          Current Max Length
+         </p>
+         <p class="text-2xl font-bold text-indigo-700" id="ls-max-length">
+          0
+         </p>
+        </div>
+        <div class="bg-green-50 p-4 rounded-md">
+         <p class="text-sm text-gray-500">
+          Longest Substring Found
+         </p>
+         <p class="text-2xl font-bold text-green-700 font-code" id="ls-longest-substring">
+          -
+         </p>
+        </div>
+       </div>
+       <div class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md text-center min-h-[3rem]" id="ls-explanation-text">
+       </div>
+      </section>
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h3 class="text-xl font-bold mb-2">
+        The Sliding Window Approach
+       </h3>
+       <p class="text-gray-600 mb-4 leading-relaxed">
+        The sliding window is an algorithmic technique that involves maintaining a "window" (a sub-array or sub-string) over a larger data structure. For this problem, we use two pointers, `start` and `end`, to define the current window.
+       </p>
+       <ol class="list-decimal list-inside space-y-2 text-gray-600">
+        <li>
+         Initialize a `start` pointer at the beginning of the string and an empty set to store characters in the current window.
+        </li>
+        <li>
+         Iterate through the string with an `end` pointer.
+        </li>
+        <li>
+         If the character at `end` is not in our set, add it. The window is valid. Update the maximum length found so far.
+        </li>
+        <li>
+         If the character at `end` is already in the set, it means we have a repeat. We must shrink the window from the left by moving the `start` pointer forward and removing characters from the set until the repeating character is gone.
+        </li>
+        <li>
+         Continue this process until the `end` pointer reaches the end of the string.
+        </li>
+       </ol>
+      </section>
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h3 class="text-xl font-bold mb-2">
+        C# Implementation
+       </h3>
+       <div class="code-block">
+        <button class="copy-btn" onclick="copyCode('ls-code')">
+         Copy
+        </button>
+        <pre><code class="font-code text-sm" id="ls-code">public class Solution {
     public int LengthOfLongestSubstring(string s) {
         if (string.IsNullOrEmpty(s)) return 0;
 
@@ -191,7 +225,7 @@
         int start = 0;
         var charSet = new HashSet&lt;char&gt;();
 
-        for (int end = 0; end < s.Length; end++) {
+        for (int end = 0; end &lt; s.Length; end++) {
             // While the set contains the current character,
             // shrink the window from the left.
             while (charSet.Contains(s[end])) {
@@ -209,75 +243,112 @@
         return maxLength;
     }
 }</code></pre>
-                        </div>
-                    </section>
-
-                     <section class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold mb-2">Complexity Analysis</h3>
-                         <div class="flex flex-col md:flex-row gap-4">
-                            <div class="flex-1 bg-gray-50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-gray-700">Time Complexity: O(N)</h4>
-                                <p class="text-gray-600 text-sm">Although there is a nested `while` loop, each character in the string is visited by the `start` and `end` pointers at most once. Therefore, the complexity is linear.</p>
-                            </div>
-                            <div class="flex-1 bg-gray-50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-gray-700">Space Complexity: O(k)</h4>
-                                <p class="text-gray-600 text-sm">Where `k` is the size of the character set (e.g., 26 for lowercase English letters, 128 for ASCII). The space used by the `HashSet` is bounded by the number of unique characters.</p>
-                            </div>
-                         </div>
-                    </section>
-                </div>
-
-                <!-- Problem 2: Longest Common Subsequence -->
-                <div id="content-lcs" class="space-y-8 hidden">
-                     <section class="bg-white p-6 rounded-lg shadow-md">
-                        <h2 class="text-2xl font-bold mb-3 text-gray-900">Longest Common Subsequence (LCS)</h2>
-                        <p class="text-gray-600 leading-relaxed">This section delves into the Longest Common Subsequence problem, a fundamental concept in computer science with applications in bioinformatics (DNA sequencing) and data comparison (diff utilities). Unlike a substring, a subsequence's characters do not need to be contiguous. We will solve this using Dynamic Programming, building a table to store solutions to subproblems. The visualizer will construct this DP table step-by-step.</p>
-                    </section>
-
-                     <section class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold mb-4">Interactive Visualizer</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                             <input type="text" id="lcs-input1" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter string 1" value="AGGTAB">
-                             <input type="text" id="lcs-input2" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter string 2" value="GXTXAYB">
-                        </div>
-                        <button id="lcs-visualize-btn" class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-300 mb-6">Visualize</button>
-                        
-                        <div id="lcs-visualizer-area" class="min-h-[10rem] bg-gray-50 p-4 rounded-md mb-4 overflow-x-auto">
-                           <div id="lcs-table-container"></div>
-                        </div>
-
-                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
-                            <div class="bg-indigo-50 p-4 rounded-md">
-                                <p class="text-sm text-gray-500">LCS Length</p>
-                                <p id="lcs-max-length" class="text-2xl font-bold text-indigo-700">0</p>
-                            </div>
-                            <div class="bg-green-50 p-4 rounded-md">
-                                <p class="text-sm text-gray-500">LCS Found</p>
-                                <p id="lcs-result-string" class="text-2xl font-bold text-green-700 font-code">-</p>
-                            </div>
-                        </div>
-                        <div id="lcs-explanation-text" class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md text-center min-h-[3rem]"></div>
-                    </section>
-                
-                     <section class="bg-white p-6 rounded-lg shadow-md">
-                         <h3 class="text-xl font-bold mb-2">The Dynamic Programming Approach</h3>
-                         <p class="text-gray-600 mb-4 leading-relaxed">
-                             We use a 2D array, let's call it `dp`, where `dp[i][j]` stores the length of the LCS for the first `i` characters of `string1` and the first `j` characters of `string2`.
-                         </p>
-                         <ol class="list-decimal list-inside space-y-2 text-gray-600">
-                             <li>Create a `dp` table of size `(m+1) x (n+1)`, where `m` and `n` are the lengths of the two strings. Initialize it with zeros.</li>
-                             <li>Iterate through the strings from `i=1` to `m` and `j=1` to `n`.</li>
-                             <li>If `string1[i-1]` equals `string2[j-1]`, the characters match! The LCS length is one more than the LCS of the strings without these characters. So, `dp[i][j] = 1 + dp[i-1][j-1]`.</li>
-                             <li>If the characters do not match, the LCS length is the maximum of the LCS found by excluding one character from either string. So, `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`.</li>
-                             <li>The value at `dp[m][n]` will be the length of the LCS. We can then backtrack from this cell to reconstruct the actual subsequence.</li>
-                         </ol>
-                     </section>
-
-                    <section class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold mb-2">C# Implementation</h3>
-                        <div class="code-block">
-                             <button class="copy-btn" onclick="copyCode('lcs-code')">Copy</button>
-                            <pre><code id="lcs-code" class="font-code text-sm">public class Solution {
+       </div>
+      </section>
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h3 class="text-xl font-bold mb-2">
+        Complexity Analysis
+       </h3>
+       <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1 bg-gray-50 p-4 rounded-lg">
+         <h4 class="font-semibold text-gray-700">
+          Time Complexity: O(N)
+         </h4>
+         <p class="text-gray-600 text-sm">
+          Although there is a nested `while` loop, each character in the string is visited by the `start` and `end` pointers at most once. Therefore, the complexity is linear.
+         </p>
+        </div>
+        <div class="flex-1 bg-gray-50 p-4 rounded-lg">
+         <h4 class="font-semibold text-gray-700">
+          Space Complexity: O(k)
+         </h4>
+         <p class="text-gray-600 text-sm">
+          Where `k` is the size of the character set (e.g., 26 for lowercase English letters, 128 for ASCII). The space used by the `HashSet` is bounded by the number of unique characters.
+         </p>
+        </div>
+       </div>
+      </section>
+     </div>
+     <!-- Problem 2: Longest Common Subsequence -->
+     <div class="space-y-8 hidden" id="content-lcs">
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h2 class="text-2xl font-bold mb-3 text-gray-900">
+        Longest Common Subsequence (LCS)
+       </h2>
+       <p class="text-gray-600 leading-relaxed">
+        This section delves into the Longest Common Subsequence problem, a fundamental concept in computer science with applications in bioinformatics (DNA sequencing) and data comparison (diff utilities). Unlike a substring, a subsequence's characters do not need to be contiguous. We will solve this using Dynamic Programming, building a table to store solutions to subproblems. The visualizer will construct this DP table step-by-step.
+       </p>
+      </section>
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h3 class="text-xl font-bold mb-4">
+        Interactive Visualizer
+       </h3>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <input class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" id="lcs-input1" placeholder="Enter string 1" type="text" value="AGGTAB">
+        <input class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" id="lcs-input2" placeholder="Enter string 2" type="text" value="GXTXAYB">
+       </div>
+       <button class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-300 mb-6" id="lcs-visualize-btn">
+        Visualize
+       </button>
+       <div class="min-h-[10rem] bg-gray-50 p-4 rounded-md mb-4 overflow-x-auto" id="lcs-visualizer-area">
+        <div id="lcs-table-container">
+        </div>
+       </div>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+        <div class="bg-indigo-50 p-4 rounded-md">
+         <p class="text-sm text-gray-500">
+          LCS Length
+         </p>
+         <p class="text-2xl font-bold text-indigo-700" id="lcs-max-length">
+          0
+         </p>
+        </div>
+        <div class="bg-green-50 p-4 rounded-md">
+         <p class="text-sm text-gray-500">
+          LCS Found
+         </p>
+         <p class="text-2xl font-bold text-green-700 font-code" id="lcs-result-string">
+          -
+         </p>
+        </div>
+       </div>
+       <div class="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md text-center min-h-[3rem]" id="lcs-explanation-text">
+       </div>
+      </section>
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h3 class="text-xl font-bold mb-2">
+        The Dynamic Programming Approach
+       </h3>
+       <p class="text-gray-600 mb-4 leading-relaxed">
+        We use a 2D array, let's call it `dp`, where `dp[i][j]` stores the length of the LCS for the first `i` characters of `string1` and the first `j` characters of `string2`.
+       </p>
+       <ol class="list-decimal list-inside space-y-2 text-gray-600">
+        <li>
+         Create a `dp` table of size `(m+1) x (n+1)`, where `m` and `n` are the lengths of the two strings. Initialize it with zeros.
+        </li>
+        <li>
+         Iterate through the strings from `i=1` to `m` and `j=1` to `n`.
+        </li>
+        <li>
+         If `string1[i-1]` equals `string2[j-1]`, the characters match! The LCS length is one more than the LCS of the strings without these characters. So, `dp[i][j] = 1 + dp[i-1][j-1]`.
+        </li>
+        <li>
+         If the characters do not match, the LCS length is the maximum of the LCS found by excluding one character from either string. So, `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`.
+        </li>
+        <li>
+         The value at `dp[m][n]` will be the length of the LCS. We can then backtrack from this cell to reconstruct the actual subsequence.
+        </li>
+       </ol>
+      </section>
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h3 class="text-xl font-bold mb-2">
+        C# Implementation
+       </h3>
+       <div class="code-block">
+        <button class="copy-btn" onclick="copyCode('lcs-code')">
+         Copy
+        </button>
+        <pre><code class="font-code text-sm" id="lcs-code">public class Solution {
     public int LongestCommonSubsequence(string text1, string text2) {
         int m = text1.Length;
         int n = text2.Length;
@@ -285,8 +356,8 @@
         // dp[i, j] will be the length of LCS of text1[0..i-1] and text2[0..j-1]
         int[,] dp = new int[m + 1, n + 1];
         
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
+        for (int i = 1; i &lt;= m; i++) {
+            for (int j = 1; j &lt;= n; j++) {
                 if (text1[i - 1] == text2[j - 1]) {
                     // If characters match, add 1 to the result from the previous diagonal cell
                     dp[i, j] = 1 + dp[i - 1, j - 1];
@@ -302,34 +373,44 @@
     }
 }
 // Note: This code finds the length. Reconstructing the string requires backtracking.</code></pre>
-                        </div>
-                    </section>
-
-                     <section class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold mb-2">Complexity Analysis</h3>
-                         <div class="flex flex-col md:flex-row gap-4">
-                            <div class="flex-1 bg-gray-50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-gray-700">Time Complexity: O(m * n)</h4>
-                                <p class="text-gray-600 text-sm">We iterate through a 2D grid of size `m x n`, where `m` and `n` are the lengths of the two strings. Each cell computation takes constant time.</p>
-                            </div>
-                            <div class="flex-1 bg-gray-50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-gray-700">Space Complexity: O(m * n)</h4>
-                                <p class="text-gray-600 text-sm">We use a 2D `dp` table of size `(m+1) x (n+1)` to store the intermediate results.</p>
-                            </div>
-                         </div>
-                    </section>
-                </div>
-            </main>
+       </div>
+      </section>
+      <section class="bg-white p-6 rounded-lg shadow-md">
+       <h3 class="text-xl font-bold mb-2">
+        Complexity Analysis
+       </h3>
+       <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1 bg-gray-50 p-4 rounded-lg">
+         <h4 class="font-semibold text-gray-700">
+          Time Complexity: O(m * n)
+         </h4>
+         <p class="text-gray-600 text-sm">
+          We iterate through a 2D grid of size `m x n`, where `m` and `n` are the lengths of the two strings. Each cell computation takes constant time.
+         </p>
         </div>
-    </div>
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-    </div>
-</footer>
-
-    <script>
-        const tabLs = document.getElementById('tab-ls');
+        <div class="flex-1 bg-gray-50 p-4 rounded-lg">
+         <h4 class="font-semibold text-gray-700">
+          Space Complexity: O(m * n)
+         </h4>
+         <p class="text-gray-600 text-sm">
+          We use a 2D `dp` table of size `(m+1) x (n+1)` to store the intermediate results.
+         </p>
+        </div>
+       </div>
+      </section>
+     </div>
+    </main>
+   </div>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const tabLs = document.getElementById('tab-ls');
         const tabLcs = document.getElementById('tab-lcs');
         const contentLs = document.getElementById('content-ls');
         const contentLcs = document.getElementById('content-lcs');
@@ -584,7 +665,6 @@
 
             lcsAnimationTimeout = setTimeout(() => animateLcs(steps, stepIndex + 1), 400);
         }
-
-    </script>
-</body>
+  </script>
+ </body>
 </html>

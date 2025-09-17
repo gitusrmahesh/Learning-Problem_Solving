@@ -1,20 +1,25 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 27: Mixed Problem Practice (Arrays + Strings)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Harmony (Stone, Slate, Amber) -->
-    <!-- Application Structure Plan: A task-oriented, single-page application using a tabbed navigation system. The user selects one of five coding problems, and a central content area dynamically displays the problem statement, key concepts, a C# solution, and an interactive example. This structure was chosen to break down the day's learning into focused, manageable units, preventing overwhelm from a long scrolling page and providing immediate access to any problem. -->
-    <!-- Visualization & Content Choices: 1. Overview Chart: Report Info -> Concepts covered in the 5 problems. Goal -> Inform/Overview. Viz -> Bar Chart (Chart.js/Canvas). Interaction -> Static. Justification -> Provides a quick visual summary of the skills being practiced. 2. Problem Details: Report Info -> Problem statement, solution, examples. Goal -> Inform/Educate. Presentation -> Structured HTML (headings, paragraphs, pre/code blocks). Interaction -> Content revealed on tab click; example output shown on button click. Justification -> Organizes complex information clearly and provides a simple interactive element to reinforce learning. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 27: Mixed Problem Practice (Arrays + Strings)
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Calm Harmony (Stone, Slate, Amber) -->
+  <!-- Application Structure Plan: A task-oriented, single-page application using a tabbed navigation system. The user selects one of five coding problems, and a central content area dynamically displays the problem statement, key concepts, a C# solution, and an interactive example. This structure was chosen to break down the day's learning into focused, manageable units, preventing overwhelm from a long scrolling page and providing immediate access to any problem. -->
+  <!-- Visualization & Content Choices: 1. Overview Chart: Report Info -> Concepts covered in the 5 problems. Goal -> Inform/Overview. Viz -> Bar Chart (Chart.js/Canvas). Interaction -> Static. Justification -> Provides a quick visual summary of the skills being practiced. 2. Problem Details: Report Info -> Problem statement, solution, examples. Goal -> Inform/Educate. Presentation -> Structured HTML (headings, paragraphs, pre/code blocks). Interaction -> Content revealed on tab click; example output shown on button click. Justification -> Organizes complex information clearly and provides a simple interactive element to reinforce learning. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
             font-family: 'Inter', sans-serif;
             background-color: #f5f5f4; /* stone-100 */
             color: #1e293b; /* slate-800 */
@@ -47,52 +52,62 @@
             height: 300px;
             max-height: 400px;
         }
-    </style>
-
-</head>
-<body class="antialiased">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=4" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=4">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">30-Day Problem Solving Roadmap</p>
-</div>
-</div>
-    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">30-Day Problem Solving Roadmap</h1>
-            <p class="text-lg text-amber-700 font-semibold mt-1">Day 27: Mixed Problem Practice (Arrays + Strings)</p>
-        </div>
-
-        <section id="overview" class="mb-10 bg-white p-6 rounded-lg shadow-sm">
-            <h2 class="text-2xl font-bold text-slate-800 mb-4">Today's Focus Concepts</h2>
-            <p class="text-slate-600 mb-6">
-                Today's problems are designed to strengthen your ability to manipulate and analyze data structures that combine arrays and strings. We will focus on techniques like hashing for quick lookups, in-place array modifications, custom sorting logic, and careful string parsing. This session bridges the gap between basic data structure knowledge and complex real-world problem-solving.
-            </p>
-            <div class="chart-container">
-                <canvas id="conceptsChart"></canvas>
-            </div>
-        </section>
-
-        <main>
-            <nav id="problem-tabs" class="flex flex-wrap justify-center border-b-2 border-slate-200 mb-8 gap-2">
-                <!-- Tabs will be dynamically inserted here -->
-            </nav>
-            <div id="content-area" class="bg-white p-6 rounded-lg shadow-sm min-h-[400px]">
-                <!-- Problem content will be dynamically inserted here -->
-            </div>
-        </main>
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 27: Mixed Problem Practice (Arrays + Strings)
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
+   <div class="text-center mb-8">
+    <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">
+     30-Day Problem Solving Roadmap
+    </h1>
+    <p class="text-lg text-amber-700 font-semibold mt-1">
+     Day 27: Mixed Problem Practice (Arrays + Strings)
+    </p>
+   </div>
+   <section class="mb-10 bg-white p-6 rounded-lg shadow-sm" id="overview">
+    <h2 class="text-2xl font-bold text-slate-800 mb-4">
+     Today's Focus Concepts
+    </h2>
+    <p class="text-slate-600 mb-6">
+     Today's problems are designed to strengthen your ability to manipulate and analyze data structures that combine arrays and strings. We will focus on techniques like hashing for quick lookups, in-place array modifications, custom sorting logic, and careful string parsing. This session bridges the gap between basic data structure knowledge and complex real-world problem-solving.
+    </p>
+    <div class="chart-container">
+     <canvas id="conceptsChart">
+     </canvas>
     </div>
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
+   </section>
+   <main>
+    <nav class="flex flex-wrap justify-center border-b-2 border-slate-200 mb-8 gap-2" id="problem-tabs">
+     <!-- Tabs will be dynamically inserted here -->
+    </nav>
+    <div class="bg-white p-6 rounded-lg shadow-sm min-h-[400px]" id="content-area">
+     <!-- Problem content will be dynamically inserted here -->
     </div>
-</footer>
-
-    <script>
-        const problems = [
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const problems = [
             {
                 title: "Group Anagrams",
                 description: "Given an array of strings, group the anagrams together. An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.",
@@ -391,6 +406,6 @@
                 }
             });
         });
-    </script>
-</body>
+  </script>
+ </body>
 </html>

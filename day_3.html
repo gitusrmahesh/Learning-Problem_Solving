@@ -1,21 +1,26 @@
+
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Understanding Space Complexity in C#</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Neutrals -->
-    <!-- Application Structure Plan: A single-page, scrollable educational layout with a sticky navigation bar for easy access to key concepts. The structure progresses logically from basic definitions (Total vs. Auxiliary Space) to more complex topics (Recursion/Call Stack), culminating in an interactive case study (Fibonacci). This linear, chapter-like flow is chosen for optimal learning and comprehension, as each concept builds upon the previous one. The interactivity in the case study allows users to directly experience the performance difference, reinforcing the theoretical knowledge. -->
-    <!-- Visualization & Content Choices: 1. Total vs. Auxiliary Space -> Goal: Inform -> Method: Side-by-side text definitions and a color-coded C# code block -> Interaction: None, static explanation for clarity -> Justification: Clearly separates and defines fundamental concepts before building on them. 2. Recursion/Call Stack -> Goal: Organize/Explain -> Method: Diagram built with styled HTML/CSS divs -> Interaction: None, static visual -> Justification: A literal, visual representation of the call stack is more intuitive for learning than an abstract chart. 3. Fibonacci Comparison -> Goal: Compare -> Method: Chart.js Bar Chart -> Interaction: User-controlled slider adjusts input 'n', chart updates dynamically -> Justification: Visually and interactively demonstrates the dramatic difference in space complexity growth (O(n) vs. O(1)) between recursive and iterative solutions. CONFIRMED: NO SVG, NO Mermaid. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .code-keyword { color: #90CDF4; }
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Understanding Space Complexity in C#
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Calm Neutrals -->
+  <!-- Application Structure Plan: A single-page, scrollable educational layout with a sticky navigation bar for easy access to key concepts. The structure progresses logically from basic definitions (Total vs. Auxiliary Space) to more complex topics (Recursion/Call Stack), culminating in an interactive case study (Fibonacci). This linear, chapter-like flow is chosen for optimal learning and comprehension, as each concept builds upon the previous one. The interactivity in the case study allows users to directly experience the performance difference, reinforcing the theoretical knowledge. -->
+  <!-- Visualization & Content Choices: 1. Total vs. Auxiliary Space -> Goal: Inform -> Method: Side-by-side text definitions and a color-coded C# code block -> Interaction: None, static explanation for clarity -> Justification: Clearly separates and defines fundamental concepts before building on them. 2. Recursion/Call Stack -> Goal: Organize/Explain -> Method: Diagram built with styled HTML/CSS divs -> Interaction: None, static visual -> Justification: A literal, visual representation of the call stack is more intuitive for learning than an abstract chart. 3. Fibonacci Comparison -> Goal: Compare -> Method: Chart.js Bar Chart -> Interaction: User-controlled slider adjusts input 'n', chart updates dynamically -> Justification: Visually and interactively demonstrates the dramatic difference in space complexity growth (O(n) vs. O(1)) between recursive and iterative solutions. CONFIRMED: NO SVG, NO Mermaid. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   .code-keyword { color: #90CDF4; }
         .code-type { color: #9AE6B4; }
         .code-method { color: #F6AD55; }
         .code-comment { color: #A0AEC0; }
@@ -33,209 +38,460 @@
                 height: 450px;
             }
         }
-    </style>
-
-</head>
-<body>
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=1" class="jules-return-button">
+  </style>
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=1">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Understanding Space Complexity in C#</p>
-</div>
-</div>
-    <div class="container mx-auto px-4 py-8 md:py-12">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Understanding Space Complexity</h1>
-            <p class="mt-4 text-lg text-gray-600">A practical guide with C# examples</p>
-        </div>
-
-        <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur-md shadow-sm rounded-lg mb-12">
-            <ul class="flex items-center justify-center p-4 space-x-4 md:space-x-8 overflow-x-auto">
-                <li><a href="#total-vs-auxiliary" class="text-gray-700 hover:text-blue-600 font-medium whitespace-nowrap">Total vs. Auxiliary</a></li>
-                <li><a href="#recursion-stack" class="text-gray-700 hover:text-blue-600 font-medium whitespace-nowrap">Recursion & Stack</a></li>
-                <li><a href="#fibonacci-case-study" class="text-gray-700 hover:text-blue-600 font-medium whitespace-nowrap">Fibonacci Case Study</a></li>
-                <li><a href="#key-takeaways" class="text-gray-700 hover:text-blue-600 font-medium whitespace-nowrap">Key Takeaways</a></li>
-            </ul>
-        </nav>
-
-        <main class="space-y-16">
-            <section id="total-vs-auxiliary" class="scroll-mt-24">
-                <div class="bg-white p-6 md:p-8 rounded-lg shadow-md">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Total Space vs. Auxiliary Space</h2>
-                    <p class="text-gray-600 mb-6">When analyzing an algorithm, we often talk about two types of space. Understanding the difference is crucial for accurate analysis. Total space complexity is the combination of the space taken by the input and any extra space the algorithm uses.</p>
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                            <h3 class="text-xl font-semibold text-blue-800 mb-2">Input Space</h3>
-                            <p class="text-blue-700">This is the memory required to store the input data itself. For example, if your function takes an array of `n` integers, the input space is O(n).</p>
-                        </div>
-                        <div class="bg-green-50 p-6 rounded-lg border border-green-200">
-                            <h3 class="text-xl font-semibold text-green-800 mb-2">Auxiliary Space</h3>
-                            <p class="text-green-700">This is the extra or temporary space used by the algorithm while it's running. It includes variables, data structures, and function call overhead. We usually focus on auxiliary space because it measures the algorithm's own memory footprint.</p>
-                        </div>
-                    </div>
-                    <div class="mt-8">
-                        <h4 class="text-2xl font-semibold text-gray-700 mb-4">Example: Summing an Array</h4>
-                        <p class="text-gray-600 mb-4">Let's see this in action with a simple C# function that sums the elements of an array. We can clearly distinguish between the space for the input and the extra space our function needs.</p>
-                        <div class="code-block">
-<span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-type">int</span> <span class="code-method">SumArray</span>(<span class="code-type">int</span>[] numbers)
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Understanding Space Complexity in C#
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto px-4 py-8 md:py-12">
+   <nav class="sticky top-0 z-10 bg-white/80 backdrop-blur-md shadow-sm rounded-lg mb-12">
+    <ul class="flex items-center justify-center p-4 space-x-4 md:space-x-8 overflow-x-auto">
+     <li>
+      <a class="text-gray-700 hover:text-blue-600 font-medium whitespace-nowrap" href="#total-vs-auxiliary">
+       Total vs. Auxiliary
+      </a>
+     </li>
+     <li>
+      <a class="text-gray-700 hover:text-blue-600 font-medium whitespace-nowrap" href="#recursion-stack">
+       Recursion & Stack
+      </a>
+     </li>
+     <li>
+      <a class="text-gray-700 hover:text-blue-600 font-medium whitespace-nowrap" href="#fibonacci-case-study">
+       Fibonacci Case Study
+      </a>
+     </li>
+     <li>
+      <a class="text-gray-700 hover:text-blue-600 font-medium whitespace-nowrap" href="#key-takeaways">
+       Key Takeaways
+      </a>
+     </li>
+    </ul>
+   </nav>
+   <main class="space-y-16">
+    <section class="scroll-mt-24" id="total-vs-auxiliary">
+     <div class="bg-white p-6 md:p-8 rounded-lg shadow-md">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">
+       Total Space vs. Auxiliary Space
+      </h2>
+      <p class="text-gray-600 mb-6">
+       When analyzing an algorithm, we often talk about two types of space. Understanding the difference is crucial for accurate analysis. Total space complexity is the combination of the space taken by the input and any extra space the algorithm uses.
+      </p>
+      <div class="grid md:grid-cols-2 gap-8">
+       <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+        <h3 class="text-xl font-semibold text-blue-800 mb-2">
+         Input Space
+        </h3>
+        <p class="text-blue-700">
+         This is the memory required to store the input data itself. For example, if your function takes an array of `n` integers, the input space is O(n).
+        </p>
+       </div>
+       <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+        <h3 class="text-xl font-semibold text-green-800 mb-2">
+         Auxiliary Space
+        </h3>
+        <p class="text-green-700">
+         This is the extra or temporary space used by the algorithm while it's running. It includes variables, data structures, and function call overhead. We usually focus on auxiliary space because it measures the algorithm's own memory footprint.
+        </p>
+       </div>
+      </div>
+      <div class="mt-8">
+       <h4 class="text-2xl font-semibold text-gray-700 mb-4">
+        Example: Summing an Array
+       </h4>
+       <p class="text-gray-600 mb-4">
+        Let's see this in action with a simple C# function that sums the elements of an array. We can clearly distinguish between the space for the input and the extra space our function needs.
+       </p>
+       <div class="code-block">
+        <span class="code-keyword">
+         public
+        </span>
+        <span class="code-keyword">
+         static
+        </span>
+        <span class="code-type">
+         int
+        </span>
+        <span class="code-method">
+         SumArray
+        </span>
+        (
+        <span class="code-type">
+         int
+        </span>
+        [] numbers)
 {
-    <span class="code-comment">// Input Space: The 'numbers' array itself. If it has n elements, space is O(n).</span>
-
-    <span class="code-type">int</span> sum = 0; <span class="code-comment">// Auxiliary Space: One integer variable. Space is O(1).</span>
-
-    <span class="code-keyword">foreach</span> (<span class="code-type">int</span> num <span class="code-keyword">in</span> numbers)
+        <span class="code-comment">
+         // Input Space: The 'numbers' array itself. If it has n elements, space is O(n).
+        </span>
+        <span class="code-type">
+         int
+        </span>
+        sum = 0;
+        <span class="code-comment">
+         // Auxiliary Space: One integer variable. Space is O(1).
+        </span>
+        <span class="code-keyword">
+         foreach
+        </span>
+        (
+        <span class="code-type">
+         int
+        </span>
+        num
+        <span class="code-keyword">
+         in
+        </span>
+        numbers)
     {
         sum += num;
     }
-
-    <span class="code-keyword">return</span> sum;
+        <span class="code-keyword">
+         return
+        </span>
+        sum;
 }
-                        </div>
-                        <div class="mt-4 p-4 bg-gray-100 rounded-lg">
-                            <p><span class="font-bold">Total Space Complexity:</span> O(n) (from input) + O(1) (from auxiliary) = <span class="font-semibold text-gray-800">O(n)</span></p>
-                            <p><span class="font-bold">Auxiliary Space Complexity:</span> <span class="font-semibold text-gray-800">O(1)</span></p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="recursion-stack" class="scroll-mt-24">
-                <div class="bg-white p-6 md:p-8 rounded-lg shadow-md">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Recursion and The Call Stack</h2>
-                    <p class="text-gray-600 mb-6">Recursive functions can be elegant, but they have a hidden space cost: the call stack. Every time a function calls itself, a new "stack frame" is added to memory to store its local variables, parameters, and return address. This stack grows until the base case is reached.</p>
-                    <div class="grid md:grid-cols-2 gap-8 items-center">
-                        <div>
-                            <h4 class="text-2xl font-semibold text-gray-700 mb-4">Example: Factorial</h4>
-                            <p class="text-gray-600 mb-4">Consider calculating a factorial recursively. The function `Factorial(n)` will call `Factorial(n-1)`, which calls `Factorial(n-2)`, and so on, until it reaches the base case `Factorial(0)`. This creates a chain of `n+1` calls on the stack.</p>
-                            <div class="code-block text-sm">
-<span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-type">int</span> <span class="code-method">Factorial</span>(<span class="code-type">int</span> n)
+       </div>
+       <div class="mt-4 p-4 bg-gray-100 rounded-lg">
+        <p>
+         <span class="font-bold">
+          Total Space Complexity:
+         </span>
+         O(n) (from input) + O(1) (from auxiliary) =
+         <span class="font-semibold text-gray-800">
+          O(n)
+         </span>
+        </p>
+        <p>
+         <span class="font-bold">
+          Auxiliary Space Complexity:
+         </span>
+         <span class="font-semibold text-gray-800">
+          O(1)
+         </span>
+        </p>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="scroll-mt-24" id="recursion-stack">
+     <div class="bg-white p-6 md:p-8 rounded-lg shadow-md">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">
+       Recursion and The Call Stack
+      </h2>
+      <p class="text-gray-600 mb-6">
+       Recursive functions can be elegant, but they have a hidden space cost: the call stack. Every time a function calls itself, a new "stack frame" is added to memory to store its local variables, parameters, and return address. This stack grows until the base case is reached.
+      </p>
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+       <div>
+        <h4 class="text-2xl font-semibold text-gray-700 mb-4">
+         Example: Factorial
+        </h4>
+        <p class="text-gray-600 mb-4">
+         Consider calculating a factorial recursively. The function `Factorial(n)` will call `Factorial(n-1)`, which calls `Factorial(n-2)`, and so on, until it reaches the base case `Factorial(0)`. This creates a chain of `n+1` calls on the stack.
+        </p>
+        <div class="code-block text-sm">
+         <span class="code-keyword">
+          public
+         </span>
+         <span class="code-keyword">
+          static
+         </span>
+         <span class="code-type">
+          int
+         </span>
+         <span class="code-method">
+          Factorial
+         </span>
+         (
+         <span class="code-type">
+          int
+         </span>
+         n)
 {
-    <span class="code-keyword">if</span> (n == 0)
+         <span class="code-keyword">
+          if
+         </span>
+         (n == 0)
     {
-        <span class="code-keyword">return</span> 1;
+         <span class="code-keyword">
+          return
+         </span>
+         1;
     }
-    <span class="code-keyword">return</span> n * <span class="code-method">Factorial</span>(n - 1);
+         <span class="code-keyword">
+          return
+         </span>
+         n *
+         <span class="code-method">
+          Factorial
+         </span>
+         (n - 1);
 }
-                            </div>
-                            <div class="mt-4 p-4 bg-gray-100 rounded-lg">
-                            <p><span class="font-bold">Auxiliary Space Complexity:</span> The maximum depth of the call stack is proportional to `n`, so the space complexity is <span class="font-semibold text-gray-800">O(n)</span>.</p>
-                        </div>
-                        </div>
-                        <div class="mt-6 md:mt-0">
-                            <h4 class="text-xl font-semibold text-center mb-3">Call Stack for `Factorial(3)`</h4>
-                            <div class="relative bg-gray-200 p-4 rounded-lg h-80 flex flex-col-reverse justify-start">
-                                <div class="bg-red-200 border border-red-400 p-3 rounded-md text-center text-sm shadow-sm mb-2">
-                                    <p class="font-bold">Factorial(0)</p>
-                                    <p>n = 0</p>
-                                </div>
-                                <div class="bg-yellow-200 border border-yellow-400 p-3 rounded-md text-center text-sm shadow-sm mb-2">
-                                    <p class="font-bold">Factorial(1)</p>
-                                    <p>n = 1</p>
-                                </div>
-                                <div class="bg-blue-200 border border-blue-400 p-3 rounded-md text-center text-sm shadow-sm mb-2">
-                                    <p class="font-bold">Factorial(2)</p>
-                                    <p>n = 2</p>
-                                </div>
-                                <div class="bg-green-200 border border-green-400 p-3 rounded-md text-center text-sm shadow-sm mb-2">
-                                    <p class="font-bold">Factorial(3)</p>
-                                    <p>n = 3</p>
-                                </div>
-                                <p class="absolute top-2 left-1/2 -translate-x-1/2 text-gray-500 font-medium">Stack Grows ↓</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="fibonacci-case-study" class="scroll-mt-24">
-                <div class="bg-white p-6 md:p-8 rounded-lg shadow-md">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Case Study: Fibonacci Sequence</h2>
-                    <p class="text-gray-600 mb-6">The Fibonacci sequence is a classic example for comparing recursive and iterative solutions. While time complexity is often discussed, their space complexity differences are just as important. Use the slider below to see how the auxiliary space requirements change for each approach as `n` increases.</p>
-
-                    <div class="mb-8">
-                        <label for="fib-slider" class="block text-xl font-medium text-gray-700 mb-2">Select a value for 'n': <span id="slider-value" class="font-bold text-blue-600">10</span></label>
-                        <input id="fib-slider" type="range" min="1" max="40" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                    </div>
-
-                    <div class="chart-container mb-8">
-                        <canvas id="fibChart"></canvas>
-                    </div>
-
-                    <p id="chart-explanation" class="text-center text-gray-600 mb-8 h-12"></p>
-
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h4 class="text-2xl font-semibold text-gray-700 mb-4">Recursive Approach: O(n)</h4>
-                            <p class="text-gray-600 mb-4">Similar to factorial, the recursive Fibonacci solution creates a call stack that goes `n` levels deep, resulting in linear space complexity.</p>
-                            <div class="code-block text-sm">
-<span class="code-keyword">public</span> <span class="code-type">int</span> <span class="code-method">FibRecursive</span>(<span class="code-type">int</span> n)
+        </div>
+        <div class="mt-4 p-4 bg-gray-100 rounded-lg">
+         <p>
+          <span class="font-bold">
+           Auxiliary Space Complexity:
+          </span>
+          The maximum depth of the call stack is proportional to `n`, so the space complexity is
+          <span class="font-semibold text-gray-800">
+           O(n)
+          </span>
+          .
+         </p>
+        </div>
+       </div>
+       <div class="mt-6 md:mt-0">
+        <h4 class="text-xl font-semibold text-center mb-3">
+         Call Stack for `Factorial(3)`
+        </h4>
+        <div class="relative bg-gray-200 p-4 rounded-lg h-80 flex flex-col-reverse justify-start">
+         <div class="bg-red-200 border border-red-400 p-3 rounded-md text-center text-sm shadow-sm mb-2">
+          <p class="font-bold">
+           Factorial(0)
+          </p>
+          <p>
+           n = 0
+          </p>
+         </div>
+         <div class="bg-yellow-200 border border-yellow-400 p-3 rounded-md text-center text-sm shadow-sm mb-2">
+          <p class="font-bold">
+           Factorial(1)
+          </p>
+          <p>
+           n = 1
+          </p>
+         </div>
+         <div class="bg-blue-200 border border-blue-400 p-3 rounded-md text-center text-sm shadow-sm mb-2">
+          <p class="font-bold">
+           Factorial(2)
+          </p>
+          <p>
+           n = 2
+          </p>
+         </div>
+         <div class="bg-green-200 border border-green-400 p-3 rounded-md text-center text-sm shadow-sm mb-2">
+          <p class="font-bold">
+           Factorial(3)
+          </p>
+          <p>
+           n = 3
+          </p>
+         </div>
+         <p class="absolute top-2 left-1/2 -translate-x-1/2 text-gray-500 font-medium">
+          Stack Grows &darr;
+         </p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="scroll-mt-24" id="fibonacci-case-study">
+     <div class="bg-white p-6 md:p-8 rounded-lg shadow-md">
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">
+       Case Study: Fibonacci Sequence
+      </h2>
+      <p class="text-gray-600 mb-6">
+       The Fibonacci sequence is a classic example for comparing recursive and iterative solutions. While time complexity is often discussed, their space complexity differences are just as important. Use the slider below to see how the auxiliary space requirements change for each approach as `n` increases.
+      </p>
+      <div class="mb-8">
+       <label class="block text-xl font-medium text-gray-700 mb-2" for="fib-slider">
+        Select a value for 'n':
+        <span class="font-bold text-blue-600" id="slider-value">
+         10
+        </span>
+       </label>
+       <input class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" id="fib-slider" max="40" min="1" type="range" value="10">
+      </div>
+      <div class="chart-container mb-8">
+       <canvas id="fibChart">
+       </canvas>
+      </div>
+      <p class="text-center text-gray-600 mb-8 h-12" id="chart-explanation">
+      </p>
+      <div class="grid md:grid-cols-2 gap-8">
+       <div>
+        <h4 class="text-2xl font-semibold text-gray-700 mb-4">
+         Recursive Approach: O(n)
+        </h4>
+        <p class="text-gray-600 mb-4">
+         Similar to factorial, the recursive Fibonacci solution creates a call stack that goes `n` levels deep, resulting in linear space complexity.
+        </p>
+        <div class="code-block text-sm">
+         <span class="code-keyword">
+          public
+         </span>
+         <span class="code-type">
+          int
+         </span>
+         <span class="code-method">
+          FibRecursive
+         </span>
+         (
+         <span class="code-type">
+          int
+         </span>
+         n)
 {
-    <span class="code-keyword">if</span> (n <= 1) <span class="code-keyword">return</span> n;
-    <span class="code-keyword">return</span> <span class="code-method">FibRecursive</span>(n - 1) +
-           <span class="code-method">FibRecursive</span>(n - 2);
+         <span class="code-keyword">
+          if
+         </span>
+         (n &lt;= 1)
+         <span class="code-keyword">
+          return
+         </span>
+         n;
+         <span class="code-keyword">
+          return
+         </span>
+         <span class="code-method">
+          FibRecursive
+         </span>
+         (n - 1) +
+         <span class="code-method">
+          FibRecursive
+         </span>
+         (n - 2);
 }
-                            </div>
-                        </div>
-                        <div>
-                            <h4 class="text-2xl font-semibold text-gray-700 mb-4">Iterative Approach: O(1)</h4>
-                             <p class="text-gray-600 mb-4">The iterative solution uses a fixed number of variables (`a`, `b`, `temp`) regardless of the size of `n`. This makes its space usage constant.</p>
-                            <div class="code-block text-sm">
-<span class="code-keyword">public</span> <span class="code-type">int</span> <span class="code-method">FibIterative</span>(<span class="code-type">int</span> n)
+        </div>
+       </div>
+       <div>
+        <h4 class="text-2xl font-semibold text-gray-700 mb-4">
+         Iterative Approach: O(1)
+        </h4>
+        <p class="text-gray-600 mb-4">
+         The iterative solution uses a fixed number of variables (`a`, `b`, `temp`) regardless of the size of `n`. This makes its space usage constant.
+        </p>
+        <div class="code-block text-sm">
+         <span class="code-keyword">
+          public
+         </span>
+         <span class="code-type">
+          int
+         </span>
+         <span class="code-method">
+          FibIterative
+         </span>
+         (
+         <span class="code-type">
+          int
+         </span>
+         n)
 {
-    <span class="code-keyword">if</span> (n <= 1) <span class="code-keyword">return</span> n;
-    <span class="code-type">int</span> a = 0, b = 1;
-    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = 2; i <= n; i++)
+         <span class="code-keyword">
+          if
+         </span>
+         (n &lt;= 1)
+         <span class="code-keyword">
+          return
+         </span>
+         n;
+         <span class="code-type">
+          int
+         </span>
+         a = 0, b = 1;
+         <span class="code-keyword">
+          for
+         </span>
+         (
+         <span class="code-type">
+          int
+         </span>
+         i = 2; i &lt;= n; i++)
     {
-        <span class="code-type">int</span> temp = a + b;
+         <span class="code-type">
+          int
+         </span>
+         temp = a + b;
         a = b;
         b = temp;
     }
-    <span class="code-keyword">return</span> b;
+         <span class="code-keyword">
+          return
+         </span>
+         b;
 }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="key-takeaways" class="scroll-mt-24">
-                 <div class="bg-white p-6 md:p-8 rounded-lg shadow-md">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Key Takeaways</h2>
-                    <ul class="space-y-4">
-                        <li class="flex items-start">
-                            <span class="text-blue-500 font-bold mr-3 text-2xl">✓</span>
-                            <p class="text-gray-700"><span class="font-semibold">Distinguish space types:</span> Always be clear whether you're analyzing auxiliary space (algorithm's footprint) or total space (including inputs).</p>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-500 font-bold mr-3 text-2xl">✓</span>
-                            <p class="text-gray-700"><span class="font-semibold">Recursion costs memory:</span> Every recursive call adds to the call stack. The space complexity of a recursive algorithm is often determined by its maximum recursion depth.</p>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-500 font-bold mr-3 text-2xl">✓</span>
-                            <p class="text-gray-700"><span class="font-semibold">Iteration is often space-efficient:</span> Many problems that can be solved recursively can also be solved iteratively with O(1) auxiliary space, making it a better choice for memory-constrained environments.</p>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-500 font-bold mr-3 text-2xl">✓</span>
-                            <p class="text-gray-700"><span class="font-semibold">It's a trade-off:</span> Sometimes a recursive solution is much simpler to write and understand, even if it uses more space. The best choice depends on the specific constraints of your problem.</p>
-                        </li>
-                    </ul>
-                </div>
-            </section>
-        </main>
-
-        </main>
-    </div>
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-    </div>
-</footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="scroll-mt-24" id="key-takeaways">
+     <div class="bg-white p-6 md:p-8 rounded-lg shadow-md">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">
+       Key Takeaways
+      </h2>
+      <ul class="space-y-4">
+       <li class="flex items-start">
+        <span class="text-blue-500 font-bold mr-3 text-2xl">
+         &checkmark;
+        </span>
+        <p class="text-gray-700">
+         <span class="font-semibold">
+          Distinguish space types:
+         </span>
+         Always be clear whether you're analyzing auxiliary space (algorithm's footprint) or total space (including inputs).
+        </p>
+       </li>
+       <li class="flex items-start">
+        <span class="text-blue-500 font-bold mr-3 text-2xl">
+         &checkmark;
+        </span>
+        <p class="text-gray-700">
+         <span class="font-semibold">
+          Recursion costs memory:
+         </span>
+         Every recursive call adds to the call stack. The space complexity of a recursive algorithm is often determined by its maximum recursion depth.
+        </p>
+       </li>
+       <li class="flex items-start">
+        <span class="text-blue-500 font-bold mr-3 text-2xl">
+         &checkmark;
+        </span>
+        <p class="text-gray-700">
+         <span class="font-semibold">
+          Iteration is often space-efficient:
+         </span>
+         Many problems that can be solved recursively can also be solved iteratively with O(1) auxiliary space, making it a better choice for memory-constrained environments.
+        </p>
+       </li>
+       <li class="flex items-start">
+        <span class="text-blue-500 font-bold mr-3 text-2xl">
+         &checkmark;
+        </span>
+        <p class="text-gray-700">
+         <span class="font-semibold">
+          It's a trade-off:
+         </span>
+         Sometimes a recursive solution is much simpler to write and understand, even if it uses more space. The best choice depends on the specific constraints of your problem.
+        </p>
+       </li>
+      </ul>
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('fib-slider');
             const sliderValueSpan = document.getElementById('slider-value');
             const explanation = document.getElementById('chart-explanation');
@@ -311,6 +567,6 @@
             updateChart(parseInt(slider.value, 10));
             updateExplanation(parseInt(slider.value, 10));
         });
-    </script>
-</body>
+  </script>
+ </body>
 </html>

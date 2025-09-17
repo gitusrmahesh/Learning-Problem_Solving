@@ -1,23 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 1: Introduction to Problem Solving</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Neutrals -->
-    <!-- Application Structure Plan: The application is structured as a linear, educational journey, ideal for a "Day 1" topic. It starts with a brief intro, moves to core theoretical concepts presented in an interactive tabbed format to prevent information overload, and culminates in a hands-on "Interactive Practice" section. This structure was chosen to first build foundational knowledge and then immediately reinforce it through active participation. The user flow is guided from theory to practice, which is a highly effective learning model. -->
-    <!-- Visualization & Content Choices:
-        - Report Info: Core concepts (Understanding Problems, Approaches). Goal: Inform/Compare. Presentation: Tabbed interface. Interaction: User clicks tabs to switch content. Justification: Segments complex information into digestible parts, allowing users to focus on one concept at a time. Method: JS-controlled visibility of HTML sections.
-        - Report Info: Practice Problems (Sum, Max/Min, Reverse Array). Goal: Engage/Apply. Presentation: Interactive code simulator. Interaction: Users select a problem, toggle between brute-force/optimized C# code views, provide custom input, and "run" the code to see the output (simulated via JS). Justification: This active learning approach is crucial for reinforcing problem-solving skills, allowing users to see the direct impact of different algorithms on their own data. Method: JS logic manages state, simulates C# algorithms, and updates the DOM.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .tab-active {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 1: Introduction to Problem Solving
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   .tab-active {
             background-color: #A8A29E;
             color: #FFFFFF;
             border-color: #A8A29E;
@@ -42,129 +39,175 @@
             background-color: #D6D3D1;
             color: #333;
         }
-    </style>
-
-</head>
-<body>
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=1" class="jules-return-button">
+  </style>
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=1">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 1: Introduction to Problem Solving</p>
-</div>
-</div>
-    <div class="container mx-auto px-4 py-8 md:py-12 max-w-5xl">
-
-        <div class="text-center mb-12">
-            <h1 class="text-3xl md:text-4xl font-bold text-stone-700">Day 1: Introduction to Problem Solving</h1>
-            <p class="text-lg text-stone-500 mt-2">in C#</p>
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 1: Introduction to Problem Solving
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto px-4 py-8 md:py-12 max-w-5xl">
+   <main>
+    <section class="mb-12 bg-stone-100 p-6 rounded-lg shadow" id="introduction">
+     <h2 class="text-2xl font-bold text-stone-800 mb-3">
+      Welcome to Day 1!
+     </h2>
+     <p class="text-stone-600 leading-relaxed">
+      Today's goal is to build a solid foundation for tackling programming challenges. We will learn how to dissect a problem, understand its components, and differentiate between a straightforward (brute force) solution and a more efficient (optimized) one. This interactive guide will walk you through the concepts and let you experiment with code.
+     </p>
+    </section>
+    <section class="mb-12" id="core-concepts">
+     <h2 class="text-3xl font-bold text-stone-700 text-center mb-6">
+      Core Concepts
+     </h2>
+     <div class="w-full max-w-2xl mx-auto">
+      <div class="flex border-b border-stone-300 mb-4">
+       <button class="flex-1 py-2 px-4 text-center font-semibold rounded-t-md transition-colors duration-300" id="tab-btn-1">
+        1. Understanding the Problem
+       </button>
+       <button class="flex-1 py-2 px-4 text-center font-semibold rounded-t-md transition-colors duration-300" id="tab-btn-2">
+        2. Solution Approaches
+       </button>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md" id="tab-content-1">
+       <h3 class="text-xl font-semibold text-stone-800 mb-4">
+        Dissecting a Problem Statement
+       </h3>
+       <p class="mb-4 text-stone-600">
+        Before writing any code, you must fully understand what's being asked. Break it down into three key parts:
+       </p>
+       <ul class="space-y-3">
+        <li class="flex items-start">
+         <span class="text-emerald-600 font-bold mr-3 mt-1">
+          &checkmark;
+         </span>
+         <div>
+          <strong class="text-stone-700">
+           Inputs:
+          </strong>
+          What data is your function receiving? Know its type (e.g., integer array, string), format, and potential size.
+         </div>
+        </li>
+        <li class="flex items-start">
+         <span class="text-emerald-600 font-bold mr-3 mt-1">
+          &checkmark;
+         </span>
+         <div>
+          <strong class="text-stone-700">
+           Outputs:
+          </strong>
+          What should your function return? Understand its type and format.
+         </div>
+        </li>
+        <li class="flex items-start">
+         <span class="text-emerald-600 font-bold mr-3 mt-1">
+          &checkmark;
+         </span>
+         <div>
+          <strong class="text-stone-700">
+           Constraints:
+          </strong>
+          What are the limitations? These are critical clues. Examples include the range of input values (e.g., `1 &lt;= n &lt;= 1000`), time limits (e.g., "must run in under 1 second"), or memory limits. Constraints often tell you if a simple solution is too slow.
+         </div>
+        </li>
+       </ul>
+      </div>
+      <div class="hidden bg-white p-6 rounded-lg shadow-md" id="tab-content-2">
+       <h3 class="text-xl font-semibold text-stone-800 mb-4">
+        Brute Force vs. Optimized
+       </h3>
+       <p class="mb-4 text-stone-600">
+        For most problems, you can devise multiple solutions. They often fall into two categories:
+       </p>
+       <div class="grid md:grid-cols-2 gap-6">
+        <div class="border border-stone-200 p-4 rounded-md">
+         <h4 class="font-bold text-lg text-stone-700">
+          Brute Force
+         </h4>
+         <p class="text-stone-600 mt-2">
+          This is the most direct, straightforward approach. It often involves simple loops or checking every possibility. It's a great starting point to ensure you understand the problem, but it might be too slow for large inputs.
+         </p>
         </div>
-
-        <main>
-            <section id="introduction" class="mb-12 bg-stone-100 p-6 rounded-lg shadow">
-                <h2 class="text-2xl font-bold text-stone-800 mb-3">Welcome to Day 1!</h2>
-                <p class="text-stone-600 leading-relaxed">
-                    Today's goal is to build a solid foundation for tackling programming challenges. We will learn how to dissect a problem, understand its components, and differentiate between a straightforward (brute force) solution and a more efficient (optimized) one. This interactive guide will walk you through the concepts and let you experiment with code.
-                </p>
-            </section>
-
-            <section id="core-concepts" class="mb-12">
-                <h2 class="text-3xl font-bold text-stone-700 text-center mb-6">Core Concepts</h2>
-                <div class="w-full max-w-2xl mx-auto">
-                    <div class="flex border-b border-stone-300 mb-4">
-                        <button id="tab-btn-1" class="flex-1 py-2 px-4 text-center font-semibold rounded-t-md transition-colors duration-300">1. Understanding the Problem</button>
-                        <button id="tab-btn-2" class="flex-1 py-2 px-4 text-center font-semibold rounded-t-md transition-colors duration-300">2. Solution Approaches</button>
-                    </div>
-
-                    <div id="tab-content-1" class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-semibold text-stone-800 mb-4">Dissecting a Problem Statement</h3>
-                        <p class="mb-4 text-stone-600">Before writing any code, you must fully understand what's being asked. Break it down into three key parts:</p>
-                        <ul class="space-y-3">
-                            <li class="flex items-start">
-                                <span class="text-emerald-600 font-bold mr-3 mt-1">&#10003;</span>
-                                <div>
-                                    <strong class="text-stone-700">Inputs:</strong> What data is your function receiving? Know its type (e.g., integer array, string), format, and potential size.
-                                </div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-emerald-600 font-bold mr-3 mt-1">&#10003;</span>
-                                <div>
-                                    <strong class="text-stone-700">Outputs:</strong> What should your function return? Understand its type and format.
-                                </div>
-                            </li>
-                             <li class="flex items-start">
-                                <span class="text-emerald-600 font-bold mr-3 mt-1">&#10003;</span>
-                                <div>
-                                    <strong class="text-stone-700">Constraints:</strong> What are the limitations? These are critical clues. Examples include the range of input values (e.g., `1 <= n <= 1000`), time limits (e.g., "must run in under 1 second"), or memory limits. Constraints often tell you if a simple solution is too slow.
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div id="tab-content-2" class="hidden bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-semibold text-stone-800 mb-4">Brute Force vs. Optimized</h3>
-                        <p class="mb-4 text-stone-600">For most problems, you can devise multiple solutions. They often fall into two categories:</p>
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="border border-stone-200 p-4 rounded-md">
-                                <h4 class="font-bold text-lg text-stone-700">Brute Force</h4>
-                                <p class="text-stone-600 mt-2">This is the most direct, straightforward approach. It often involves simple loops or checking every possibility. It's a great starting point to ensure you understand the problem, but it might be too slow for large inputs.</p>
-                            </div>
-                            <div class="border border-stone-200 p-4 rounded-md">
-                                <h4 class="font-bold text-lg text-stone-700">Optimized</h4>
-                                <p class="text-stone-600 mt-2">This is a more clever solution that solves the problem more efficiently (faster or using less memory). It often requires knowledge of specific algorithms or data structures to avoid unnecessary work. The goal is to find an optimized solution that passes within the given constraints.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="interactive-practice">
-                <h2 class="text-3xl font-bold text-stone-700 text-center mb-2">Interactive Practice Problems</h2>
-                <p class="text-center text-stone-500 mb-8">Select a problem, provide your input, and see how different approaches work.</p>
-
-                <div class="bg-stone-50 p-6 rounded-xl shadow-lg">
-                    <div id="problem-selector" class="flex flex-wrap justify-center gap-3 mb-6">
-                    </div>
-
-                    <div class="grid lg:grid-cols-2 gap-6">
-                        <div>
-                            <h3 id="problem-title" class="text-2xl font-bold text-stone-800 mb-2"></h3>
-                            <p id="problem-description" class="text-stone-600 mb-4"></p>
-
-                            <div class="mb-4">
-                                <label for="array-input" class="block font-semibold mb-2 text-stone-700">Input Array (comma-separated):</label>
-                                <input type="text" id="array-input" class="w-full p-2 border border-stone-300 rounded-md font-code focus:ring-2 focus:ring-stone-400 focus:border-stone-400" placeholder="e.g., 5, 1, 9, 3, 7">
-                                <button id="run-btn" class="btn-primary w-full mt-3 py-2 px-4 rounded-md font-semibold">Run Code</button>
-                            </div>
-
-                            <div>
-                                <h4 class="font-semibold mb-2 text-stone-700">Output:</h4>
-                                <div id="output-display" class="w-full p-3 min-h-[50px] bg-white border border-stone-200 rounded-md font-code text-stone-800"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                             <div class="flex mb-3 rounded-md overflow-hidden border border-stone-300">
-                                <button id="code-toggle-brute" class="flex-1 py-2 px-4 font-semibold transition-colors duration-300">Brute Force</button>
-                                <button id="code-toggle-optimized" class="flex-1 py-2 px-4 font-semibold transition-colors duration-300">Optimized</button>
-                            </div>
-                            <div id="code-display" class="code-block font-code text-sm"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-    </div>
-</footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        <div class="border border-stone-200 p-4 rounded-md">
+         <h4 class="font-bold text-lg text-stone-700">
+          Optimized
+         </h4>
+         <p class="text-stone-600 mt-2">
+          This is a more clever solution that solves the problem more efficiently (faster or using less memory). It often requires knowledge of specific algorithms or data structures to avoid unnecessary work. The goal is to find an optimized solution that passes within the given constraints.
+         </p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section id="interactive-practice">
+     <h2 class="text-3xl font-bold text-stone-700 text-center mb-2">
+      Interactive Practice Problems
+     </h2>
+     <p class="text-center text-stone-500 mb-8">
+      Select a problem, provide your input, and see how different approaches work.
+     </p>
+     <div class="bg-stone-50 p-6 rounded-xl shadow-lg">
+      <div class="flex flex-wrap justify-center gap-3 mb-6" id="problem-selector">
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6">
+       <div>
+        <h3 class="text-2xl font-bold text-stone-800 mb-2" id="problem-title">
+        </h3>
+        <p class="text-stone-600 mb-4" id="problem-description">
+        </p>
+        <div class="mb-4">
+         <label class="block font-semibold mb-2 text-stone-700" for="array-input">
+          Input Array (comma-separated):
+         </label>
+         <input class="w-full p-2 border border-stone-300 rounded-md font-code focus:ring-2 focus:ring-stone-400 focus:border-stone-400" id="array-input" placeholder="e.g., 5, 1, 9, 3, 7" type="text">
+         <button class="btn-primary w-full mt-3 py-2 px-4 rounded-md font-semibold" id="run-btn">
+          Run Code
+         </button>
+        </div>
+        <div>
+         <h4 class="font-semibold mb-2 text-stone-700">
+          Output:
+         </h4>
+         <div class="w-full p-3 min-h-[50px] bg-white border border-stone-200 rounded-md font-code text-stone-800" id="output-display">
+         </div>
+        </div>
+       </div>
+       <div>
+        <div class="flex mb-3 rounded-md overflow-hidden border border-stone-300">
+         <button class="flex-1 py-2 px-4 font-semibold transition-colors duration-300" id="code-toggle-brute">
+          Brute Force
+         </button>
+         <button class="flex-1 py-2 px-4 font-semibold transition-colors duration-300" id="code-toggle-optimized">
+          Optimized
+         </button>
+        </div>
+        <div class="code-block font-code text-sm" id="code-display">
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
             const problems = [
                 {
                     id: 'sum-array',
@@ -469,6 +512,6 @@ public class Solution
             setActiveTab(1);
             renderProblem();
         });
-    </script>
-</body>
+  </script>
+ </body>
 </html>

@@ -1,21 +1,25 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 8: C# Array Basics & Rotations</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chosen Palette: Slate & Sky -->
-    <!-- Application Structure Plan: The application is structured into two main, navigable sections: 'Basics' and 'Rotations'. This separation allows users to first grasp fundamental concepts (Traversal, Insertion, Deletion) before applying them in a practical exercise (Rotation). The 'Basics' section is further divided into three interactive modules. Each module pairs a conceptual explanation with a hands-on demo where users can manipulate a visual array, see the result, and view the underlying C# code. This interactive, modular design was chosen to transform passive learning into an active, experimental process, which is more effective for understanding data structures and algorithms. -->
-    <!-- Visualization & Content Choices:
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 8: C# Array Basics & Rotations
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <!-- Chosen Palette: Slate & Sky -->
+  <!-- Application Structure Plan: The application is structured into two main, navigable sections: 'Basics' and 'Rotations'. This separation allows users to first grasp fundamental concepts (Traversal, Insertion, Deletion) before applying them in a practical exercise (Rotation). The 'Basics' section is further divided into three interactive modules. Each module pairs a conceptual explanation with a hands-on demo where users can manipulate a visual array, see the result, and view the underlying C# code. This interactive, modular design was chosen to transform passive learning into an active, experimental process, which is more effective for understanding data structures and algorithms. -->
+  <!-- Visualization & Content Choices:
         - Report Info: Array Traversal, Insertion, Deletion. Goal: Teach fundamental operations. Viz/Presentation: A visual representation of an array using styled HTML divs, an explanation of the concept, and a C# code block. Interaction: A 'Run' button animates the traversal. Justification: Visualizing the step-by-step process makes the abstract concept of iteration tangible. Library: Vanilla JS & Tailwind CSS.
         - Report Info: Array Insertion/Deletion. Goal: Demonstrate how to modify fixed-size arrays. Viz/Presentation: 'Before' and 'After' visual arrays, with user inputs for value and index. Interaction: User provides input, clicks a button, and the UI updates to show the result and the C# code. Justification: This immediately connects user action to outcome, reinforcing the concept that insertion/deletion in C# requires creating a new array. Library: Vanilla JS & Tailwind CSS.
         - Report Info: Array Rotation. Goal: Provide a practical problem-solving exercise. Viz/Presentation: An interactive panel similar to insertion/deletion, with inputs for rotation amount. Interaction: User selects direction (Left/Right) and amount, and sees the array transform. Justification: Consolidates learning by applying array manipulation techniques to a common interview-style problem. Library: Vanilla JS & Tailwind CSS.
     -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         .array-container {
             display: flex;
             gap: 0.5rem;
@@ -60,154 +64,232 @@
             border-color: #0284c7;
             transform: scale(1.1);
         }
-    </style>
-
-</head>
-<body>
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=2" class="jules-return-button">
+  </style>
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=2">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 8: C# Array Basics & Rotations</p>
-</div>
-</div>
-    <div id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
-
-        <nav class="flex justify-center mb-10 bg-slate-200 p-2 rounded-lg shadow-inner">
-            <button id="nav-basics" class="nav-button active px-6 py-2 font-semibold rounded-md">Basics</button>
-            <button id="nav-rotations" class="nav-button px-6 py-2 font-semibold rounded-md">Rotations</button>
-        </nav>
-
-        <main>
-            <section id="basics-section">
-                <div class="space-y-12">
-
-                    <!-- Traversal -->
-                    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md border border-slate-200">
-                        <h2 class="text-2xl font-bold text-sky-700 mb-4">1. Array Traversal</h2>
-                        <p class="text-slate-600 mb-6">Traversal means visiting or accessing each element of an array exactly once. This is the most fundamental array operation, commonly done using a `for` or `foreach` loop in C# to read, process, or display elements.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                            <div>
-                                <h3 class="font-semibold mb-2">Interactive Demo</h3>
-                                <div id="traversal-array" class="array-container mb-4"></div>
-                                <button id="run-traversal-btn" class="w-full bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300">Run Traversal</button>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold mb-2">C# Code Example (`for` loop)</h3>
-                                <div class="code-block">
-int[] numbers = { 10, 20, 30, 40, 50 };
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 8: C# Array Basics & Rotations
+    </p>
+   </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="app">
+   <nav class="flex justify-center mb-10 bg-slate-200 p-2 rounded-lg shadow-inner">
+    <button class="nav-button active px-6 py-2 font-semibold rounded-md" id="nav-basics">
+     Basics
+    </button>
+    <button class="nav-button px-6 py-2 font-semibold rounded-md" id="nav-rotations">
+     Rotations
+    </button>
+   </nav>
+   <main>
+    <section id="basics-section">
+     <div class="space-y-12">
+      <!-- Traversal -->
+      <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md border border-slate-200">
+       <h2 class="text-2xl font-bold text-sky-700 mb-4">
+        1. Array Traversal
+       </h2>
+       <p class="text-slate-600 mb-6">
+        Traversal means visiting or accessing each element of an array exactly once. This is the most fundamental array operation, commonly done using a `for` or `foreach` loop in C# to read, process, or display elements.
+       </p>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <div>
+         <h3 class="font-semibold mb-2">
+          Interactive Demo
+         </h3>
+         <div class="array-container mb-4" id="traversal-array">
+         </div>
+         <button class="w-full bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300" id="run-traversal-btn">
+          Run Traversal
+         </button>
+        </div>
+        <div>
+         <h3 class="font-semibold mb-2">
+          C# Code Example (`for` loop)
+         </h3>
+         <div class="code-block">
+          int[] numbers = { 10, 20, 30, 40, 50 };
 
 Console.WriteLine("Array elements:");
-for (int i = 0; i < numbers.Length; i++)
+for (int i = 0; i &lt; numbers.Length; i++)
 {
     // Accessing element at index i
     Console.WriteLine(numbers[i]);
 }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Insertion -->
-                    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md border border-slate-200">
-                        <h2 class="text-2xl font-bold text-sky-700 mb-4">2. Array Insertion</h2>
-                        <p class="text-slate-600 mb-6">Since C# arrays have a fixed size, you cannot directly "insert" an element into a full array. The process involves creating a new, larger array and copying elements from the original array, along with the new element, into their correct positions.</p>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                            <div>
-                                <h3 class="font-semibold mb-2">Interactive Demo</h3>
-                                <div class="flex flex-col sm:flex-row gap-4 mb-4">
-                                    <div class="flex-1">
-                                        <label for="insert-value" class="block text-sm font-medium text-slate-700">Value to Insert</label>
-                                        <input type="number" id="insert-value" value="99" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2">
-                                    </div>
-                                    <div class="flex-1">
-                                        <label for="insert-index" class="block text-sm font-medium text-slate-700">Index to Insert At</label>
-                                        <input type="number" id="insert-index" value="2" min="0" max="5" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2">
-                                    </div>
-                                </div>
-                                <button id="run-insertion-btn" class="w-full bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300 mb-4">Perform Insertion</button>
-                                <h4 class="font-medium mt-4">Before:</h4>
-                                <div id="insertion-array-before" class="array-container"></div>
-                                <h4 class="font-medium mt-4">After:</h4>
-                                <div id="insertion-array-after" class="array-container"></div>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold mb-2">C# Code Snippet</h3>
-                                <div id="insertion-code" class="code-block"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Deletion -->
-                    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md border border-slate-200">
-                        <h2 class="text-2xl font-bold text-sky-700 mb-4">3. Array Deletion</h2>
-                        <p class="text-slate-600 mb-6">Similar to insertion, deleting an element from a C# array requires creating a new, smaller array. You copy all elements from the original array except the one at the specified index.</p>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                            <div>
-                                <h3 class="font-semibold mb-2">Interactive Demo</h3>
-                                <div class="mb-4">
-                                    <label for="delete-index" class="block text-sm font-medium text-slate-700">Index to Delete</label>
-                                    <input type="number" id="delete-index" value="2" min="0" max="4" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2">
-                                </div>
-                                <button id="run-deletion-btn" class="w-full bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300 mb-4">Perform Deletion</button>
-                                <h4 class="font-medium mt-4">Before:</h4>
-                                <div id="deletion-array-before" class="array-container"></div>
-                                <h4 class="font-medium mt-4">After:</h4>
-                                <div id="deletion-array-after" class="array-container"></div>
-                            </div>
-                             <div>
-                                <h3 class="font-semibold mb-2">C# Code Snippet</h3>
-                                <div id="deletion-code" class="code-block"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <section id="rotations-section" class="hidden">
-                 <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md border border-slate-200">
-                    <h2 class="text-2xl font-bold text-sky-700 mb-4">Practice: Array Rotation</h2>
-                    <p class="text-slate-600 mb-6">Array rotation is a common operation where the elements of an array are shifted by a certain number of positions. A <span class="font-semibold">left rotation</span> shifts elements to the beginning of the array, while a <span class="font-semibold">right rotation</span> shifts them towards the end. Elements that are shifted off one end reappear on the other.</p>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                        <div>
-                            <h3 class="font-semibold mb-2">Interactive Demo</h3>
-                            <div class="mb-4">
-                                <label for="rotate-by" class="block text-sm font-medium text-slate-700">Rotate by how many positions?</label>
-                                <input type="number" id="rotate-by" value="2" min="0" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2">
-                            </div>
-                            <div class="flex gap-4 mb-4">
-                                <button id="run-left-rotation-btn" class="flex-1 bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300">Rotate Left</button>
-                                <button id="run-right-rotation-btn" class="flex-1 bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300">Rotate Right</button>
-                            </div>
-                            <h4 class="font-medium mt-4">Original Array:</h4>
-                            <div id="rotation-array-before" class="array-container"></div>
-                            <h4 class="font-medium mt-4">Rotated Array:</h4>
-                            <div id="rotation-array-after" class="array-container"></div>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold mb-2">C# Code Snippet (Efficient Method)</h3>
-                            <div id="rotation-code" class="code-block">Select a rotation to see the code.</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        </main>
-
-        <footer class="bg-stone-800 text-white mt-12 py-6">
-            <div class="container mx-auto px-4 text-center max-w-5xl">
-                <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
-            </div>
-        </footer>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- Insertion -->
+      <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md border border-slate-200">
+       <h2 class="text-2xl font-bold text-sky-700 mb-4">
+        2. Array Insertion
+       </h2>
+       <p class="text-slate-600 mb-6">
+        Since C# arrays have a fixed size, you cannot directly "insert" an element into a full array. The process involves creating a new, larger array and copying elements from the original array, along with the new element, into their correct positions.
+       </p>
+       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div>
+         <h3 class="font-semibold mb-2">
+          Interactive Demo
+         </h3>
+         <div class="flex flex-col sm:flex-row gap-4 mb-4">
+          <div class="flex-1">
+           <label class="block text-sm font-medium text-slate-700" for="insert-value">
+            Value to Insert
+           </label>
+           <input class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" id="insert-value" type="number" value="99">
+          </div>
+          <div class="flex-1">
+           <label class="block text-sm font-medium text-slate-700" for="insert-index">
+            Index to Insert At
+           </label>
+           <input class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" id="insert-index" max="5" min="0" type="number" value="2">
+          </div>
+         </div>
+         <button class="w-full bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300 mb-4" id="run-insertion-btn">
+          Perform Insertion
+         </button>
+         <h4 class="font-medium mt-4">
+          Before:
+         </h4>
+         <div class="array-container" id="insertion-array-before">
+         </div>
+         <h4 class="font-medium mt-4">
+          After:
+         </h4>
+         <div class="array-container" id="insertion-array-after">
+         </div>
+        </div>
+        <div>
+         <h3 class="font-semibold mb-2">
+          C# Code Snippet
+         </h3>
+         <div class="code-block" id="insertion-code">
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- Deletion -->
+      <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md border border-slate-200">
+       <h2 class="text-2xl font-bold text-sky-700 mb-4">
+        3. Array Deletion
+       </h2>
+       <p class="text-slate-600 mb-6">
+        Similar to insertion, deleting an element from a C# array requires creating a new, smaller array. You copy all elements from the original array except the one at the specified index.
+       </p>
+       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div>
+         <h3 class="font-semibold mb-2">
+          Interactive Demo
+         </h3>
+         <div class="mb-4">
+          <label class="block text-sm font-medium text-slate-700" for="delete-index">
+           Index to Delete
+          </label>
+          <input class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" id="delete-index" max="4" min="0" type="number" value="2">
+         </div>
+         <button class="w-full bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300 mb-4" id="run-deletion-btn">
+          Perform Deletion
+         </button>
+         <h4 class="font-medium mt-4">
+          Before:
+         </h4>
+         <div class="array-container" id="deletion-array-before">
+         </div>
+         <h4 class="font-medium mt-4">
+          After:
+         </h4>
+         <div class="array-container" id="deletion-array-after">
+         </div>
+        </div>
+        <div>
+         <h3 class="font-semibold mb-2">
+          C# Code Snippet
+         </h3>
+         <div class="code-block" id="deletion-code">
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="hidden" id="rotations-section">
+     <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md border border-slate-200">
+      <h2 class="text-2xl font-bold text-sky-700 mb-4">
+       Practice: Array Rotation
+      </h2>
+      <p class="text-slate-600 mb-6">
+       Array rotation is a common operation where the elements of an array are shifted by a certain number of positions. A
+       <span class="font-semibold">
+        left rotation
+       </span>
+       shifts elements to the beginning of the array, while a
+       <span class="font-semibold">
+        right rotation
+       </span>
+       shifts them towards the end. Elements that are shifted off one end reappear on the other.
+      </p>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+       <div>
+        <h3 class="font-semibold mb-2">
+         Interactive Demo
+        </h3>
+        <div class="mb-4">
+         <label class="block text-sm font-medium text-slate-700" for="rotate-by">
+          Rotate by how many positions?
+         </label>
+         <input class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" id="rotate-by" min="0" type="number" value="2">
+        </div>
+        <div class="flex gap-4 mb-4">
+         <button class="flex-1 bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300" id="run-left-rotation-btn">
+          Rotate Left
+         </button>
+         <button class="flex-1 bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition duration-300" id="run-right-rotation-btn">
+          Rotate Right
+         </button>
+        </div>
+        <h4 class="font-medium mt-4">
+         Original Array:
+        </h4>
+        <div class="array-container" id="rotation-array-before">
+        </div>
+        <h4 class="font-medium mt-4">
+         Rotated Array:
+        </h4>
+        <div class="array-container" id="rotation-array-after">
+        </div>
+       </div>
+       <div>
+        <h3 class="font-semibold mb-2">
+         C# Code Snippet (Efficient Method)
+        </h3>
+        <div class="code-block" id="rotation-code">
+         Select a rotation to see the code.
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main>
+   <footer class="bg-stone-800 text-white mt-12 py-6">
+    <div class="container mx-auto px-4 text-center max-w-5xl">
+     <p class="text-sm text-stone-400">
+      &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+     </p>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+   </footer>
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', () => {
             const state = {
                 traversal: [10, 20, 30, 40, 50],
                 insertion: [11, 22, 33, 44, 55],
@@ -429,7 +511,6 @@ Rotate${direction === 'left' ? 'Left' : 'Right'}(numbers, ${d});
 
             init();
         });
-    </script>
-
-</body>
+  </script>
+ </body>
 </html>

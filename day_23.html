@@ -1,20 +1,25 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 23: Anagrams & Frequency Maps</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Neutrals -->
-    <!-- Application Structure Plan: The application is designed as a linear, educational walkthrough. It starts with fundamental concepts and builds progressively to complex problems and analysis. The structure is: 1) Introduction to define the topic. 2) Interactive "Core Concept" visualizer for frequency maps to make the abstract tangible. 3) A section for the "Check Anagram" problem, featuring an interactive demo, visual explanation, and C# code. 4) A similar section for the more advanced "Group Anagrams" problem. 5) A "Performance Analysis" section with a chart to compare algorithms, fulfilling the "deep research" requirement. 6) A "Practice" section for further learning. This sequential flow is optimal for a tutorial, guiding the user from understanding the 'what' and 'how' to the 'why' (performance) and 'what next' (practice). -->
-    <!-- Visualization & Content Choices: Report Info: Anagrams, Frequency Maps. -> Goal: Teach, Compare, Organize. -> Viz/Presentation: Interactive text inputs and visual grid/table displays for frequency maps, dynamically generated HTML divs for grouped anagrams, and a Chart.js bar chart for performance comparison. -> Interaction: Users can input their own strings to see frequency maps built in real-time, check if strings are anagrams, and group lists of words. This hands-on approach solidifies understanding. Code is presented in clean, switchable blocks. -> Justification: Interactive demos are more engaging than static text. Visualizing the frequency maps explains the algorithm's logic instantly. A chart is the clearest way to compare abstract time complexities. -> Library/Method: Vanilla JS for DOM manipulation, Chart.js for the bar chart. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 23: Anagrams & Frequency Maps
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Calm Neutrals -->
+  <!-- Application Structure Plan: The application is designed as a linear, educational walkthrough. It starts with fundamental concepts and builds progressively to complex problems and analysis. The structure is: 1) Introduction to define the topic. 2) Interactive "Core Concept" visualizer for frequency maps to make the abstract tangible. 3) A section for the "Check Anagram" problem, featuring an interactive demo, visual explanation, and C# code. 4) A similar section for the more advanced "Group Anagrams" problem. 5) A "Performance Analysis" section with a chart to compare algorithms, fulfilling the "deep research" requirement. 6) A "Practice" section for further learning. This sequential flow is optimal for a tutorial, guiding the user from understanding the 'what' and 'how' to the 'why' (performance) and 'what next' (practice). -->
+  <!-- Visualization & Content Choices: Report Info: Anagrams, Frequency Maps. -> Goal: Teach, Compare, Organize. -> Viz/Presentation: Interactive text inputs and visual grid/table displays for frequency maps, dynamically generated HTML divs for grouped anagrams, and a Chart.js bar chart for performance comparison. -> Interaction: Users can input their own strings to see frequency maps built in real-time, check if strings are anagrams, and group lists of words. This hands-on approach solidifies understanding. Code is presented in clean, switchable blocks. -> Justification: Interactive demos are more engaging than static text. Visualizing the frequency maps explains the algorithm's logic instantly. A chart is the clearest way to compare abstract time complexities. -> Library/Method: Vanilla JS for DOM manipulation, Chart.js for the bar chart. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
             font-family: 'Inter', sans-serif;
         }
         .code-block {
@@ -67,83 +72,103 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-    </style>
-
-</head>
-<body class="bg-slate-50 text-slate-800">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=4" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=4">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 23: Anagrams & Frequency Maps</p>
-</div>
-</div>
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-
-
-
-        <main class="space-y-16">
-
-            <section id="introduction">
-                <h2 class="text-3xl font-bold mb-4 text-slate-900">What are Anagrams?</h2>
-                <div class="bg-white p-6 rounded-lg shadow-md space-y-4 text-slate-700">
-                    <p>An anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once. For example, "listen" is an anagram of "silent".</p>
-                    <p>While this concept is simple, checking for anagrams programmatically presents interesting challenges. The most efficient and versatile approach involves a data structure called a <strong>Frequency Map</strong> (or a character count array). This map stores each character from a string and its corresponding count, providing a unique "signature" for the string's character composition.</p>
-                </div>
-            </section>
-
-            <section id="core-concept">
-                <h2 class="text-3xl font-bold mb-4 text-slate-900">Core Concept: Visualizing a Frequency Map</h2>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <p class="mb-4 text-slate-700">Enter a string below to see how a frequency map is built. This map simply counts the occurrences of each character. Two strings are anagrams if and only if they produce identical frequency maps.</p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <input type="text" id="freq-input" placeholder="Enter a string like 'hello world'" class="flex-grow p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                        <button id="freq-button" class="bg-blue-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-blue-700 transition-colors">Visualize</button>
-                    </div>
-                    <div id="freq-visualization" class="mt-6">
-                        <p class="text-slate-500 text-center">Your visualization will appear here.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="check-anagram">
-                <h2 class="text-3xl font-bold mb-6 text-slate-900">Problem 1: Check Anagram</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-2xl font-semibold mb-4">Interactive Demo</h3>
-                        <p class="text-slate-700 mb-4">Enter two strings to check if they are anagrams. We'll show you their frequency maps to explain the result.</p>
-                        <div class="space-y-4">
-                            <input type="text" id="anagram-s1" placeholder="String 1 (e.g., listen)" class="w-full p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500">
-                            <input type="text" id="anagram-s2" placeholder="String 2 (e.g., silent)" class="w-full p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500">
-                            <button id="check-anagram-button" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors">Check Anagram</button>
-                        </div>
-                        <div id="anagram-result" class="mt-6 text-center font-bold text-2xl h-10"></div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <h4 class="font-semibold text-center mb-2">String 1 Map</h4>
-                                <div id="anagram-vis-1"></div>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-center mb-2">String 2 Map</h4>
-                                <div id="anagram-vis-2"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-2xl font-semibold mb-4">C# Code Walkthrough</h3>
-                         <div class="border-b border-slate-200 mb-4">
-                            <nav class="flex space-x-4 -mb-px">
-                                <button data-target="code-check-freq" class="tab active py-2 px-1 border-b-2 border-transparent">Frequency Map</button>
-                                <button data-target="code-check-sort" class="tab py-2 px-1 border-b-2 border-transparent">Sorting</button>
-                            </nav>
-                        </div>
-                        <div id="code-check-freq" class="code-content">
-                            <p class="text-slate-700 mb-4">This O(n) solution is highly efficient. It builds a frequency map for the first string and then decrements counts using the second string. If all counts return to zero, they are anagrams.</p>
-                            <div class="code-block">
-<pre><code><span class="keyword">public bool</span> <span class="method">IsAnagram</span>(<span class="type">string</span> s, <span class="type">string</span> t) {
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 23: Anagrams & Frequency Maps
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+   <section id="core-concept">
+    <h2 class="text-3xl font-bold mb-4 text-slate-900">
+     Core Concept: Visualizing a Frequency Map
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+     <p class="mb-4 text-slate-700">
+      Enter a string below to see how a frequency map is built. This map simply counts the occurrences of each character. Two strings are anagrams if and only if they produce identical frequency maps.
+     </p>
+     <div class="flex flex-col sm:flex-row gap-4">
+      <input class="flex-grow p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" id="freq-input" placeholder="Enter a string like 'hello world'" type="text">
+      <button class="bg-blue-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-blue-700 transition-colors" id="freq-button">
+       Visualize
+      </button>
+     </div>
+     <div class="mt-6" id="freq-visualization">
+      <p class="text-slate-500 text-center">
+       Your visualization will appear here.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="check-anagram">
+    <h2 class="text-3xl font-bold mb-6 text-slate-900">
+     Problem 1: Check Anagram
+    </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">
+       Interactive Demo
+      </h3>
+      <p class="text-slate-700 mb-4">
+       Enter two strings to check if they are anagrams. We'll show you their frequency maps to explain the result.
+      </p>
+      <div class="space-y-4">
+       <input class="w-full p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500" id="anagram-s1" placeholder="String 1 (e.g., listen)" type="text">
+       <input class="w-full p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500" id="anagram-s2" placeholder="String 2 (e.g., silent)" type="text">
+       <button class="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors" id="check-anagram-button">
+        Check Anagram
+       </button>
+      </div>
+      <div class="mt-6 text-center font-bold text-2xl h-10" id="anagram-result">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+       <div>
+        <h4 class="font-semibold text-center mb-2">
+         String 1 Map
+        </h4>
+        <div id="anagram-vis-1">
+        </div>
+       </div>
+       <div>
+        <h4 class="font-semibold text-center mb-2">
+         String 2 Map
+        </h4>
+        <div id="anagram-vis-2">
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">
+       C# Code Walkthrough
+      </h3>
+      <div class="border-b border-slate-200 mb-4">
+       <nav class="flex space-x-4 -mb-px">
+        <button class="tab active py-2 px-1 border-b-2 border-transparent" data-target="code-check-freq">
+         Frequency Map
+        </button>
+        <button class="tab py-2 px-1 border-b-2 border-transparent" data-target="code-check-sort">
+         Sorting
+        </button>
+       </nav>
+      </div>
+      <div class="code-content" id="code-check-freq">
+       <p class="text-slate-700 mb-4">
+        This O(n) solution is highly efficient. It builds a frequency map for the first string and then decrements counts using the second string. If all counts return to zero, they are anagrams.
+       </p>
+       <div class="code-block">
+        <pre><code><span class="keyword">public bool</span> <span class="method">IsAnagram</span>(<span class="type">string</span> s, <span class="type">string</span> t) {
     <span class="keyword">if</span> (s.Length != t.Length) <span class="keyword">return false</span>;
 
     <span class="type">var</span> counts = <span class="keyword">new</span> <span class="type">Dictionary</span>&lt;<span class="type">char</span>, <span class="type">int</span>&gt;();
@@ -164,12 +189,14 @@
     <span class="keyword">return true</span>;
 }
 </code></pre>
-                            </div>
-                        </div>
-                        <div id="code-check-sort" class="code-content hidden">
-                            <p class="text-slate-700 mb-4">This O(n log n) solution is very intuitive. If two strings are anagrams, their sorted versions will be identical.</p>
-                            <div class="code-block">
-<pre><code><span class="keyword">public bool</span> <span class="method">IsAnagramSorting</span>(<span class="type">string</span> s, <span class="type">string</span> t) {
+       </div>
+      </div>
+      <div class="code-content hidden" id="code-check-sort">
+       <p class="text-slate-700 mb-4">
+        This O(n log n) solution is very intuitive. If two strings are anagrams, their sorted versions will be identical.
+       </p>
+       <div class="code-block">
+        <pre><code><span class="keyword">public bool</span> <span class="method">IsAnagramSorting</span>(<span class="type">string</span> s, <span class="type">string</span> t) {
     <span class="keyword">if</span> (s.Length != t.Length) <span class="keyword">return false</span>;
 
     <span class="type">var</span> sArray = s.ToCharArray();
@@ -181,27 +208,39 @@
     <span class="keyword">return new</span> <span class="type">string</span>(sArray) == <span class="keyword">new</span> <span class="type">string</span>(tArray);
 }
 </code></pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="group-anagrams">
-                <h2 class="text-3xl font-bold mb-6 text-slate-900">Problem 2: Group Anagrams</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-2xl font-semibold mb-4">Interactive Demo</h3>
-                        <p class="text-slate-700 mb-4">Enter a list of words separated by commas. We'll group them by their anagram "signature".</p>
-                        <textarea id="group-input" class="w-full p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 h-24" placeholder="e.g., eat, tea, tan, ate, nat, bat"></textarea>
-                        <button id="group-anagrams-button" class="w-full mt-4 bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors">Group Anagrams</button>
-                        <div id="group-result" class="mt-6 space-y-3"></div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-2xl font-semibold mb-4">C# Code Walkthrough</h3>
-                        <p class="text-slate-700 mb-4">The key is to generate a canonical representation (a unique signature) for each word. Words that are anagrams will have the same signature. We use a dictionary to group words by this signature.</p>
-                        <div class="code-block">
-<pre><code><span class="keyword">public</span> <span class="type">IList</span>&lt;<span class="type">IList</span>&lt;<span class="type">string</span>&gt;&gt; <span class="method">GroupAnagrams</span>(<span class="type">string</span>[] strs) {
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="group-anagrams">
+    <h2 class="text-3xl font-bold mb-6 text-slate-900">
+     Problem 2: Group Anagrams
+    </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">
+       Interactive Demo
+      </h3>
+      <p class="text-slate-700 mb-4">
+       Enter a list of words separated by commas. We'll group them by their anagram "signature".
+      </p>
+      <textarea class="w-full p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 h-24" id="group-input" placeholder="e.g., eat, tea, tan, ate, nat, bat"></textarea>
+      <button class="w-full mt-4 bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors" id="group-anagrams-button">
+       Group Anagrams
+      </button>
+      <div class="mt-6 space-y-3" id="group-result">
+      </div>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">
+       C# Code Walkthrough
+      </h3>
+      <p class="text-slate-700 mb-4">
+       The key is to generate a canonical representation (a unique signature) for each word. Words that are anagrams will have the same signature. We use a dictionary to group words by this signature.
+      </p>
+      <div class="code-block">
+       <pre><code><span class="keyword">public</span> <span class="type">IList</span>&lt;<span class="type">IList</span>&lt;<span class="type">string</span>&gt;&gt; <span class="method">GroupAnagrams</span>(<span class="type">string</span>[] strs) {
     <span class="keyword">var</span> groups = <span class="keyword">new</span> <span class="type">Dictionary</span>&lt;<span class="type">string</span>, <span class="type">IList</span>&lt;<span class="type">string</span>&gt;&gt;();
 
     <span class="keyword">foreach</span> (<span class="keyword">var</span> str <span class="keyword">in</span> strs) {
@@ -219,46 +258,70 @@
     <span class="keyword">return new</span> <span class="type">List</span>&lt;<span class="type">IList</span>&lt;<span class="type">string</span>&gt;&gt;(groups.Values);
 }
 </code></pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="performance">
-                <h2 class="text-3xl font-bold mb-4 text-slate-900">Performance Analysis</h2>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <p class="mb-4 text-slate-700">When checking for anagrams, the frequency map approach is generally superior to sorting. Let 'N' be the length of the strings. The frequency map method takes O(N) time because it iterates through each string once. The sorting method takes O(N log N) time due to the sorting algorithm's complexity. For grouping 'K' strings of average length 'N', the complexity is O(K * N log N) using sorting and O(K * N) using a frequency map as a key.</p>
-                    <div class="chart-container relative h-80 w-full max-w-2xl mx-auto">
-                        <canvas id="performance-chart"></canvas>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="practice">
-                <h2 class="text-3xl font-bold mb-4 text-slate-900">Further Practice</h2>
-                 <div class="bg-white p-6 rounded-lg shadow-md space-y-3">
-                    <p class="text-slate-700">Solidify your understanding with these related problems:</p>
-                    <ul class="list-disc list-inside text-blue-600 space-y-2">
-                        <li><a href="#" class="hover:underline">Valid Anagram (LeetCode 242)</a> - The classic check anagram problem.</li>
-                        <li><a href="#" class="hover:underline">Group Anagrams (LeetCode 49)</a> - The classic grouping problem.</li>
-                        <li><a href="#" class="hover:underline">Find All Anagrams in a String (LeetCode 438)</a> - A sliding window variation.</li>
-                        <li><a href="#" class="hover:underline">Permutation in String (LeetCode 567)</a> - Another sliding window problem using frequency maps.</li>
-                    </ul>
-                </div>
-            </section>
-        </main>
-        
-        </main>
-
+      </div>
+     </div>
     </div>
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
+   </section>
+   <section id="performance">
+    <h2 class="text-3xl font-bold mb-4 text-slate-900">
+     Performance Analysis
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+     <p class="mb-4 text-slate-700">
+      When checking for anagrams, the frequency map approach is generally superior to sorting. Let 'N' be the length of the strings. The frequency map method takes O(N) time because it iterates through each string once. The sorting method takes O(N log N) time due to the sorting algorithm's complexity. For grouping 'K' strings of average length 'N', the complexity is O(K * N log N) using sorting and O(K * N) using a frequency map as a key.
+     </p>
+     <div class="chart-container relative h-80 w-full max-w-2xl mx-auto">
+      <canvas id="performance-chart">
+      </canvas>
+     </div>
     </div>
-</footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+   </section>
+   <section id="practice">
+    <h2 class="text-3xl font-bold mb-4 text-slate-900">
+     Further Practice
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md space-y-3">
+     <p class="text-slate-700">
+      Solidify your understanding with these related problems:
+     </p>
+     <ul class="list-disc list-inside text-blue-600 space-y-2">
+      <li>
+       <a class="hover:underline" href="#">
+        Valid Anagram (LeetCode 242)
+       </a>
+       - The classic check anagram problem.
+      </li>
+      <li>
+       <a class="hover:underline" href="#">
+        Group Anagrams (LeetCode 49)
+       </a>
+       - The classic grouping problem.
+      </li>
+      <li>
+       <a class="hover:underline" href="#">
+        Find All Anagrams in a String (LeetCode 438)
+       </a>
+       - A sliding window variation.
+      </li>
+      <li>
+       <a class="hover:underline" href="#">
+        Permutation in String (LeetCode 567)
+       </a>
+       - Another sliding window problem using frequency maps.
+      </li>
+     </ul>
+    </div>
+   </section>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   document.addEventListener('DOMContentLoaded', () => {
 
             const createFreqMapVisualization = (str) => {
                 const map = {};
@@ -441,6 +504,6 @@
                 }
             });
         });
-    </script>
-</body>
+  </script>
+ </body>
 </html>

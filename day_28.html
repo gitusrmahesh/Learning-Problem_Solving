@@ -1,16 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 28: Contest Simulation (Enhanced)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chosen Palette: Serene Sage -->
-    <!-- Application Structure Plan: The application is a "Deep Dive Workbench". I've enhanced the previous tab-based navigation. The main content area for each problem is now a two-column layout. The left column presents the problem, examples, and detailed concepts. The right column is dedicated to the solution, a new step-by-step "Visual Walkthrough" with a concrete example, and key takeaways. This structure separates the "what" and "why" (left column) from the "how" (right column), facilitating a more structured learning process. It allows users to understand the problem fully before diving into the implementation details and seeing the algorithm in action. -->
-    <!-- Visualization & Content Choices: Report Info: 5 coding problems. Goal: Deepen understanding via detailed examples and interactive visualization. Viz/Presentation: I've introduced a "Visual Walkthrough" component built with dynamic HTML and CSS. This isn't a chart, but a custom visualizer that shows arrays, hashmaps, or bit patterns changing over time. Interaction: Users click "Next Step" to progress the algorithm's visualization. Justification: This active participation is far more effective for learning algorithms than passively reading code. It makes abstract concepts like bitmasking or prefix sum lookups tangible. Library/Method: Vanilla JS for DOM manipulation and state management. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 28: Contest Simulation (Enhanced)
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <!-- Chosen Palette: Serene Sage -->
+  <!-- Application Structure Plan: The application is a "Deep Dive Workbench". I've enhanced the previous tab-based navigation. The main content area for each problem is now a two-column layout. The left column presents the problem, examples, and detailed concepts. The right column is dedicated to the solution, a new step-by-step "Visual Walkthrough" with a concrete example, and key takeaways. This structure separates the "what" and "why" (left column) from the "how" (right column), facilitating a more structured learning process. It allows users to understand the problem fully before diving into the implementation details and seeing the algorithm in action. -->
+  <!-- Visualization & Content Choices: Report Info: 5 coding problems. Goal: Deepen understanding via detailed examples and interactive visualization. Viz/Presentation: I've introduced a "Visual Walkthrough" component built with dynamic HTML and CSS. This isn't a chart, but a custom visualizer that shows arrays, hashmaps, or bit patterns changing over time. Interaction: Users click "Next Step" to progress the algorithm's visualization. Justification: This active participation is far more effective for learning algorithms than passively reading code. It makes abstract concepts like bitmasking or prefix sum lookups tangible. Library/Method: Vanilla JS for DOM manipulation and state management. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
         body {
             background-color: #F8F9FA;
             font-family: 'Inter', sans-serif;
@@ -60,57 +64,70 @@
         .highlight-window {
             border-bottom: 3px solid #f28482;
         }
-    </style>
-
-</head>
-<body class="antialiased">
-<div class="jules-header-container">
-    <a href="30_days_progress.html?week=4" class="jules-return-button">
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=4">
     &larr; Return to Homepage
-</a>
-    <div class="text-center pt-8 pb-8">
-    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">Intermediate Problem Solving</h1>
-    <p class="text-lg md:text-xl text-gray-600 mt-2">Day 28: Contest Simulation (Enhanced)</p>
-</div>
-</div>
-    <div class="container mx-auto px-4 py-8 max-w-7xl">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-[#2C534C]">30-Day Intermediate Problem Solving</h1>
-            <p class="text-xl text-[#52796F] mt-2">Day 28: Contest Simulation (Enhanced)</p>
-        </div>
-
-        <main>
-            <div class="bg-white rounded-xl shadow-md p-6 md:p-8 mb-8 border border-gray-200">
-                <h2 class="text-2xl font-semibold text-[#2C534C] mb-3">Today's Enhanced Objective</h2>
-                <p class="text-gray-600">This enhanced session provides a deeper dive into each problem. Beyond just the solution, you'll find detailed examples and interactive visual walkthroughs that animate the algorithms step-by-step. The goal is to build a strong mental model of how the code interacts with the data. Select a problem to begin your deep dive.</p>
-            </div>
-
-            <div class="mb-8">
-                <div class="flex items-center justify-between mb-2">
-                     <span class="text-sm font-medium text-gray-500">Progress</span>
-                     <span id="progress-text" class="text-sm font-medium text-gray-500">0 / 5 Completed</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div id="progress-bar" class="bg-gradient-to-r from-[#52796F] to-[#84A98C] h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
-                </div>
-            </div>
-            
-            <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
-            </nav>
-
-            <div id="problem-container" class="bg-white rounded-xl shadow-lg p-6 md:p-10 border border-gray-200 min-h-[600px]">
-            </div>
-        </main>
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 28: Contest Simulation (Enhanced)
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto px-4 py-8 max-w-7xl">
+   <div class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-[#2C534C]">
+     30-Day Intermediate Problem Solving
+    </h1>
+    <p class="text-xl text-[#52796F] mt-2">
+     Day 28: Contest Simulation (Enhanced)
+    </p>
+   </div>
+   <main>
+    <div class="bg-white rounded-xl shadow-md p-6 md:p-8 mb-8 border border-gray-200">
+     <h2 class="text-2xl font-semibold text-[#2C534C] mb-3">
+      Today's Enhanced Objective
+     </h2>
+     <p class="text-gray-600">
+      This enhanced session provides a deeper dive into each problem. Beyond just the solution, you'll find detailed examples and interactive visual walkthroughs that animate the algorithms step-by-step. The goal is to build a strong mental model of how the code interacts with the data. Select a problem to begin your deep dive.
+     </p>
     </div>
-
-<footer class="bg-stone-800 text-white mt-12 py-6">
-    <div class="container mx-auto px-4 text-center max-w-5xl">
-        <p class="text-sm text-stone-400">&copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.</p>
+    <div class="mb-8">
+     <div class="flex items-center justify-between mb-2">
+      <span class="text-sm font-medium text-gray-500">
+       Progress
+      </span>
+      <span class="text-sm font-medium text-gray-500" id="progress-text">
+       0 / 5 Completed
+      </span>
+     </div>
+     <div class="w-full bg-gray-200 rounded-full h-2.5">
+      <div class="bg-gradient-to-r from-[#52796F] to-[#84A98C] h-2.5 rounded-full progress-bar-fill" id="progress-bar" style="width: 0%">
+      </div>
+     </div>
     </div>
-</footer>
-
-    <script>
-        const problems = [
+    <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+    </nav>
+    <div class="bg-white rounded-xl shadow-lg p-6 md:p-10 border border-gray-200 min-h-[600px]" id="problem-container">
+    </div>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const problems = [
             {
                 id: 0,
                 title: "Single Number II",
@@ -534,6 +551,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', init);
-    </script>
-</body>
+  </script>
+ </body>
 </html>
