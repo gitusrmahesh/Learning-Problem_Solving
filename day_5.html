@@ -1,23 +1,654 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 5: Mini Problem Set (Mix)</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-4">Day 5: Mini Problem Set (Mix)</h1>
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-2">Topic</h2>
-            <p class="mb-4">Mini Problem Set (Mix)</p>
-            <h2 class="text-2xl font-bold mb-2">Content</h2>
-            <p>Content for this day will be added here.</p>
-        </div>
-        <div class="mt-8">
-            <a href="30_days_progress.html" class="text-blue-500 hover:underline">Back to Roadmap</a>
-        </div>
-    </div>
-</body>
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   C# Fundamentals Explorer
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Calm Neutrals -->
+  <!-- Application Structure Plan: A single-page educational portal with tab-based navigation for distinct topics (Conditionals, Loops, Complexity). This structure was chosen to break down a dense technical subject into digestible, sequential modules, promoting a linear learning path. Interactive examples within each section allow for hands-on learning, and a final quiz reinforces the concepts. The user flow is from basic concepts to more advanced ones, ending with self-assessment. -->
+  <!-- Visualization & Content Choices: Report Info: C# Conditionals -> Goal: Demonstrate logic -> Presentation: Interactive input field and dynamic text output -> Interaction: User enters value, JS evaluates and shows result -> Justification: Active participation solidifies understanding better than static code. | Report Info: C# Loops -> Goal: Compare loop types -> Presentation: Interactive loop simulator -> Interaction: User selects loop type, sees visual output of its execution -> Justification: Helps differentiate the behavior of various loops. | Report Info: Complexity Analysis -> Goal: Visualize growth rates -> Viz: Line Chart (Chart.js/Canvas) -> Interaction: Hover for tooltips, buttons to toggle lines -> Justification: A chart provides an immediate, intuitive understanding of abstract Big O concepts that text alone cannot. | Report Info: Knowledge Check -> Goal: Assess understanding -> Presentation: Multiple-choice quiz -> Interaction: User selects answer, gets instant feedback -> Justification: Reinforces learning and provides user a metric for their comprehension. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button.active {
+            background-color: #0ea5e9;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .keyword { color: #60a5fa; }
+        .type { color: #34d399; }
+        .string { color: #f59e0b; }
+        .comment { color: #94a3b8; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .quiz-option {
+            transition: background-color 0.2s ease-in-out;
+        }
+        .quiz-option.correct {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+        }
+  </style>
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=1">
+    &larr; Return to Homepage
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     C# Fundamentals Explorer
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+   <div class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-sky-600">
+     C# Fundamentals Explorer
+    </h1>
+    <p class="mt-2 text-lg text-slate-600">
+     An interactive guide to loops, conditionals, and complexity.
+    </p>
+   </div>
+   <nav class="flex flex-wrap justify-center gap-2 mb-8">
+    <button class="nav-button active py-2 px-4 bg-white rounded-lg shadow-sm font-semibold text-slate-700 hover:bg-sky-100" data-target="conditionals">
+     Conditionals
+    </button>
+    <button class="nav-button py-2 px-4 bg-white rounded-lg shadow-sm font-semibold text-slate-700 hover:bg-sky-100" data-target="loops">
+     Loops
+    </button>
+    <button class="nav-button py-2 px-4 bg-white rounded-lg shadow-sm font-semibold text-slate-700 hover:bg-sky-100" data-target="complexity">
+     Complexity Analysis
+    </button>
+    <button class="nav-button py-2 px-4 bg-white rounded-lg shadow-sm font-semibold text-slate-700 hover:bg-sky-100" data-target="quiz">
+     Test Your Knowledge
+    </button>
+   </nav>
+   <main>
+    <!-- Conditionals Section -->
+    <section class="content-section active bg-white p-6 rounded-xl shadow-md" id="conditionals">
+     <h2 class="text-3xl font-bold mb-4 text-slate-800">
+      Conditional Statements
+     </h2>
+     <p class="mb-6 text-slate-600">
+      Conditional statements allow you to execute different blocks of code based on whether a certain condition is true or false. They are the fundamental decision-making structures in programming. This section provides an overview of C#'s primary conditional constructs and an interactive demo to see them in action.
+     </p>
+     <div class="grid md:grid-cols-2 gap-6">
+      <div>
+       <h3 class="text-xl font-semibold mb-2">
+        The
+        <code class="text-sky-600">
+         if-else
+        </code>
+        Statement
+       </h3>
+       <p class="mb-4">
+        The most common conditional statement. It executes a block of code if a condition is true, and an optional
+        <code class="text-sky-600">
+         else
+        </code>
+        block if it's false.
+       </p>
+       <div class="code-block">
+        <pre><span class="keyword">int</span> <span class="variable">age</span> = 20;
+<span class="keyword">if</span> (age &gt;= 18)
+{
+    Console.WriteLine(<span class="string">"You are an adult."</span>);
+}
+<span class="keyword">else</span>
+{
+    Console.WriteLine(<span class="string">"You are a minor."</span>);
+}</pre>
+       </div>
+      </div>
+      <div>
+       <h3 class="text-xl font-semibold mb-2">
+        The
+        <code class="text-sky-600">
+         switch
+        </code>
+        Statement
+       </h3>
+       <p class="mb-4">
+        Useful when you have a single variable to compare against multiple possible constant values.
+       </p>
+       <div class="code-block">
+        <pre><span class="keyword">char</span> <span class="variable">grade</span> = 'B';
+<span class="keyword">switch</span> (grade)
+{
+    <span class="keyword">case</span> 'A':
+        Console.WriteLine(<span class="string">"Excellent!"</span>);
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> 'B':
+        Console.WriteLine(<span class="string">"Good"</span>);
+        <span class="keyword">break</span>;
+    <span class="keyword">default</span>:
+        Console.WriteLine(<span class="string">"Needs improvement"</span>);
+        <span class="keyword">break</span>;
+}</pre>
+       </div>
+      </div>
+     </div>
+     <div class="mt-8 border-t pt-6">
+      <h3 class="text-2xl font-semibold mb-4 text-center">
+       Interactive Demo: Age Checker
+      </h3>
+      <p class="text-center text-slate-600 mb-4">
+       Enter an age below to see the
+       <code class="text-sky-600">
+        if-else if-else
+       </code>
+       logic at work.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+       <input class="w-full sm:w-auto px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500" id="ageInput" placeholder="Enter age (e.g., 15)" type="number">
+       <button class="w-full sm:w-auto bg-sky-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-sky-600 transition-colors" id="checkAgeBtn">
+        Check Age
+       </button>
+      </div>
+      <div class="mt-4 text-center text-lg font-medium p-4 rounded-lg bg-slate-100 min-h-[56px] flex items-center justify-center" id="ageResult">
+       Result will be displayed here.
+      </div>
+     </div>
+    </section>
+    <!-- Loops Section -->
+    <section class="content-section bg-white p-6 rounded-xl shadow-md" id="loops">
+     <h2 class="text-3xl font-bold mb-4 text-slate-800">
+      Looping Constructs
+     </h2>
+     <p class="mb-6 text-slate-600">
+      Loops are used to execute a block of code repeatedly as long as a certain condition is met. They are essential for iterating over collections of data, such as arrays or lists, and for performing repetitive tasks without writing the same code over and over. This section explores the different types of loops available in C#.
+     </p>
+     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div>
+       <h3 class="text-xl font-semibold mb-2">
+        <code class="text-sky-600">
+         for
+        </code>
+        Loop
+       </h3>
+       <p>
+        Best when you know the exact number of iterations.
+       </p>
+       <div class="code-block text-sm mt-2">
+        <pre><span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i &lt; 5; i++)
+{
+  <span class="comment">// Code runs 5 times</span>
+}</pre>
+       </div>
+      </div>
+      <div>
+       <h3 class="text-xl font-semibold mb-2">
+        <code class="text-sky-600">
+         while
+        </code>
+        Loop
+       </h3>
+       <p>
+        Runs as long as a condition is true. The condition is checked *before* each iteration.
+       </p>
+       <div class="code-block text-sm mt-2">
+        <pre><span class="keyword">int</span> n = 0;
+<span class="keyword">while</span> (n &lt; 5)
+{
+  n++;
+}</pre>
+       </div>
+      </div>
+      <div>
+       <h3 class="text-xl font-semibold mb-2">
+        <code class="text-sky-600">
+         do-while
+        </code>
+        Loop
+       </h3>
+       <p>
+        Similar to `while`, but the condition is checked *after* each iteration. Guarantees at least one execution.
+       </p>
+       <div class="code-block text-sm mt-2">
+        <pre><span class="keyword">int</span> n = 0;
+<span class="keyword">do</span>
+{
+  n++;
+} <span class="keyword">while</span> (n &lt; 5);</pre>
+       </div>
+      </div>
+      <div>
+       <h3 class="text-xl font-semibold mb-2">
+        <code class="text-sky-600">
+         foreach
+        </code>
+        Loop
+       </h3>
+       <p>
+        The simplest way to iterate over all elements in a collection.
+       </p>
+       <div class="code-block text-sm mt-2">
+        <pre><span class="keyword">var</span> numbers = <span class="keyword">new</span>[] {1,2,3};
+<span class="keyword">foreach</span> (<span class="keyword">var</span> num <span class="keyword">in</span> numbers)
+{
+  <span class="comment">//...</span>
+}</pre>
+       </div>
+      </div>
+     </div>
+     <div class="mt-8 border-t pt-6">
+      <h3 class="text-2xl font-semibold mb-4 text-center">
+       Interactive Demo: Loop Simulator
+      </h3>
+      <p class="text-center text-slate-600 mb-4">
+       Select a loop type and see it in action.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+       <select class="w-full sm:w-auto px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500" id="loopType">
+        <option value="for">
+         For Loop
+        </option>
+        <option value="while">
+         While Loop
+        </option>
+        <option value="dowhile">
+         Do-While Loop
+        </option>
+       </select>
+       <button class="w-full sm:w-auto bg-sky-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-sky-600 transition-colors" id="runLoopBtn">
+        Run Loop
+       </button>
+      </div>
+      <div class="mt-4">
+       <p class="font-semibold text-center">
+        Output:
+       </p>
+       <div class="mt-2 text-center p-4 rounded-lg bg-slate-100 min-h-[56px] flex items-center justify-center flex-wrap gap-2" id="loopResult">
+        Select a loop and click "Run".
+       </div>
+      </div>
+     </div>
+    </section>
+    <!-- Complexity Analysis Section -->
+    <section class="content-section bg-white p-6 rounded-xl shadow-md" id="complexity">
+     <h2 class="text-3xl font-bold mb-4 text-slate-800">
+      Complexity Analysis (Big O Notation)
+     </h2>
+     <p class="mb-6 text-slate-600">
+      Algorithmic complexity is a measure of how much time or memory an algorithm requires to run as its input size grows. We use "Big O" notation to describe this relationship. Understanding Big O is crucial for writing efficient and scalable code. This section introduces common complexity classes and visualizes their growth rates.
+     </p>
+     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <div class="p-4 bg-slate-50 rounded-lg">
+       <h3 class="text-lg font-semibold">
+        <code class="text-sky-600">
+         O(1)
+        </code>
+        - Constant Time
+       </h3>
+       <p class="text-sm">
+        The algorithm takes the same amount of time regardless of the input size. Example: Accessing an array element by its index.
+       </p>
+      </div>
+      <div class="p-4 bg-slate-50 rounded-lg">
+       <h3 class="text-lg font-semibold">
+        <code class="text-sky-600">
+         O(n)
+        </code>
+        - Linear Time
+       </h3>
+       <p class="text-sm">
+        The runtime grows linearly with the input size 'n'. Example: Iterating through an entire list once.
+       </p>
+      </div>
+      <div class="p-4 bg-slate-50 rounded-lg">
+       <h3 class="text-lg font-semibold">
+        <code class="text-sky-600">
+         O(n&sup2;)
+        </code>
+        - Quadratic Time
+       </h3>
+       <p class="text-sm">
+        The runtime is proportional to the square of the input size. Example: A nested loop iterating over the same list.
+       </p>
+      </div>
+     </div>
+     <h3 class="text-2xl font-semibold mb-4 text-center">
+      Growth Rate Visualization
+     </h3>
+     <p class="text-center text-slate-600 mb-4">
+      This chart shows how the number of operations grows with the input size for different complexity classes. Notice how quickly
+      <code class="text-sky-600">
+       O(n&sup2;)
+      </code>
+      grows compared to
+      <code class="text-sky-600">
+       O(n)
+      </code>
+      .
+     </p>
+     <div class="chart-container">
+      <canvas id="complexityChart">
+      </canvas>
+     </div>
+    </section>
+    <!-- Quiz Section -->
+    <section class="content-section bg-white p-6 rounded-xl shadow-md" id="quiz">
+     <h2 class="text-3xl font-bold mb-2 text-slate-800">
+      Test Your Knowledge
+     </h2>
+     <p class="mb-6 text-slate-600">
+      Let's see what you've learned. Answer the questions below to check your understanding of C# fundamentals.
+     </p>
+     <div id="quiz-container">
+     </div>
+     <div class="flex justify-between items-center mt-6">
+      <button class="bg-sky-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-sky-600 transition-colors disabled:bg-slate-400" disabled id="submitQuizBtn">
+       Submit Answers
+      </button>
+      <div class="text-lg font-bold" id="quiz-result">
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   document.addEventListener('DOMContentLoaded', function () {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            function switchTab(targetId) {
+                navButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.target === targetId);
+                });
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchTab(button.dataset.target);
+                });
+            });
+
+            // Interactive Conditionals
+            const ageInput = document.getElementById('ageInput');
+            const checkAgeBtn = document.getElementById('checkAgeBtn');
+            const ageResult = document.getElementById('ageResult');
+
+            checkAgeBtn.addEventListener('click', () => {
+                const age = parseInt(ageInput.value);
+                if (isNaN(age)) {
+                    ageResult.textContent = 'Please enter a valid number.';
+                    ageResult.className = 'mt-4 text-center text-lg font-medium p-4 rounded-lg bg-red-100 text-red-700 min-h-[56px] flex items-center justify-center';
+                } else if (age < 0) {
+                    ageResult.textContent = 'Age cannot be negative.';
+                     ageResult.className = 'mt-4 text-center text-lg font-medium p-4 rounded-lg bg-amber-100 text-amber-700 min-h-[56px] flex items-center justify-center';
+                } else if (age < 13) {
+                    ageResult.textContent = 'You are a child.';
+                     ageResult.className = 'mt-4 text-center text-lg font-medium p-4 rounded-lg bg-green-100 text-green-700 min-h-[56px] flex items-center justify-center';
+                } else if (age < 18) {
+                    ageResult.textContent = 'You are a teenager.';
+                     ageResult.className = 'mt-4 text-center text-lg font-medium p-4 rounded-lg bg-green-100 text-green-700 min-h-[56px] flex items-center justify-center';
+                } else if (age < 65) {
+                    ageResult.textContent = 'You are an adult.';
+                     ageResult.className = 'mt-4 text-center text-lg font-medium p-4 rounded-lg bg-green-100 text-green-700 min-h-[56px] flex items-center justify-center';
+                } else {
+                    ageResult.textContent = 'You are a senior.';
+                     ageResult.className = 'mt-4 text-center text-lg font-medium p-4 rounded-lg bg-green-100 text-green-700 min-h-[56px] flex items-center justify-center';
+                }
+            });
+
+            // Interactive Loops
+            const loopTypeSelect = document.getElementById('loopType');
+            const runLoopBtn = document.getElementById('runLoopBtn');
+            const loopResult = document.getElementById('loopResult');
+
+            runLoopBtn.addEventListener('click', () => {
+                const type = loopTypeSelect.value;
+                loopResult.innerHTML = '';
+                let output = [];
+
+                switch(type) {
+                    case 'for':
+                        for (let i = 0; i < 5; i++) {
+                            output.push(i);
+                        }
+                        break;
+                    case 'while':
+                        let j = 0;
+                        while(j < 5) {
+                            output.push(j);
+                            j++;
+                        }
+                        break;
+                    case 'dowhile':
+                        let k = 0;
+                        do {
+                            output.push(k);
+                            k++;
+                        } while(k < 5);
+                        break;
+                }
+
+                output.forEach(item => {
+                    const el = document.createElement('span');
+                    el.className = 'bg-sky-200 text-sky-800 font-mono font-bold text-sm px-3 py-1 rounded-full';
+                    el.textContent = item;
+                    loopResult.appendChild(el);
+                });
+            });
+
+            // Complexity Chart
+            const ctx = document.getElementById('complexityChart').getContext('2d');
+            const labels = Array.from({ length: 21 }, (_, i) => i * 5); // n from 0 to 100
+            const complexityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'O(1) - Constant',
+                            data: labels.map(() => 10),
+                            borderColor: '#34d399',
+                            tension: 0.1,
+                            fill: false,
+                        },
+                        {
+                            label: 'O(log n) - Logarithmic',
+                            data: labels.map(n => n > 0 ? Math.log2(n) * 20 : 0),
+                            borderColor: '#f59e0b',
+                            tension: 0.1,
+                            fill: false,
+                        },
+                        {
+                            label: 'O(n) - Linear',
+                            data: labels.map(n => n),
+                            borderColor: '#60a5fa',
+                            tension: 0.1,
+                            fill: false,
+                        },
+                        {
+                            label: 'O(n²)',
+                            data: labels.map(n => (n*n)/20), // Scaled to fit
+                            borderColor: '#ef4444',
+                            tension: 0.1,
+                            fill: false,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Input Size (n)'
+                            }
+                        },
+                        y: {
+                           title: {
+                                display: true,
+                                text: 'Number of Operations (Relative)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        title: {
+                            display: true,
+                            text: 'Big O Notation Growth Rates'
+                        }
+                    }
+                }
+            });
+
+            // Quiz Logic
+            const quizData = [
+                {
+                    question: "Which loop is guaranteed to execute at least once?",
+                    options: ["for", "while", "do-while", "foreach"],
+                    answer: "do-while"
+                },
+                {
+                    question: "What is the Big O notation for finding an element in an array by its index?",
+                    options: ["O(1)", "O(n)", "O(log n)", "O(n²)"],
+                    answer: "O(1)"
+                },
+                {
+                    question: "Which statement is best for checking a single variable against many constant values?",
+                    options: ["if-else", "switch", "while", "for"],
+                    answer: "switch"
+                },
+                 {
+                    question: "A loop inside another loop typically results in what complexity?",
+                    options: ["O(1)", "O(n)", "O(log n)", "O(n²)"],
+                    answer: "O(n²)"
+                }
+            ];
+
+            const quizContainer = document.getElementById('quiz-container');
+            const submitQuizBtn = document.getElementById('submitQuizBtn');
+            const quizResult = document.getElementById('quiz-result');
+
+            function buildQuiz() {
+                quizData.forEach((item, index) => {
+                    const questionBlock = document.createElement('div');
+                    questionBlock.className = 'mb-6';
+
+                    const questionText = document.createElement('p');
+                    questionText.className = 'font-semibold mb-3';
+                    questionText.textContent = `${index + 1}. ${item.question}`;
+                    questionBlock.appendChild(questionText);
+
+                    const optionsContainer = document.createElement('div');
+                    optionsContainer.className = 'grid sm:grid-cols-2 gap-3';
+                    questionBlock.appendChild(optionsContainer);
+
+                    item.options.forEach(option => {
+                        const optionLabel = document.createElement('label');
+                        optionLabel.className = 'quiz-option block p-3 border-2 border-slate-200 rounded-lg hover:bg-sky-50 cursor-pointer';
+
+                        const optionInput = document.createElement('input');
+                        optionInput.type = 'radio';
+                        optionInput.name = `question${index}`;
+                        optionInput.value = option;
+                        optionInput.className = 'mr-3';
+
+                        optionLabel.appendChild(optionInput);
+                        optionLabel.appendChild(document.createTextNode(option));
+                        optionsContainer.appendChild(optionLabel);
+                    });
+
+                    quizContainer.appendChild(questionBlock);
+                });
+            }
+
+            quizContainer.addEventListener('change', () => {
+                const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+                submitQuizBtn.disabled = answeredQuestions < quizData.length;
+            });
+
+            submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                quizData.forEach((item, index) => {
+                    const selector = `input[name="question${index}"]:checked`;
+                    const userAnswerNode = document.querySelector(selector);
+                    if (userAnswerNode) {
+                        const userAnswer = userAnswerNode.value;
+                        const optionLabels = userAnswerNode.closest('.grid').querySelectorAll('label');
+
+                        optionLabels.forEach(label => {
+                            const input = label.querySelector('input');
+                            if (input.value === item.answer) {
+                                label.classList.add('correct');
+                            } else if (input.checked) {
+                                label.classList.add('incorrect');
+                            }
+                        });
+
+                        if(userAnswer === item.answer) {
+                            score++;
+                        }
+                    }
+                });
+
+                quizResult.textContent = `Your Score: ${score} out of ${quizData.length}`;
+                if(score === quizData.length) {
+                    quizResult.className = 'text-lg font-bold text-green-600';
+                } else {
+                    quizResult.className = 'text-lg font-bold text-amber-600';
+                }
+
+                submitQuizBtn.disabled = true;
+            });
+
+            buildQuiz();
+            switchTab('conditionals');
+        });
+  </script>
+ </body>
 </html>

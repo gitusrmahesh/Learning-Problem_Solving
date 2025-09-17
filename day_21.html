@@ -1,23 +1,507 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 21: Weekly Contest (Sorting + Bits)</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-4">Day 21: Weekly Contest (Sorting + Bits)</h1>
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-2">Topic</h2>
-            <p class="mb-4">Weekly Contest (Sorting + Bits)</p>
-            <h2 class="text-2xl font-bold mb-2">Content</h2>
-            <p>Content for this day will be added here.</p>
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 21: Sorting & Bit Manipulation (Enhanced UI)
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Cool Breeze -->
+  <!-- Application Structure Plan: The application uses a tab-based navigation system to segment complex information into digestible parts: Core Concepts, Problem Showcase, and Performance Comparison. This task-oriented flow (learn -> practice -> analyze) is more effective for skill acquisition. The UI has been enhanced with a modern color palette, improved spacing, and interactive cues to make the experience more intuitive and professional. Accordions are used for problems to prevent information overload. -->
+  <!-- Visualization & Content Choices:
+        - Report Info: Core concepts of Sorting/Bits -> Goal: Inform -> Viz/Presentation: Styled text blocks and visually improved HTML tables -> Interaction: Tab switching -> Justification: Provides foundational knowledge in a clear, scannable format.
+        - Report Info: 4 C# Problems -> Goal: Organize/Teach -> Viz/Presentation: Enhanced Accordion panels with clear open/close states -> Interaction: Click to expand/collapse -> Justification: Allows users to focus on one problem at a time with a professional and bug-free UI.
+        - Report Info: Performance difference -> Goal: Compare -> Viz/Presentation: Bar Chart with updated color scheme -> Interaction: Tab selection -> Justification: A powerful visual comparison of algorithm efficiency, reinforcing the value of the techniques learned. -> Library/Method: Chart.js/Canvas.
+    -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        .tab-active {
+            color: #0d9488; /* teal-600 */
+            border-color: #0d9488; /* teal-600 */
+        }
+        .tab-inactive {
+            color: #64748b; /* slate-500 */
+            border-color: transparent;
+        }
+        .accordion-header.open .accordion-arrow {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .code-block {
+            background-color: #1e293b; /* slate-800 */
+            color: #f1f5f9; /* slate-100 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Menlo', 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 50vh;
+            max-height: 450px;
+        }
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=3">
+    &larr; Return to Homepage
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 21: Sorting & Bit Manipulation (Enhanced UI)
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 lg:p-12">
+   <main>
+    <div class="w-full max-w-6xl mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10">
+     <div class="mb-8">
+      <p class="text-lg text-slate-600 leading-relaxed">
+       Welcome to Day 21! Today's session is a simulated contest focusing on a powerful combination of techniques: sorting and bit manipulation. Often, a clever bitwise insight can define a custom sorting order that dramatically simplifies a problem. This module will walk you through foundational concepts and then present four problems to solidify your understanding.
+      </p>
+     </div>
+     <div class="border-b border-slate-200 mb-8">
+      <nav class="flex flex-wrap -mb-px space-x-6" id="tabs">
+       <button class="tab-btn tab-active text-lg px-1 pb-3 font-semibold border-b-2 transition-colors duration-300" data-tab="concepts">
+        Core Concepts
+       </button>
+       <button class="tab-btn tab-inactive text-lg px-1 pb-3 font-semibold border-b-2 hover:text-teal-600 transition-colors duration-300" data-tab="problems">
+        Problem Showcase
+       </button>
+       <button class="tab-btn tab-inactive text-lg px-1 pb-3 font-semibold border-b-2 hover:text-teal-600 transition-colors duration-300" data-tab="performance">
+        Performance
+       </button>
+      </nav>
+     </div>
+     <div id="tab-content">
+      <div class="tab-pane active" id="concepts">
+       <h2 class="text-3xl font-bold text-slate-700 mb-6">
+        Foundational Blocks
+       </h2>
+       <p class="mb-8 text-slate-600 text-base">
+        Before we dive into the problems, let's quickly review the core ideas. A solid grasp of sorting complexities and bitwise operators is crucial for developing efficient solutions.
+       </p>
+       <div class="grid md:grid-cols-2 gap-10">
+        <div>
+         <h3 class="text-xl font-semibold text-teal-700 mb-4">
+          Sorting Algorithm Complexity
+         </h3>
+         <div class="overflow-x-auto rounded-lg border border-slate-200">
+          <table class="w-full text-left">
+           <thead class="bg-slate-50">
+            <tr>
+             <th class="p-3 font-semibold text-slate-600">
+              Algorithm
+             </th>
+             <th class="p-3 font-semibold text-slate-600">
+              Average Case
+             </th>
+             <th class="p-3 font-semibold text-slate-600">
+              Worst Case
+             </th>
+            </tr>
+           </thead>
+           <tbody class="divide-y divide-slate-200">
+            <tr class="hover:bg-slate-50">
+             <td class="p-3">
+              Bubble Sort
+             </td>
+             <td class="p-3 font-mono">
+              O(n&sup2;)
+             </td>
+             <td class="p-3 font-mono">
+              O(n&sup2;)
+             </td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+             <td class="p-3">
+              Quick Sort
+             </td>
+             <td class="p-3 font-mono">
+              O(n log n)
+             </td>
+             <td class="p-3 font-mono">
+              O(n&sup2;)
+             </td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+             <td class="p-3">
+              Merge Sort
+             </td>
+             <td class="p-3 font-mono">
+              O(n log n)
+             </td>
+             <td class="p-3 font-mono">
+              O(n log n)
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
         </div>
-        <div class="mt-8">
-            <a href="30_days_progress.html" class="text-blue-500 hover:underline">Back to Roadmap</a>
+        <div>
+         <h3 class="text-xl font-semibold text-teal-700 mb-4">
+          Key Bitwise Operators
+         </h3>
+         <ul class="space-y-3">
+          <li>
+           <code class="font-bold text-teal-600 bg-teal-50 rounded px-2 py-1">
+            & (AND)
+           </code>
+           : Sets bit to 1 if both bits are 1.
+          </li>
+          <li>
+           <code class="font-bold text-teal-600 bg-teal-50 rounded px-2 py-1">
+            | (OR)
+           </code>
+           : Sets bit to 1 if one of two bits is 1.
+          </li>
+          <li>
+           <code class="font-bold text-teal-600 bg-teal-50 rounded px-2 py-1">
+            ^ (XOR)
+           </code>
+           : Sets bit to 1 if bits are different.
+          </li>
+          <li>
+           <code class="font-bold text-teal-600 bg-teal-50 rounded px-2 py-1">
+            &lt;&lt;
+           </code>
+           : Left shifts bits (multiply by 2).
+          </li>
+          <li>
+           <code class="font-bold text-teal-600 bg-teal-50 rounded px-2 py-1">
+            &gt;&gt;
+           </code>
+           : Right shifts bits (divide by 2).
+          </li>
+         </ul>
         </div>
+       </div>
+      </div>
+      <div class="tab-pane" id="problems" style="display: none;">
+       <h2 class="text-3xl font-bold text-slate-700 mb-6">
+        Today's Contest Problems
+       </h2>
+       <p class="mb-8 text-slate-600 text-base">
+        Here are four problems where bit manipulation is the key to an elegant sorting solution. Click on each problem to expand its details, analysis, and C# implementation.
+       </p>
+       <div class="border border-slate-200 rounded-lg" id="accordion">
+       </div>
+      </div>
+      <div class="tab-pane" id="performance" style="display: none;">
+       <h2 class="text-3xl font-bold text-slate-700 mb-6">
+        Optimized vs. Naive Approach
+       </h2>
+       <p class="mb-8 text-slate-600 text-base">
+        Let's visualize the performance impact of using an optimized bit manipulation technique for the "Sort by Set Bit Count" problem compared to a naive string conversion method. The chart shows estimated operations for an array of size N.
+       </p>
+       <div class="chart-container">
+        <canvas id="performanceChart">
+        </canvas>
+       </div>
+      </div>
+     </div>
     </div>
-</body>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const problemData = [
+             {
+                title: "Problem 1: Sort by Set Bit Count",
+                statement: "Given an array of integers, sort them in ascending order based on the number of 1s in their binary representation. If two numbers have the same number of 1s, sort them numerically.",
+                analysis: "The core task is a custom comparison. For any two numbers, 'a' and 'b', we compare their 'set bit counts'. If different, the one with fewer set bits comes first. If equal, we use their natural order. An efficient way to count set bits is Brian Kernighan's algorithm, which repeatedly unsets the rightmost set bit (`n &= (n - 1)`). This avoids iterating through all 32 bits.",
+                code: `using System;
+using System.Linq;
+using System.Collections.Generic;
+
+public class Solution {
+    private static int CountSetBits(int n) {
+        int count = 0;
+        while (n > 0) {
+            n &= (n - 1); // Unset the rightmost set bit
+            count++;
+        }
+        return count;
+    }
+
+    public static int[] SortByBits(int[] arr) {
+        var list = arr.ToList();
+        
+        list.Sort((a, b) => {
+            int bitsA = CountSetBits(a);
+            int bitsB = CountSetBits(b);
+            
+            if (bitsA != bitsB) {
+                return bitsA.CompareTo(bitsB);
+            } else {
+                return a.CompareTo(b);
+            }
+        });
+        
+        return list.ToArray();
+    }
+}`
+            },
+            {
+                title: "Problem 2: Single Number II",
+                statement: "In a non-empty array, every element appears three times except for one, which appears once. Find that single number.",
+                analysis: "This problem uses bitwise logic akin to Radix Sort. We iterate through each of the 32 bit positions. For each position 'i', we count how many numbers in the array have that bit set. Since every other number appears 3 times, the total count for any bit position will be a multiple of 3 if the single number's bit is 0. Any remainder (modulo 3) must come from the single number's bit. We construct the result bit by bit.",
+                code: `public class Solution {
+    public static int SingleNumber(int[] nums) {
+        int result = 0;
+        for (int i = 0; i < 32; i++) {
+            int sum = 0;
+            int mask = 1 << i;
+            foreach (int num in nums) {
+                if ((num & mask) != 0) {
+                    sum++;
+                }
+            }
+            if (sum % 3 != 0) {
+                result |= mask;
+            }
+        }
+        return result;
+    }
+}`
+            },
+            {
+                title: "Problem 3: Maximum XOR Pair",
+                statement: "Given an array of non-negative integers, find the maximum XOR value of any pair of numbers in the array.",
+                analysis: "A naive O(n²) solution is too slow. An optimal O(n) approach uses a hash set. We build the max XOR result from the most significant bit downwards. For each bit position 'i', we optimistically assume this bit can be 1 in our result. We then check if there exist two numbers in the array whose prefixes (up to bit 'i') can XOR to form our optimistic prefix. This check is fast using a hash set of prefixes.",
+                code: `using System.Collections.Generic;
+
+public class Solution {
+    public static int FindMaximumXOR(int[] nums) {
+        int maxResult = 0;
+        int mask = 0;
+        
+        // Greedily build the max XOR from MSB to LSB
+        for (int i = 31; i >= 0; i--) {
+            mask |= (1 << i);
+            var prefixes = new HashSet<int>();
+            foreach (int num in nums) {
+                prefixes.Add(num & mask);
+            }
+            
+            // Try to make the i-th bit of the result a 1
+            int temp = maxResult | (1 << i);
+            foreach (int prefix in prefixes) {
+                if (prefixes.Contains(temp ^ prefix)) {
+                    maxResult = temp; // Success
+                    break;
+                }
+            }
+        }
+        return maxResult;
+    }
+}`
+            },
+            {
+                title: "Problem 4: Gray Code Subsequence",
+                statement: "A Gray code sequence is where successive values differ by one bit. Given unique integers, can any permutation form a Gray code sequence starting from the first element?",
+                analysis: "This can be modeled as finding a Hamiltonian path in a graph, where numbers are nodes and an edge exists if their XOR is a power of two. We can solve this with a depth-first search (DFS) and backtracking. We start at the first element, then recursively explore its 'neighbors' (numbers that differ by one bit), keeping track of visited nodes. If we find a path that visits all N nodes, we return true.",
+                code: `using System.Collections.Generic;
+using System.Linq;
+
+public class Solution {
+    public static bool CanFormGrayCode(int[] arr) {
+        if (arr.Length <= 1) return true;
+        // Build an adjacency list for the graph
+        var adj = new Dictionary<int, List<int>>();
+        for(int i = 0; i < arr.Length; i++){
+            adj[arr[i]] = new List<int>();
+            for(int j = 0; j < arr.Length; j++){
+                if (i == j) continue;
+                int xorVal = arr[i] ^ arr[j];
+                // Check if xorVal is a power of two
+                if ((xorVal > 0) && ((xorVal & (xorVal - 1)) == 0)) {
+                    adj[arr[i]].Add(arr[j]);
+                }
+            }
+        }
+
+        var visited = new HashSet<int>();
+        return Dfs(arr[0], adj, visited, arr.Length);
+    }
+
+    private static bool Dfs(int u, Dictionary<int, List<int>> adj, HashSet<int> visited, int n) {
+        visited.Add(u);
+        if (visited.Count == n) return true;
+
+        foreach (var v in adj[u]) {
+            if (!visited.Contains(v)) {
+                if (Dfs(v, adj, visited, n)) return true;
+            }
+        }
+        
+        visited.Remove(u); // Backtrack
+        return false;
+    }
+}`
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            const accordionContainer = document.getElementById('accordion');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => {
+                        t.classList.remove('tab-active');
+                        t.classList.add('tab-inactive');
+                    });
+                    tab.classList.add('tab-active');
+                    tab.classList.remove('tab-inactive');
+
+                    const target = tab.getAttribute('data-tab');
+                    tabPanes.forEach(pane => {
+                        pane.style.display = pane.id === target ? 'block' : 'none';
+                    });
+
+                    if (target === 'performance' && !performanceChartInstance) {
+                        renderPerformanceChart();
+                    }
+                });
+            });
+
+            problemData.forEach((problem, index) => {
+                const isFirst = index === 0;
+                const accordionItem = document.createElement('div');
+                accordionItem.className = isFirst ? '' : 'border-t border-slate-200';
+                
+                const header = document.createElement('div');
+                header.className = 'accordion-header flex justify-between items-center p-5 cursor-pointer hover:bg-slate-50 transition-colors duration-200';
+                header.innerHTML = `
+                    <h3 class="text-lg font-semibold text-slate-800">${problem.title}</h3>
+                    <span class="accordion-arrow text-slate-500 transform transition-transform duration-300">&#9660;</span>
+                `;
+                
+                const content = document.createElement('div');
+                content.className = 'accordion-content';
+                
+                const contentWrapper = document.createElement('div');
+                contentWrapper.className = 'px-5 pb-6';
+                contentWrapper.innerHTML = `
+                    <p class="font-medium text-slate-700 mt-2 mb-4">${problem.statement}</p>
+                    <h4 class="font-semibold text-teal-700 mb-2">Analysis & Approach</h4>
+                    <p class="text-slate-600 mb-5 leading-relaxed">${problem.analysis}</p>
+                    <h4 class="font-semibold text-teal-700 mb-2">C# Implementation</h4>
+                    <div class="code-block"><pre><code>${problem.code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre></div>
+                `;
+                
+                content.appendChild(contentWrapper);
+                accordionItem.appendChild(header);
+                accordionItem.appendChild(content);
+                accordionContainer.appendChild(accordionItem);
+
+                header.addEventListener('click', () => {
+                    const isOpen = header.classList.contains('open');
+                    
+                    document.querySelectorAll('.accordion-header').forEach(h => {
+                         if (h !== header) {
+                            h.classList.remove('open');
+                            h.nextElementSibling.style.maxHeight = null;
+                         }
+                    });
+
+                    if (isOpen) {
+                        header.classList.remove('open');
+                        content.style.maxHeight = null;
+                    } else {
+                        header.classList.add('open');
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            });
+        });
+
+        let performanceChartInstance = null;
+        function renderPerformanceChart() {
+            if (performanceChartInstance) return;
+            
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            performanceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['N=100', 'N=1,000', 'N=10,000'],
+                    datasets: [{
+                        label: 'Naive (O(N*k), k=32)',
+                        data: [100 * 32, 1000 * 32, 10000 * 32],
+                        backgroundColor: 'rgba(203, 213, 225, 0.6)',
+                        borderColor: '#94a3b8',
+                        borderWidth: 1
+                    }, {
+                        label: 'Optimized Sort (O(N log N))',
+                        data: [100 * Math.log2(100), 1000 * Math.log2(1000), 10000 * Math.log2(10000)],
+                        backgroundColor: 'rgba(20, 184, 166, 0.6)',
+                        borderColor: '#0d9488',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            type: 'logarithmic',
+                            title: { display: true, text: 'Estimated Operations (Log Scale)', font: { size: 14, weight: '500' }, color: '#475569' },
+                            grid: { color: '#e2e8f0' }
+                        },
+                        x: {
+                           title: { display: true, text: 'Input Size (N)', font: { size: 14, weight: '500' }, color: '#475569' },
+                           grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        title: { display: true, text: 'Algorithm Complexity Comparison', font: { size: 18, weight: '600' }, color: '#1e293b', padding: { bottom: 20 } },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 12 },
+                            callbacks: {
+                                label: (c) => `${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString()} ops`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+  </script>
+ </body>
 </html>

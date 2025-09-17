@@ -1,23 +1,856 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 29: Revision Day</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-4">Day 29: Revision Day</h1>
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-2">Topic</h2>
-            <p class="mb-4">Revision Day</p>
-            <h2 class="text-2xl font-bold mb-2">Content</h2>
-            <p>Content for this day will be added here.</p>
-        </div>
-        <div class="mt-8">
-            <a href="30_days_progress.html" class="text-blue-500 hover:underline">Back to Roadmap</a>
-        </div>
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 29: C# Revision Roadmap
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <!-- Chosen Palette: Developer Focus -->
+  <!-- Application Structure Plan: The application uses a tabbed navigation system to structure the day's tasks: 'Weak Area Review', 'Tricky Problem Solver', and 'Deep Dive Research'. This thematic separation allows the user to focus on one activity at a time (self-assessment, active problem-solving, or deep learning) without the distraction of a long, scrolling page. This task-oriented design is more effective for a revision session than a linear layout, promoting focused engagement with each type of content. User flow is simple: select a tab, then interact with the content within that self-contained section. -->
+  <!-- Visualization & Content Choices: Report Info: Review weak areas -> Goal: Organize/Inform -> Viz/Presentation: Interactive accordion list of C# topics -> Interaction: Click topic to reveal detailed explanation and code -> Justification: Allows users to self-identify and explore only the topics they need, preventing information overload. | Report Info: Re-solve tricky problems -> Goal: Challenge/Organize -> Viz/Presentation: Problem cards with toggleable solutions -> Interaction: Click button to reveal solution -> Justification: Encourages active problem-solving before viewing the answer. | Report Info: Deep research -> Goal: Inform -> Viz/Presentation: Formatted text and code blocks -> Interaction: None (static content) -> Justification: Provides a clean, readable format for in-depth study. A simple HTML/CSS progress bar is used to visually track progress through the 30-day plan. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
+            background-color: #f8fafc; 
+        }
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            border-color: #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .topic-btn {
+            transition: all 0.3s ease;
+        }
+        .topic-btn.active {
+            background-color: #2563eb;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+        }
+        .code-block .keyword { color: #569cd6; }
+        .code-block .type { color: #4ec9b0; }
+        .code-block .string { color: #d69d85; }
+        .code-block .comment { color: #6a9955; }
+        .code-block .method { color: #dcdcaa; }
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=5">
+    &larr; Return to Homepage
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 29: C# Revision Roadmap
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+   <div class="text-center mb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+     30-Day Problem Solving Roadmap
+    </h1>
+    <p class="text-xl text-blue-600 mt-2">
+     Day 29: Intermediate C# Revision
+    </p>
+   </div>
+   <div class="w-full bg-gray-200 rounded-full h-2.5 mb-8">
+    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 96.66%">
     </div>
-</body>
+    <p class="text-right text-sm text-gray-600 mt-1">
+     Day 29 of 30 Complete
+    </p>
+   </div>
+   <main>
+    <div class="border-b border-gray-200 mb-6">
+     <nav aria-label="Tabs" class="-mb-px flex justify-center space-x-4 md:space-x-8">
+      <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-review">
+       Weak Area Review
+      </button>
+      <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-problems">
+       Tricky Problem Solver
+      </button>
+      <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" id="tab-research">
+       Deep Dive Research
+      </button>
+     </nav>
+    </div>
+    <div class="tab-content" id="content-review">
+     <div class="text-center p-4 bg-blue-50 border border-blue-200 rounded-lg mb-6">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+       Identify & Strengthen Your Weak Spots
+      </h2>
+      <p class="text-gray-700">
+       This section helps you pinpoint common intermediate C# topics that can be challenging. Click on a topic below to get a concise explanation and a practical, full-fledged code example to solidify your understanding.
+      </p>
+     </div>
+     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6" id="topics-container">
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md min-h-[400px]" id="topic-details-container">
+      <p class="text-gray-500 text-center flex items-center justify-center h-full">
+       Select a topic above to see details here.
+      </p>
+     </div>
+    </div>
+    <div class="tab-content hidden" id="content-problems">
+     <div class="text-center p-4 bg-green-50 border border-green-200 rounded-lg mb-6">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+       Sharpen Your Skills
+      </h2>
+      <p class="text-gray-700">
+       Theory is one thing, but application is another. Try to solve these tricky problems first, then click the button to see a detailed, commented solution. This is a great way to test your problem-solving process.
+      </p>
+     </div>
+     <div class="space-y-6" id="problems-container">
+     </div>
+    </div>
+    <div class="tab-content hidden" id="content-research">
+     <div class="text-center p-4 bg-purple-50 border border-purple-200 rounded-lg mb-6">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+       Explore Advanced Concepts
+      </h2>
+      <p class="text-gray-700">
+       This section provides a deeper look into complex but powerful C# features. Understanding these concepts is key to writing efficient, robust, and modern C# code. Today's focus is on Memory Management and Advanced LINQ.
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-md space-y-6">
+      <div>
+       <h3 class="text-2xl font-bold text-gray-800 mb-2">
+        Deep Dive 1: Memory Management (Stack vs. Heap & GC)
+       </h3>
+       <p class="mb-4">
+        In C#, understanding how memory is managed is crucial for writing high-performance applications. Memory is primarily divided into two places: the
+        <strong>
+         Stack
+        </strong>
+        and the
+        <strong>
+         Heap
+        </strong>
+        .
+       </p>
+       <ul class="list-disc list-inside space-y-2 mb-4">
+        <li>
+         <strong>
+          The Stack:
+         </strong>
+         A highly efficient, LIFO (Last-In, First-Out) data structure. It stores value types (like `int`, `double`, `bool`, `struct`) and pointers/references to objects on the heap. Memory allocation and deallocation on the stack is extremely fast because it's just a matter of moving a pointer. When a method finishes, its entire frame on the stack is cleared.
+        </li>
+        <li>
+         <strong>
+          The Heap:
+         </strong>
+         A large pool of memory used for dynamic allocation of reference types (like `class` instances, `string`, arrays). The .NET Garbage Collector (GC) is responsible for managing the heap, automatically freeing up memory that is no longer referenced by the application.
+        </li>
+       </ul>
+       <p class="mb-4">
+        The
+        <strong>
+         Garbage Collector (GC)
+        </strong>
+        works by periodically checking for objects on the heap that are no longer accessible. It's a complex process involving "generations" (Gen 0, 1, 2) to optimize collections, assuming that newer objects have shorter lifetimes. While the GC is automatic, developers can influence its behavior and must be mindful of creating unnecessary allocations, especially in performance-critical code.
+       </p>
+       <pre class="code-block"><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="type">GarbageCollectionExample</span>
+{
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="method">Main</span>()
+    {
+        <span class="comment">// 'myInt' is a value type, stored on the stack.</span>
+        <span class="type">int</span> myInt = 10; 
+
+        <span class="comment">// 'myObject' is a reference to an object on the heap.</span>
+        <span class="type">MyClass</span> myObject = <span class="keyword">new</span> <span class="type">MyClass</span>(<span class="string">"Example"</span>); 
+        
+        Console.<span class="method">WriteLine</span>(<span class="string">"Method is running..."</span>);
+        <span class="comment">// When Main() finishes, 'myInt' is popped off the stack.</span>
+        <span class="comment">// The reference 'myObject' is also removed from the stack.</span>
+        <span class="comment">// The MyClass instance on the heap is now unreferenced and becomes</span>
+        <span class="comment">// eligible for garbage collection.</span>
+    }
+}
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="type">MyClass</span> 
+{
+    <span class="keyword">public</span> <span class="type">string</span> Name;
+    <span class="keyword">public</span> <span class="method">MyClass</span>(<span class="type">string</span> name) { <span class="keyword">this</span>.Name = name; }
+}</code></pre>
+      </div>
+      <hr>
+      <div>
+       <h3 class="text-2xl font-bold text-gray-800 mb-2">
+        Deep Dive 2: Advanced LINQ - Deferred Execution
+       </h3>
+       <p class="mb-4">
+        One of LINQ's most powerful but sometimes confusing features is
+        <strong>
+         Deferred Execution
+        </strong>
+        . This means that a LINQ query is not actually executed when it is defined, but rather when its results are enumerated (e.g., in a `foreach` loop, or by calling methods like `.ToList()`, `.ToArray()`, `.First()`, `.Count()`).
+       </p>
+       <p class="mb-4">
+        This has significant benefits:
+       </p>
+       <ul class="list-disc list-inside space-y-2 mb-4">
+        <li>
+         <strong>
+          Efficiency:
+         </strong>
+         If you build a complex query but only need the first few results, you don't waste resources processing the entire data source.
+        </li>
+        <li>
+         <strong>
+          Fresh Data:
+         </strong>
+         The query is executed against the data source at the moment of enumeration. If the underlying data changes between query definition and execution, the query will use the updated data.
+        </li>
+       </ul>
+       <p class="mb-4">
+        Methods that cause immediate execution are typically those that return a single value or a concrete collection, like `.Count()`, `.First()`, `.ToList()`. Methods that return `IEnumerable&lt;T&gt;`, like `.Where()` and `.Select()`, typically use deferred execution.
+       </p>
+       <pre class="code-block"><code><span class="keyword">public</span> <span class="keyword">class</span> <span class="type">DeferredExecutionExample</span>
+{
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="method">Main</span>()
+    {
+        <span class="keyword">var</span> numbers = <span class="keyword">new</span> <span class="type">List</span>&lt;<span class="type">int</span>&gt; { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        <span class="comment">// 1. Define the LINQ query. </span>
+        <span class="comment">// NO execution happens here. 'highNumbersQuery' just holds the query definition.</span>
+        <span class="keyword">var</span> highNumbersQuery = numbers.<span class="method">Where</span>(n =&gt; n &gt; 5);
+
+        Console.<span class="method">WriteLine</span>(<span class="string">"Query defined. Now modifying the source list..."</span>);
+        
+        <span class="comment">// 2. Modify the underlying data source.</span>
+        numbers.<span class="method">Add</span>(9);
+        numbers.<span class="method">Add</span>(10);
+
+        <span class="comment">// 3. Execute the query by enumerating it.</span>
+        <span class="comment">// The query runs NOW, on the MODIFIED list.</span>
+        Console.<span class="method">WriteLine</span>(<span class="string">"Executing query with foreach loop:"</span>);
+        <span class="keyword">foreach</span> (<span class="keyword">var</span> number <span class="keyword">in</span> highNumbersQuery)
+        {
+            Console.<span class="method">WriteLine</span>(number); <span class="comment">// Will print 6, 7, 8, 9, 10</span>
+        }
+        
+        <span class="comment">// Example of immediate execution</span>
+        <span class="type">int</span> count = numbers.<span class="method">Where</span>(n =&gt; n &gt; 5).<span class="method">Count</span>(); <span class="comment">// Query executes immediately</span>
+        Console.<span class="method">WriteLine</span>(<span class="string">"\nImmediate count: "</span> + count); <span class="comment">// count is 5</span>
+    }
+}</code></pre>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   document.addEventListener('DOMContentLoaded', () => {
+
+            const weakAreasData = [
+                {
+                    id: 'linq',
+                    name: 'LINQ',
+                    title: 'Language-Integrated Query (LINQ)',
+                    description: 'LINQ provides a powerful, SQL-like syntax for querying collections, databases, XML, and more directly in C#. The key is to understand method syntax vs. query syntax, common operators (`Where`, `Select`, `OrderBy`, `GroupBy`), and the concept of deferred execution.',
+                    code: `public class LinqExample 
+{
+    public class Product
+    {
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public decimal Price { get; set; }
+    }
+
+    public void Run()
+    {
+        var products = new List<Product>
+        {
+            new Product { Name = "Laptop", Category = "Electronics", Price = 1200.50m },
+            new Product { Name = "Keyboard", Category = "Electronics", Price = 75.00m },
+            new Product { Name = "Book", Category = "Books", Price = 15.99m },
+            new Product { Name = "Mouse", Category = "Electronics", Price = 25.50m },
+            new Product { Name = "Desk Chair", Category = "Furniture", Price = 150.75m }
+        };
+
+        // Find all electronics, order by price descending
+        var expensiveElectronics = products
+            .Where(p => p.Category == "Electronics")
+            .OrderByDescending(p => p.Price);
+
+        Console.WriteLine("--- Expensive Electronics ---");
+        foreach (var product in expensiveElectronics)
+        {
+            Console.WriteLine("- " + product.Name + ": $" + product.Price);
+        }
+    }
+}`
+                },
+                {
+                    id: 'async',
+                    name: 'Async/Await',
+                    title: 'Asynchronous Programming with Async/Await',
+                    description: '`async` and `await` are keywords that simplify writing non-blocking code, crucial for responsive UIs and scalable servers. An `async` method can be "paused" with `await` until a long-running task (like a file read or API call) completes, freeing up the calling thread to do other work.',
+                    code: `public class AsyncAwaitExample
+{
+    public async Task Run()
+    {
+        Console.WriteLine("Starting the async operation...");
+        string data = await DownloadDataAsync();
+        Console.WriteLine("Async operation complete.");
+        Console.WriteLine("Downloaded data length: " + data.Length + " characters.");
+    }
+
+    public async Task<string> DownloadDataAsync()
+    {
+        using (var client = new HttpClient())
+        {
+            Console.WriteLine("   -> Simulating a network request (will take 3 seconds)...");
+            // Delay for 3 seconds to simulate a slow network call without blocking.
+            await Task.Delay(3000); 
+            Console.WriteLine("   -> Network request finished.");
+            // In a real app, you would use:
+            // return await client.GetStringAsync("https://api.example.com/data");
+            return "{\"message\": \"This is simulated data from the server.\"}";
+        }
+    }
+}`
+                },
+                {
+                    id: 'delegates',
+                    name: 'Delegates & Events',
+                    title: 'Delegates and Events',
+                    description: 'A delegate is a type that safely encapsulates a method, essentially a type-safe function pointer. They are the foundation for events and are heavily used in LINQ (`Func<T, TResult>`, `Action<T>`). Events provide a publisher-subscriber mechanism, allowing objects to notify others when something happens, without having a direct reference.',
+                    code: `public class DelegateEventExample
+{
+    // 1. Define a delegate type
+    public delegate void WorkPerformedHandler(int hours, string workType);
+
+    // 2. Define a class that will raise the event
+    public class Worker
+    {
+        public event WorkPerformedHandler WorkPerformed;
+
+        public void DoWork(int hours, string workType)
+        {
+            Console.WriteLine("Worker is doing '" + workType + "' for " + hours + " hours.");
+            // 3. Raise the event
+            OnWorkPerformed(hours, workType);
+        }
+
+        protected virtual void OnWorkPerformed(int hours, string workType)
+        {
+            // If there are subscribers, invoke the delegate
+            WorkPerformed?.Invoke(hours, workType);
+        }
+    }
+    
+    // 4. Create subscriber methods
+    public void ManagerHandler(int hours, string workType)
+    {
+        Console.WriteLine("[Manager] Noted: Work on '" + workType + "' took " + hours + " hours.");
+    }
+
+    public void PayrollHandler(int hours, string workType)
+    {
+        Console.WriteLine("[Payroll] Processed payment for " + hours + " hours of '" + workType + "'.");
+    }
+
+    public void Run()
+    {
+        var worker = new Worker();
+        
+        // 5. Subscribe to the event
+        worker.WorkPerformed += ManagerHandler;
+        worker.WorkPerformed += PayrollHandler;
+
+        worker.DoWork(8, "Software Development");
+
+        // 6. Unsubscribe from the event
+        worker.WorkPerformed -= ManagerHandler;
+        Console.WriteLine("\\n--- Manager unsubscribed ---");
+        worker.DoWork(4, "Bug Fixing");
+    }
+}`
+                },
+                {
+                    id: 'generics',
+                    name: 'Generics',
+                    title: 'Generics',
+                    description: 'Generics allow you to write classes and methods that defer the specification of one or more types until the class or method is declared and instantiated by client code. They provide type safety and performance benefits by avoiding boxing/unboxing. `List<T>` is the most common example.',
+                    code: `public class GenericsExample
+{
+    // A generic class
+    public class DataStore<T>
+    {
+        private T[] _data = new T[10];
+        private int _count = 0;
+
+        public void Add(T item)
+        {
+            if (_count < 10)
+            {
+                _data[_count] = item;
+                _count++;
+            }
+        }
+
+        public T GetItem(int index) => _data[index];
+    }
+    
+    public void Run()
+    {
+        // Create a DataStore for strings
+        var stringStore = new DataStore<string>();
+        stringStore.Add("Hello");
+        stringStore.Add("World");
+        Console.WriteLine("String store item 0: " + stringStore.GetItem(0));
+        
+        // Create a DataStore for integers
+        var intStore = new DataStore<int>();
+        intStore.Add(123);
+        intStore.Add(456);
+        Console.WriteLine("Integer store item 0: " + intStore.GetItem(0));
+        
+        // The following line would cause a COMPILE error due to type safety:
+        // intStore.Add("some string"); 
+    }
+}`
+                },
+                {
+                    id: 'di',
+                    name: 'Dependency Injection',
+                    title: 'Dependency Injection (DI)',
+                    description: 'DI is a design pattern used to achieve Inversion of Control (IoC). Instead of a class creating its own dependencies (e.g., `new Logger()`), these dependencies are "injected" from an external source (usually a DI container). This promotes loose coupling, making code more modular, testable, and maintainable.',
+                    code: `public class DIExample
+{
+    // Abstraction
+    public interface IMessageService
+    {
+        void SendMessage(string message);
+    }
+
+    // Concrete Implementations
+    public class EmailService : IMessageService
+    {
+        public void SendMessage(string message)
+        {
+            Console.WriteLine("Emailing: " + message);
+        }
+    }
+
+    public class SmsService : IMessageService
+    {
+        public void SendMessage(string message)
+        {
+            Console.WriteLine("Sending SMS: " + message);
+        }
+    }
+
+    // Consumer class that DEPENDS on the abstraction
+    public class NotificationService
+    {
+        private readonly IMessageService _messageService;
+
+        // The dependency is INJECTED via the constructor
+        public NotificationService(IMessageService messageService)
+        {
+            _messageService = messageService;
+        }
+
+        public void Notify(string notification)
+        {
+            _messageService.SendMessage(notification);
+        }
+    }
+
+    public void Run()
+    {
+        // Manually composing the dependencies (a DI container would do this)
+        IMessageService emailer = new EmailService();
+        NotificationService emailNotifier = new NotificationService(emailer);
+        emailNotifier.Notify("Your order has shipped!");
+
+        IMessageService texter = new SmsService();
+        NotificationService textNotifier = new NotificationService(texter);
+        textNotifier.Notify("Your package has arrived.");
+    }
+}`
+                },
+                {
+                    id: 'exceptions',
+                    name: 'Exception Handling',
+                    title: 'Robust Exception Handling',
+                    description: 'Properly handling runtime errors is vital for creating stable applications. C# uses `try`, `catch`, and `finally` blocks. The `try` block contains code that might throw an exception, `catch` blocks handle specific exceptions, and the `finally` block contains code that will always execute, regardless of whether an exception occurred (useful for resource cleanup).',
+                    code: `public class ExceptionDemo 
+{
+    public void ProcessFile(string filePath) 
+    {
+        StreamReader reader = null;
+        try 
+        {
+            reader = new StreamReader(filePath);
+            string content = reader.ReadToEnd();
+            Console.WriteLine("File content loaded successfully.");
+            
+            // Simulate another potential error
+            int.Parse("not-a-number");
+        }
+        catch (FileNotFoundException ex) 
+        {
+            Console.WriteLine("Error: The file was not found at " + filePath + ".");
+            Console.WriteLine("Details: " + ex.Message);
+        }
+        catch (FormatException ex) 
+        {
+            Console.WriteLine("Error: Data in the file is not in the expected format.");
+        }
+        catch (Exception ex) // General catch-all
+        {
+            Console.WriteLine("An unexpected error occurred: " + ex.Message);
+        }
+        finally 
+        {
+            // This block always executes, ensuring resources are cleaned up.
+            if (reader != null) 
+            {
+                reader.Close();
+                Console.WriteLine("StreamReader closed.");
+            }
+        }
+    }
+
+    public void Run()
+    {
+        Console.WriteLine("--- Attempting to read a valid file path, but with bad data ---");
+        // Create a dummy file for this test
+        // File.WriteAllText("test.txt", "some text"); // Commented out for browser env
+        ProcessFile("test.txt"); 
+        
+        Console.WriteLine("\\n--- Attempting to read a non-existent file ---");
+        ProcessFile("nonexistentfile.txt");
+    }
+}`
+                },
+                {
+                    id: 'interfacevsabstract',
+                    name: 'Interfaces vs. Abstract',
+                    title: 'Interfaces vs. Abstract Classes',
+                    description: 'A key object-oriented design choice. An `interface` defines a \'can-do\' contract (a set of public methods/properties) but provides no implementation. A class can implement multiple interfaces. An `abstract class` provides an \'is-a\' relationship, can have default implementation for some methods, and can have fields. A class can only inherit from one abstract class.',
+                    code: `// Interface: Defines a contract for what a class CAN DO.
+public interface ILoggable 
+{
+    void LogMessage(string message);
+}
+
+// Abstract Class: Provides a base with some shared logic.
+public abstract class DataRepository 
+{
+    protected string ConnectionString { get; set; }
+
+    public DataRepository(string connectionString) 
+    {
+        this.ConnectionString = connectionString;
+    }
+
+    // Abstract method: Must be implemented by derived classes.
+    public abstract void Connect();
+
+    // Concrete method: Shared by all derived classes.
+    public void Disconnect() 
+    {
+        Console.WriteLine("Disconnected from the database.");
+    }
+}
+
+// Concrete implementation
+public class SqlRepository : DataRepository, ILoggable 
+{
+    public SqlRepository(string connStr) : base(connStr) { }
+
+    public override void Connect() 
+    {
+        Console.WriteLine("Connecting to SQL database with: " + ConnectionString);
+    }
+
+    public void LogMessage(string message) 
+    {
+        Console.WriteLine("SQL LOG: " + message);
+    }
+}
+
+public class AbstractionExample
+{
+    public void Run()
+    {
+        var repo = new SqlRepository("Server=myServer;Database=myDataBase;");
+        repo.Connect();
+        repo.LogMessage("User logged in.");
+        repo.Disconnect();
+    }
+}`
+                },
+                {
+                    id: 'extensionmethods',
+                    name: 'Extension Methods',
+                    title: 'Extension Methods',
+                    description: 'Extension methods enable you to \'add\' methods to existing types without creating a new derived type, recompiling, or otherwise modifying the original type. They are a special kind of static method, but they are called as if they were instance methods on the extended type. LINQ is a heavy user of extension methods on `IEnumerable<T>`.',
+                    code: `// The containing class must be static.
+public static class StringExtensions 
+{
+    // The first parameter specifies the type the method operates on,
+    // and is preceded by the 'this' modifier.
+    public static int WordCount(this string str) 
+    {
+        if (string.IsNullOrWhiteSpace(str)) 
+        {
+            return 0;
+        }
+        return str.Split(new char[] { ' ', '.', '?', '!' }, StringSplitOptions.RemoveEmptyEntries).Length;
+    }
+}
+
+public class ExtensionMethodDemo 
+{
+    public void Run() 
+    {
+        string mySentence = "Hello world, this is a test!";
+        // We can now call WordCount as if it were a built-in string method!
+        int count = mySentence.WordCount();
+        Console.WriteLine("The sentence has " + count + " words."); // Output: 7
+    }
+}`
+                }
+            ];
+
+            const trickyProblemsData = [
+                {
+                    id: 'palindrome',
+                    title: 'Check for Palindrome',
+                    problem: 'Write an efficient C# method that checks if a given string is a palindrome, ignoring case and non-alphanumeric characters. For example, "A man, a plan, a canal: Panama" should return true.',
+                    solution: `This problem tests string manipulation and algorithmic thinking. The most efficient approach avoids creating new strings. We can use two pointers, one at the start and one at the end, moving towards the center. We skip any non-alphanumeric characters and compare the valid characters in a case-insensitive way.`,
+                    code: `public bool IsPalindrome(string s) 
+{
+    int left = 0, right = s.Length - 1;
+    while (left < right) 
+    {
+        if (!char.IsLetterOrDigit(s[left])) 
+        {
+            left++;
+        } 
+        else if (!char.IsLetterOrDigit(s[right])) 
+        {
+            right--;
+        } 
+        else 
+        {
+            if (char.ToLower(s[left]) != char.ToLower(s[right])) 
+            {
+                return false;
+            }
+            left++;
+            right--;
+        }
+    }
+    return true;
+}`
+                },
+                {
+                    id: 'fizzbuzz',
+                    title: 'FizzBuzz with a Twist',
+                    problem: 'Write a C# method that prints numbers from 1 to 100. But for multiples of three, print "Fizz" instead of the number, for multiples of five, print "Buzz". For numbers which are multiples of both three and five, print "FizzBuzz". How would you write this to be easily extensible for new rules (e.g., multiple of 7 is "Bazz")?',
+                    solution: `The classic FizzBuzz tests basic conditional logic. The "extensible" twist pushes for a better design. Instead of a long if-else-if chain, we can use a loop that builds the output string. This allows us to add new rules without modifying the existing logic, adhering to the Open/Closed Principle.`,
+                    code: `public void ExtensibleFizzBuzz() 
+{
+    var rules = new Dictionary<int, string> 
+    {
+        { 3, "Fizz" },
+        { 5, "Buzz" },
+        // { 7, "Bazz" } // Easily add new rules here
+    };
+
+    for (int i = 1; i <= 100; i++) 
+    {
+        string output = "";
+        foreach (var rule in rules.OrderBy(r => r.Key)) 
+        {
+            if (i % rule.Key == 0) 
+            {
+                output += rule.Value;
+            }
+        }
+
+        if (string.IsNullOrEmpty(output)) 
+        {
+            Console.WriteLine(i);
+        } 
+        else 
+        {
+            Console.WriteLine(output);
+        }
+    }
+}`
+                },
+                 {
+                    id: 'singleton',
+                    title: 'Implement a Thread-Safe Singleton',
+                    problem: 'Implement the Singleton design pattern in C#. Your implementation must be thread-safe to ensure that only one instance of the class is ever created, even in a multi-threaded environment.',
+                    solution: 'A common interview question. A naive implementation is not thread-safe. The standard solution involves using a private constructor, a static private instance variable, and a public static property to get the instance. Thread safety is achieved using a lock object and double-check locking to ensure high performance.',
+                    code: `public sealed class Singleton
+{
+    private static Singleton _instance = null;
+    private static readonly object _padlock = new object();
+
+    private Singleton()
+    {
+        // Private constructor prevents direct instantiation.
+    }
+
+    public static Singleton Instance
+    {
+        get
+        {
+            // Double-check locking for thread safety and performance.
+            if (_instance == null)
+            {
+                lock (_padlock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new Singleton();
+                    }
+                }
+            }
+            return _instance;
+        }
+    }
+}`
+                }
+            ];
+
+            const tabs = [
+                { btn: document.getElementById('tab-review'), content: document.getElementById('content-review') },
+                { btn: document.getElementById('tab-problems'), content: document.getElementById('content-problems') },
+                { btn: document.getElementById('tab-research'), content: document.getElementById('content-research') },
+            ];
+            
+            const topicsContainer = document.getElementById('topics-container');
+            const topicDetailsContainer = document.getElementById('topic-details-container');
+            const problemsContainer = document.getElementById('problems-container');
+
+            let activeTopicBtn = null;
+
+            function switchTab(targetBtn) {
+                tabs.forEach(tab => {
+                    if (tab.btn === targetBtn) {
+                        tab.btn.classList.add('active');
+                        tab.content.classList.remove('hidden');
+                    } else {
+                        tab.btn.classList.remove('active');
+                        tab.content.classList.add('hidden');
+                    }
+                });
+            }
+
+            tabs.forEach(tab => {
+                tab.btn.addEventListener('click', () => switchTab(tab.btn));
+            });
+            
+            function syntaxHighlight(code) {
+                return code.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                    .replace(/\b(public|class|void|async|Task|string|int|decimal|var|new|get|set|where|orderby|descending|foreach|in|delegate|event|protected|virtual|if|else|return|try|catch|finally|using|static|readonly|sealed|lock|this|base|override|await)\b/g, '<span class="keyword">$&</span>')
+                    .replace(/\b(List|Product|Console|HttpClient|WorkPerformedHandler|Worker|DataStore|IMessageService|EmailService|SmsService|NotificationService|Exception|StreamReader|FileNotFoundException|FormatException|File|ILoggable|DataRepository|SqlRepository|StringExtensions|Dictionary|Singleton|object)\b/g, '<span class="type">$&</span>')
+                    .replace(/\"(.*?)\"/g, '<span class="string">"$1"</span>')
+                    .replace(/\/\/(.*)/g, '<span class="comment">//$1</span>')
+                    .replace(/\b(Run|WriteLine|Where|OrderByDescending|Delay|DoWork|OnWorkPerformed|Invoke|Add|GetItem|SendMessage|Notify|ProcessFile|WriteAllText|Connect|LogMessage|Disconnect|WordCount|Split|IsLetterOrDigit|ToLower|OrderBy|Main|Count)\b/g, '<span class="method">$&</span>');
+            }
+
+            function renderWeakAreas() {
+                // Filter out duplicate IDs before rendering
+                const uniqueTopics = weakAreasData.filter((topic, index, self) =>
+                    index === self.findIndex((t) => (
+                        t.id === topic.id
+                    ))
+                );
+
+                uniqueTopics.forEach(topic => {
+                    const button = document.createElement('button');
+                    button.className = 'topic-btn text-center p-3 bg-white shadow rounded-lg border border-gray-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500';
+                    button.textContent = topic.name;
+                    button.addEventListener('click', () => {
+                        if (activeTopicBtn) {
+                            activeTopicBtn.classList.remove('active');
+                        }
+                        button.classList.add('active');
+                        activeTopicBtn = button;
+                        
+                        topicDetailsContainer.innerHTML = `
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">${topic.title}</h3>
+                            <p class="text-gray-600 mb-4">${topic.description}</p>
+                            <pre class="code-block"><code>${syntaxHighlight(topic.code)}</code></pre>
+                        `;
+                    });
+                    topicsContainer.appendChild(button);
+                });
+            }
+            
+            function renderTrickyProblems() {
+                problemsContainer.innerHTML = '';
+                trickyProblemsData.forEach(problem => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-6 rounded-lg shadow-md';
+                    card.innerHTML = `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">${problem.title}</h3>
+                        <p class="text-gray-600 mb-4">${problem.problem}</p>
+                        <button class="show-solution-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            Show Solution
+                        </button>
+                        <div class="solution-content hidden mt-4 border-t pt-4">
+                           <p class="text-gray-600 mb-4">${problem.solution}</p>
+                           <pre class="code-block"><code>${syntaxHighlight(problem.code)}</code></pre>
+                        </div>
+                    `;
+                    problemsContainer.appendChild(card);
+                });
+
+                document.querySelectorAll('.show-solution-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const solution = btn.nextElementSibling;
+                        const isHidden = solution.classList.contains('hidden');
+                        solution.classList.toggle('hidden');
+                        btn.textContent = isHidden ? 'Hide Solution' : 'Show Solution';
+                    });
+                });
+            }
+
+            renderWeakAreas();
+            renderTrickyProblems();
+            switchTab(tabs[0].btn);
+
+        });
+  </script>
+ </body>
 </html>

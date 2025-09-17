@@ -1,23 +1,639 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 4: Dry Runs & Edge Cases</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-4">Day 4: Dry Runs & Edge Cases</h1>
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-2">Topic</h2>
-            <p class="mb-4">Dry Runs & Edge Cases</p>
-            <h2 class="text-2xl font-bold mb-2">Content</h2>
-            <p>Content for this day will be added here.</p>
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   C# Debugging & Edge Cases Guide
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .nav-link {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .nav-link.active {
+            color: #4a5568;
+            border-bottom-color: #4a5568;
+            font-weight: 600;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .solution {
+            display: none;
+        }
+        .accordion-content {
+            display: none;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+  </style>
+  <!-- Chosen Palette: Warm Neutrals -->
+  <!-- Application Structure Plan: A tab-based single-page application is used to present the content in a structured, digestible manner. The navigation allows users to switch between three core learning modules: 'Debugging Techniques', 'Handling Corner Cases', and 'Practice Problems'. This structure mirrors a logical learning progression from theory to practical application. The interactive elements, such as toggles for problem/solution views and accordions for practice questions, are designed to engage the user and reinforce learning by encouraging active participation rather than passive reading. -->
+  <!-- Visualization & Content Choices: The information is primarily textual and code-based. The presentation relies on structured HTML, Tailwind CSS, and icons for clarity. Goal: Explain Debugging -> Presentation: Side-by-side text and code blocks with icons -> Interaction: None, focus on readability. Goal: Compare good/bad practices for Corner Cases -> Presentation: Cards with code snippets -> Interaction: A toggle button to switch between the flawed and robust code, encouraging direct comparison. Goal: Test Knowledge with Practice Problems -> Presentation: Accordion layout -> Interaction: Click to expand a problem, then click a button to reveal the solution and explanation. This prevents spoilers and promotes critical thinking. No data charts are needed, so no charting libraries are used. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=1">
+    &larr; Return to Homepage
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     C# Debugging & Edge Cases Guide
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+   <div class="text-center mb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-800">
+     Day 4: Dry Runs & Edge Cases in C#
+    </h1>
+    <p class="text-lg text-gray-600 mt-2">
+     Mastering the art of robust and bug-free code.
+    </p>
+   </div>
+   <nav class="flex justify-center border-b-2 border-gray-200 mb-8">
+    <a class="nav-link active py-4 px-6 border-b-2 border-transparent text-gray-600 hover:text-gray-800" onclick="showSection('debugging')">
+     Debugging Techniques
+    </a>
+    <a class="nav-link py-4 px-6 border-b-2 border-transparent text-gray-600 hover:text-gray-800" onclick="showSection('corners')">
+     Handling Corner Cases
+    </a>
+    <a class="nav-link py-4 px-6 border-b-2 border-transparent text-gray-600 hover:text-gray-800" onclick="showSection('practice')">
+     Practice Problems
+    </a>
+   </nav>
+   <main>
+    <!-- Debugging Techniques Section -->
+    <section class="content-section active" id="debugging">
+     <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm">
+      <h2 class="text-3xl font-bold mb-4">
+       Debugging Techniques in C#
+      </h2>
+      <p class="text-gray-600 mb-8">
+       Debugging is the process of finding and fixing errors. While `Console.WriteLine()` is a start, Visual Studio's built-in debugger is far more powerful. It allows you to pause your program, inspect its state, and execute it line by line.
+      </p>
+      <div class="space-y-8">
+       <div>
+        <h3 class="text-2xl font-semibold mb-2 flex items-center">
+         <span class="text-xl mr-3">
+          🔴
+         </span>
+         Breakpoints
+        </h3>
+        <p class="mb-4">
+         A breakpoint pauses your program's execution right *before* a specific line of code is run. This allows you to "freeze" time and inspect the values of variables at that exact moment. To set one, simply click in the margin next to the line number in Visual Studio.
+        </p>
+       </div>
+       <div>
+        <h3 class="text-2xl font-semibold mb-2">
+         Stepping Through Code
+        </h3>
+        <p class="mb-4">
+         Once paused at a breakpoint, you can control the flow of execution:
+        </p>
+        <ul class="list-none space-y-3">
+         <li class="flex items-start">
+          <strong class="font-mono bg-gray-200 text-gray-700 py-1 px-2 rounded-md mr-4 w-32 text-center">
+           F10 (Step Over)
+          </strong>
+          Executes the current line. If it's a method call, it runs the entire method without showing you the internal steps.
+         </li>
+         <li class="flex items-start">
+          <strong class="font-mono bg-gray-200 text-gray-700 py-1 px-2 rounded-md mr-4 w-32 text-center">
+           F11 (Step Into)
+          </strong>
+          Executes the current line. If it's a method call, the debugger jumps *inside* that method, allowing you to debug it.
+         </li>
+         <li class="flex items-start">
+          <strong class="font-mono bg-gray-200 text-gray-700 py-1 px-2 rounded-md mr-4 w-32 text-center">
+           Shift+F11 (Step Out)
+          </strong>
+          Finishes executing the current method and returns to the line where it was called.
+         </li>
+        </ul>
+       </div>
+       <div>
+        <h3 class="text-2xl font-semibold mb-2">
+         Inspecting Variables
+        </h3>
+        <p class="mb-4">
+         While paused, you can easily check variable values. Hover your mouse over any variable to see its current value. For more detail, use the 'Locals', 'Autos', and 'Watch' windows at the bottom of Visual Studio, which provide a live view of your application's state.
+        </p>
+       </div>
+      </div>
+     </div>
+    </section>
+    <!-- Handling Corner Cases Section -->
+    <section class="content-section" id="corners">
+     <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm">
+      <h2 class="text-3xl font-bold mb-4">
+       Handling Corner Cases
+      </h2>
+      <p class="text-gray-600 mb-8">
+       Edge cases are inputs at the extremes of the valid range (e.g., zero, null, empty, min/max values). Failing to consider them is a top source of bugs. Robust code anticipates and handles these scenarios gracefully.
+      </p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+       <!-- Empty Arrays -->
+       <div class="border border-gray-200 rounded-lg p-6">
+        <h3 class="text-2xl font-semibold mb-2">
+         Empty/Null Arrays
+        </h3>
+        <p class="mb-4 text-gray-600">
+         A function that processes a collection should never assume it contains items. It might be empty or even `null`.
+        </p>
+        <div class="code-container">
+         <p class="font-semibold text-red-600 mb-2">
+          Problem: Unsafe Code
+         </p>
+         <div class="code-block">
+          public double CalculateAverage(int[] numbers)
+{
+    // Throws NullReferenceException if numbers is null.
+    // Throws DivideByZeroException if numbers is empty.
+    return numbers.Sum() / (double)numbers.Length;
+}
+         </div>
         </div>
-        <div class="mt-8">
-            <a href="30_days_progress.html" class="text-blue-500 hover:underline">Back to Roadmap</a>
+        <div class="solution code-container mt-4">
+         <p class="font-semibold text-green-600 mb-2">
+          Solution: Robust Code
+         </p>
+         <div class="code-block">
+          public double CalculateAverage(int[] numbers)
+{
+    if (numbers == null || numbers.Length == 0)
+    {
+        return 0; // Return a safe default value.
+    }
+    return numbers.Sum() / (double)numbers.Length;
+}
+         </div>
         </div>
-    </div>
-</body>
+        <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-md hover:bg-gray-800 transition" onclick="toggleSolution(this)">
+         Show Solution
+        </button>
+       </div>
+       <!-- Large Numbers -->
+       <div class="border border-gray-200 rounded-lg p-6">
+        <h3 class="text-2xl font-semibold mb-2">
+         Large Numbers & Overflow
+        </h3>
+        <p class="mb-4 text-gray-600">
+         Calculations involving large numbers can exceed the maximum value for a data type (like `int`), causing an overflow where the value wraps around unexpectedly.
+        </p>
+        <div class="code-container">
+         <p class="font-semibold text-red-600 mb-2">
+          Problem: Integer Overflow
+         </p>
+         <div class="code-block">
+          public int AddLargeNumbers(int a, int b)
+{
+    // If a = 2_000_000_000 and b = 2_000_000_000,
+    // the result will be incorrect due to overflow.
+    return a + b;
+}
+         </div>
+        </div>
+        <div class="solution code-container mt-4">
+         <p class="font-semibold text-green-600 mb-2">
+          Solution: Use Larger Type
+         </p>
+         <div class="code-block">
+          public long AddLargeNumbers(int a, int b)
+{
+    // Use 'long' for the calculation and return type
+    // to accommodate a much larger result.
+    return (long)a + b;
+}
+         </div>
+        </div>
+        <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-md hover:bg-gray-800 transition" onclick="toggleSolution(this)">
+         Show Solution
+        </button>
+       </div>
+       <!-- Negative Numbers -->
+       <div class="border border-gray-200 rounded-lg p-6">
+        <h3 class="text-2xl font-semibold mb-2">
+         Negative Numbers
+        </h3>
+        <p class="mb-4 text-gray-600">
+         Functions expecting positive inputs (like for array indices or factorials) can fail if they receive a negative number.
+        </p>
+        <div class="code-container">
+         <p class="font-semibold text-red-600 mb-2">
+          Problem: Invalid Input
+         </p>
+         <div class="code-block">
+          public int GetNthElement(int[] array, int n)
+{
+    // If n is -1, this will throw an
+    // IndexOutOfRangeException.
+    return array[n];
+}
+         </div>
+        </div>
+        <div class="solution code-container mt-4">
+         <p class="font-semibold text-green-600 mb-2">
+          Solution: Input Validation
+         </p>
+         <div class="code-block">
+          public int GetNthElement(int[] array, int n)
+{
+    // Validate the input before using it.
+    if (n &lt; 0 || n &gt;= array.Length)
+    {
+        throw new ArgumentOutOfRangeException(nameof(n));
+    }
+    return array[n];
+}
+         </div>
+        </div>
+        <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-md hover:bg-gray-800 transition" onclick="toggleSolution(this)">
+         Show Solution
+        </button>
+       </div>
+      </div>
+     </div>
+    </section>
+    <!-- Practice Problems Section -->
+    <section class="content-section" id="practice">
+     <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm">
+      <h2 class="text-3xl font-bold mb-4">
+       Edge Case Practice Problems
+      </h2>
+      <p class="text-gray-600 mb-8">
+       Test your knowledge. For each problem, consider the potential edge cases and think about how you would make the code robust before revealing the solution.
+      </p>
+      <div class="space-y-4" id="accordion-container">
+       <!-- Problem 1 -->
+       <div class="border border-gray-200 rounded-lg">
+        <button class="accordion-header w-full text-left p-4 font-semibold text-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition">
+         1. Find Maximum Value in an Array
+         <span class="accordion-icon transform rotate-0 transition-transform">
+          +
+         </span>
+        </button>
+        <div class="accordion-content p-4 border-t border-gray-200">
+         <p class="mb-4">
+          This function is supposed to find the largest integer in an array. What could go wrong?
+         </p>
+         <div class="code-block mb-4">
+          public int FindMax(int[] numbers)
+{
+    int max = numbers[0];
+    for (int i = 1; i &lt; numbers.Length; i++)
+    {
+        if (numbers[i] &gt; max)
+        {
+            max = numbers[i];
+        }
+    }
+    return max;
+}
+         </div>
+         <div class="solution bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-bold text-lg mb-2">
+           Edge Cases & Solution
+          </h4>
+          <ul class="list-disc list-inside mb-4 space-y-1">
+           <li>
+            <strong>
+             Empty Array:
+            </strong>
+            The original code throws an `IndexOutOfRangeException`.
+           </li>
+           <li>
+            <strong>
+             Null Array:
+            </strong>
+            The original code throws a `NullReferenceException`.
+           </li>
+          </ul>
+          <p class="mb-4">
+           The solution is to check for these cases first and throw a meaningful exception.
+          </p>
+          <div class="code-block">
+           public int FindMax(int[] numbers)
+{
+    if (numbers == null || numbers.Length == 0)
+    {
+        throw new ArgumentException("Input array cannot be null or empty.");
+    }
+
+    int max = numbers[0];
+    for (int i = 1; i &lt; numbers.Length; i++)
+    {
+        if (numbers[i] &gt; max)
+        {
+            max = numbers[i];
+        }
+    }
+    return max;
+}
+          </div>
+         </div>
+         <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-md hover:bg-gray-800 transition" onclick="toggleSolution(this)">
+          Reveal Solution
+         </button>
+        </div>
+       </div>
+       <!-- Problem 2 -->
+       <div class="border border-gray-200 rounded-lg">
+        <button class="accordion-header w-full text-left p-4 font-semibold text-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition">
+         2. Calculate Factorial
+         <span class="accordion-icon transform rotate-0 transition-transform">
+          +
+         </span>
+        </button>
+        <div class="accordion-content p-4 border-t border-gray-200">
+         <p class="mb-4">
+          This function calculates the factorial of a number (n!). What are the hidden dangers?
+         </p>
+         <div class="code-block mb-4">
+          public int Factorial(int n)
+{
+    if (n == 0) return 1;
+    return n * Factorial(n - 1);
+}
+         </div>
+         <div class="solution bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-bold text-lg mb-2">
+           Edge Cases & Solution
+          </h4>
+          <ul class="list-disc list-inside mb-4 space-y-1">
+           <li>
+            <strong>
+             Negative Input:
+            </strong>
+            The recursion will never end, causing a `StackOverflowException`.
+           </li>
+           <li>
+            <strong>
+             Large Input:
+            </strong>
+            Factorials grow very fast. `13!` already exceeds the max value of an `int`, causing an overflow.
+           </li>
+          </ul>
+          <p class="mb-4">
+           The solution validates the input and uses a `long` to handle larger results, preventing overflow for a wider range of inputs.
+          </p>
+          <div class="code-block">
+           public long Factorial(int n)
+{
+    if (n &lt; 0)
+    {
+        throw new ArgumentException("Factorial is not defined for negative numbers.");
+    }
+    if (n &gt; 20) // Factorial of 21 overflows even a long
+    {
+        throw new ArgumentException("Input too large for a long.");
+    }
+
+    if (n == 0) return 1;
+
+    long result = 1;
+    for (int i = 1; i &lt;= n; i++)
+    {
+        result *= i;
+    }
+    return result;
+}
+          </div>
+         </div>
+         <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-md hover:bg-gray-800 transition" onclick="toggleSolution(this)">
+          Reveal Solution
+         </button>
+        </div>
+       </div>
+       <!-- Problem 3 -->
+       <div class="border border-gray-200 rounded-lg">
+        <button class="accordion-header w-full text-left p-4 font-semibold text-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition">
+         3. Get First Character of a String
+         <span class="accordion-icon transform rotate-0 transition-transform">
+          +
+         </span>
+        </button>
+        <div class="accordion-content p-4 border-t border-gray-200">
+         <p class="mb-4">
+          A simple function to get the first character. What could possibly fail?
+         </p>
+         <div class="code-block mb-4">
+          public char GetFirstChar(string text)
+{
+    return text[0];
+}
+         </div>
+         <div class="solution bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-bold text-lg mb-2">
+           Edge Cases & Solution
+          </h4>
+          <ul class="list-disc list-inside mb-4 space-y-1">
+           <li>
+            <strong>
+             Null String:
+            </strong>
+            Accessing `text[0]` will throw a `NullReferenceException`.
+           </li>
+           <li>
+            <strong>
+             Empty String:
+            </strong>
+            Accessing `text[0]` on an empty string will throw an `IndexOutOfRangeException`.
+           </li>
+          </ul>
+          <p class="mb-4">
+           A robust solution checks for these conditions using `string.IsNullOrEmpty` before attempting to access the character.
+          </p>
+          <div class="code-block">
+           public char GetFirstChar(string text)
+{
+    if (string.IsNullOrEmpty(text))
+    {
+        throw new ArgumentException("Input string cannot be null or empty.");
+    }
+    return text[0];
+}
+          </div>
+         </div>
+         <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-md hover:bg-gray-800 transition" onclick="toggleSolution(this)">
+          Reveal Solution
+         </button>
+        </div>
+       </div>
+       <!-- Problem 4 -->
+       <div class="border border-gray-200 rounded-lg">
+        <button class="accordion-header w-full text-left p-4 font-semibold text-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition">
+         4. Divide Two Numbers
+         <span class="accordion-icon transform rotate-0 transition-transform">
+          +
+         </span>
+        </button>
+        <div class="accordion-content p-4 border-t border-gray-200">
+         <p class="mb-4">
+          This function performs simple division. What's the most famous edge case in division?
+         </p>
+         <div class="code-block mb-4">
+          public int Divide(int numerator, int denominator)
+{
+    return numerator / denominator;
+}
+         </div>
+         <div class="solution bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-bold text-lg mb-2">
+           Edge Cases & Solution
+          </h4>
+          <ul class="list-disc list-inside mb-4 space-y-1">
+           <li>
+            <strong>
+             Division by Zero:
+            </strong>
+            If `denominator` is 0, the code will throw a `DivideByZeroException`.
+           </li>
+          </ul>
+          <p class="mb-4">
+           The corrected code explicitly checks for a zero denominator to provide a more controlled error or response.
+          </p>
+          <div class="code-block">
+           public int Divide(int numerator, int denominator)
+{
+    if (denominator == 0)
+    {
+        throw new ArgumentException("Denominator cannot be zero.");
+    }
+    return numerator / denominator;
+}
+          </div>
+         </div>
+         <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-md hover:bg-gray-800 transition" onclick="toggleSolution(this)">
+          Reveal Solution
+         </button>
+        </div>
+       </div>
+       <!-- Problem 5 -->
+       <div class="border border-gray-200 rounded-lg">
+        <button class="accordion-header w-full text-left p-4 font-semibold text-lg bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition">
+         5. Process User from Database
+         <span class="accordion-icon transform rotate-0 transition-transform">
+          +
+         </span>
+        </button>
+        <div class="accordion-content p-4 border-t border-gray-200">
+         <p class="mb-4">
+          Imagine `GetUser` returns a user object from a database, or `null` if not found. How can this code fail?
+         </p>
+         <div class="code-block mb-4">
+          public class User { public string Name { get; set; } }
+
+public string GetUserName(int userId)
+{
+    User user = GetUser(userId); // This might return null
+    return user.Name;
+}
+
+// Assume this method exists and might return null
+private User GetUser(int id) { /* ... database logic ... */ return null; }
+         </div>
+         <div class="solution bg-gray-50 p-4 rounded-lg">
+          <h4 class="font-bold text-lg mb-2">
+           Edge Cases & Solution
+          </h4>
+          <ul class="list-disc list-inside mb-4 space-y-1">
+           <li>
+            <strong>
+             Null Reference:
+            </strong>
+            If `GetUser` returns `null` because the user doesn't exist, calling `user.Name` will throw a `NullReferenceException`.
+           </li>
+          </ul>
+          <p class="mb-4">
+           Always check for `null` after a database or API call that might not find a result.
+          </p>
+          <div class="code-block">
+           public class User { public string Name { get; set; } }
+
+public string GetUserName(int userId)
+{
+    User user = GetUser(userId);
+    if (user == null)
+    {
+        return "User not found";
+    }
+    return user.Name;
+}
+
+private User GetUser(int id) { return null; }
+          </div>
+         </div>
+         <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-md hover:bg-gray-800 transition" onclick="toggleSolution(this)">
+          Reveal Solution
+         </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
+        }
+
+        function toggleSolution(button) {
+            const container = button.parentElement;
+            const solution = container.querySelector('.solution');
+            const isVisible = solution.style.display === 'block';
+            solution.style.display = isVisible ? 'none' : 'block';
+            button.textContent = isVisible ? 'Reveal Solution' : 'Hide Solution';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.accordion-icon');
+
+                    const isOpen = content.style.display === 'block';
+
+                    if (isOpen) {
+                        content.style.display = 'none';
+                        icon.classList.remove('rotate-45');
+                    } else {
+                        content.style.display = 'block';
+                        icon.classList.add('rotate-45');
+                    }
+                });
+            });
+        });
+  </script>
+ </body>
 </html>

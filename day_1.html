@@ -1,23 +1,517 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 1: Introduction to Problem Solving</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-4">Day 1: Introduction to Problem Solving</h1>
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-2">Topic</h2>
-            <p class="mb-4">Introduction to Problem Solving</p>
-            <h2 class="text-2xl font-bold mb-2">Content</h2>
-            <p>Content for this day will be added here.</p>
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 1: Introduction to Problem Solving
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   .tab-active {
+            background-color: #A8A29E;
+            color: #FFFFFF;
+            border-color: #A8A29E;
+        }
+        .tab-inactive {
+            background-color: #E7E5E4;
+            color: #57534E;
+        }
+        .btn-primary {
+            background-color: #57534E;
+            color: #FFFFFF;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #44403C;
+        }
+        .btn-secondary-active {
+            background-color: #A8A29E;
+            color: white;
+        }
+        .btn-secondary-inactive {
+            background-color: #D6D3D1;
+            color: #333;
+        }
+  </style>
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=1">
+    &larr; Return to Homepage
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 1: Introduction to Problem Solving
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto px-4 py-8 md:py-12 max-w-5xl">
+   <main>
+    <section class="mb-12 bg-stone-100 p-6 rounded-lg shadow" id="introduction">
+     <h2 class="text-2xl font-bold text-stone-800 mb-3">
+      Welcome to Day 1!
+     </h2>
+     <p class="text-stone-600 leading-relaxed">
+      Today's goal is to build a solid foundation for tackling programming challenges. We will learn how to dissect a problem, understand its components, and differentiate between a straightforward (brute force) solution and a more efficient (optimized) one. This interactive guide will walk you through the concepts and let you experiment with code.
+     </p>
+    </section>
+    <section class="mb-12" id="core-concepts">
+     <h2 class="text-3xl font-bold text-stone-700 text-center mb-6">
+      Core Concepts
+     </h2>
+     <div class="w-full max-w-2xl mx-auto">
+      <div class="flex border-b border-stone-300 mb-4">
+       <button class="flex-1 py-2 px-4 text-center font-semibold rounded-t-md transition-colors duration-300" id="tab-btn-1">
+        1. Understanding the Problem
+       </button>
+       <button class="flex-1 py-2 px-4 text-center font-semibold rounded-t-md transition-colors duration-300" id="tab-btn-2">
+        2. Solution Approaches
+       </button>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md" id="tab-content-1">
+       <h3 class="text-xl font-semibold text-stone-800 mb-4">
+        Dissecting a Problem Statement
+       </h3>
+       <p class="mb-4 text-stone-600">
+        Before writing any code, you must fully understand what's being asked. Break it down into three key parts:
+       </p>
+       <ul class="space-y-3">
+        <li class="flex items-start">
+         <span class="text-emerald-600 font-bold mr-3 mt-1">
+          &checkmark;
+         </span>
+         <div>
+          <strong class="text-stone-700">
+           Inputs:
+          </strong>
+          What data is your function receiving? Know its type (e.g., integer array, string), format, and potential size.
+         </div>
+        </li>
+        <li class="flex items-start">
+         <span class="text-emerald-600 font-bold mr-3 mt-1">
+          &checkmark;
+         </span>
+         <div>
+          <strong class="text-stone-700">
+           Outputs:
+          </strong>
+          What should your function return? Understand its type and format.
+         </div>
+        </li>
+        <li class="flex items-start">
+         <span class="text-emerald-600 font-bold mr-3 mt-1">
+          &checkmark;
+         </span>
+         <div>
+          <strong class="text-stone-700">
+           Constraints:
+          </strong>
+          What are the limitations? These are critical clues. Examples include the range of input values (e.g., `1 &lt;= n &lt;= 1000`), time limits (e.g., "must run in under 1 second"), or memory limits. Constraints often tell you if a simple solution is too slow.
+         </div>
+        </li>
+       </ul>
+      </div>
+      <div class="hidden bg-white p-6 rounded-lg shadow-md" id="tab-content-2">
+       <h3 class="text-xl font-semibold text-stone-800 mb-4">
+        Brute Force vs. Optimized
+       </h3>
+       <p class="mb-4 text-stone-600">
+        For most problems, you can devise multiple solutions. They often fall into two categories:
+       </p>
+       <div class="grid md:grid-cols-2 gap-6">
+        <div class="border border-stone-200 p-4 rounded-md">
+         <h4 class="font-bold text-lg text-stone-700">
+          Brute Force
+         </h4>
+         <p class="text-stone-600 mt-2">
+          This is the most direct, straightforward approach. It often involves simple loops or checking every possibility. It's a great starting point to ensure you understand the problem, but it might be too slow for large inputs.
+         </p>
         </div>
-        <div class="mt-8">
-            <a href="30_days_progress.html" class="text-blue-500 hover:underline">Back to Roadmap</a>
+        <div class="border border-stone-200 p-4 rounded-md">
+         <h4 class="font-bold text-lg text-stone-700">
+          Optimized
+         </h4>
+         <p class="text-stone-600 mt-2">
+          This is a more clever solution that solves the problem more efficiently (faster or using less memory). It often requires knowledge of specific algorithms or data structures to avoid unnecessary work. The goal is to find an optimized solution that passes within the given constraints.
+         </p>
         </div>
-    </div>
-</body>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section id="interactive-practice">
+     <h2 class="text-3xl font-bold text-stone-700 text-center mb-2">
+      Interactive Practice Problems
+     </h2>
+     <p class="text-center text-stone-500 mb-8">
+      Select a problem, provide your input, and see how different approaches work.
+     </p>
+     <div class="bg-stone-50 p-6 rounded-xl shadow-lg">
+      <div class="flex flex-wrap justify-center gap-3 mb-6" id="problem-selector">
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6">
+       <div>
+        <h3 class="text-2xl font-bold text-stone-800 mb-2" id="problem-title">
+        </h3>
+        <p class="text-stone-600 mb-4" id="problem-description">
+        </p>
+        <div class="mb-4">
+         <label class="block font-semibold mb-2 text-stone-700" for="array-input">
+          Input Array (comma-separated):
+         </label>
+         <input class="w-full p-2 border border-stone-300 rounded-md font-code focus:ring-2 focus:ring-stone-400 focus:border-stone-400" id="array-input" placeholder="e.g., 5, 1, 9, 3, 7" type="text">
+         <button class="btn-primary w-full mt-3 py-2 px-4 rounded-md font-semibold" id="run-btn">
+          Run Code
+         </button>
+        </div>
+        <div>
+         <h4 class="font-semibold mb-2 text-stone-700">
+          Output:
+         </h4>
+         <div class="w-full p-3 min-h-[50px] bg-white border border-stone-200 rounded-md font-code text-stone-800" id="output-display">
+         </div>
+        </div>
+       </div>
+       <div>
+        <div class="flex mb-3 rounded-md overflow-hidden border border-stone-300">
+         <button class="flex-1 py-2 px-4 font-semibold transition-colors duration-300" id="code-toggle-brute">
+          Brute Force
+         </button>
+         <button class="flex-1 py-2 px-4 font-semibold transition-colors duration-300" id="code-toggle-optimized">
+          Optimized
+         </button>
+        </div>
+        <div class="code-block font-code text-sm" id="code-display">
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+            const problems = [
+                {
+                    id: 'sum-array',
+                    title: 'Sum of an Array',
+                    description: 'Given an array of integers, calculate and return the sum of all its elements.',
+                    defaultInput: '10, 20, 30, 40',
+                    csharp_brute: `public class Solution
+{
+    public int SumArray(int[] nums)
+    {
+        int sum = 0;
+        // Iterate through each number in the array
+        foreach (int num in nums)
+        {
+            sum += num;
+        }
+        return sum;
+    }
+}`,
+                    csharp_optimized: `using System.Linq;
+
+public class Solution
+{
+    // C#'s built-in Linq library provides a highly
+    // optimized Sum() method. Under the hood, it's
+    // still a loop, but it's concise and readable.
+    public int SumArray(int[] nums)
+    {
+        return nums.Sum();
+    }
+}`,
+                    js_brute: (arr) => arr.reduce((acc, val) => acc + val, 0),
+                    js_optimized: (arr) => arr.reduce((acc, val) => acc + val, 0),
+                },
+                {
+                    id: 'find-max-min',
+                    title: 'Find Max/Min in Array',
+                    description: 'Given an array of integers, find the maximum and minimum values in the array. Return them as a pair.',
+                    defaultInput: '5, 1, 9, 3, 7, -2',
+                    csharp_brute: `public class Solution
+{
+    public (int, int) FindMaxMin(int[] nums)
+    {
+        if (nums == null || nums.Length == 0)
+            return (0, 0);
+
+        int min = nums[0];
+        int max = nums[0];
+
+        // Iterate through the array to find the max
+        foreach (int num in nums)
+        {
+            if (num > max)
+            {
+                max = num;
+            }
+        }
+
+        // Iterate AGAIN to find the min
+        foreach (int num in nums)
+        {
+            if (num < min)
+            {
+                min = num;
+            }
+        }
+        return (min, max);
+    }
+}`,
+                    csharp_optimized: `public class Solution
+{
+    public (int, int) FindMaxMin(int[] nums)
+    {
+        if (nums == null || nums.Length == 0)
+            return (0, 0);
+
+        int min = nums[0];
+        int max = nums[0];
+
+        // Single pass through the array
+        foreach (int num in nums)
+        {
+            if (num > max)
+            {
+                max = num;
+            }
+            else if (num < min)
+            {
+                min = num;
+            }
+        }
+        return (min, max);
+    }
+}`,
+                    js_brute: (arr) => {
+                        if (!arr.length) return '(0, 0)';
+                        const max = Math.max(...arr);
+                        const min = Math.min(...arr);
+                        return `(min: ${min}, max: ${max})`;
+                    },
+                    js_optimized: (arr) => {
+                         if (!arr.length) return '(0, 0)';
+                        let min = arr[0];
+                        let max = arr[0];
+                        for(let i = 1; i < arr.length; i++) {
+                            if(arr[i] > max) max = arr[i];
+                            else if(arr[i] < min) min = arr[i];
+                        }
+                        return `(min: ${min}, max: ${max})`;
+                    },
+                },
+                {
+                    id: 'reverse-array',
+                    title: 'Reverse an Array',
+                    description: 'Given an array, reverse its elements in-place without creating a new array.',
+                    defaultInput: '1, 2, 3, 4, 5',
+                    csharp_brute: `public class Solution
+{
+    public int[] ReverseArray(int[] nums)
+    {
+        // Creates a new array, so not "in-place"
+        int[] reversed = new int[nums.Length];
+        for (int i = 0; i < nums.Length; i++)
+        {
+            reversed[i] = nums[nums.Length - 1 - i];
+        }
+        return reversed;
+    }
+}`,
+                    csharp_optimized: `public class Solution
+{
+    public void ReverseArrayInPlace(int[] nums)
+    {
+        int left = 0;
+        int right = nums.Length - 1;
+
+        while (left < right)
+        {
+            // Swap elements using a temporary variable
+            int temp = nums[left];
+            nums[left] = nums[right];
+            nums[right] = temp;
+
+            left++;
+            right--;
+        }
+    }
+}`,
+                    js_brute: (arr) => arr.slice().reverse(),
+                    js_optimized: (arr) => {
+                        let left = 0;
+                        let right = arr.length - 1;
+                        while(left < right) {
+                            [arr[left], arr[right]] = [arr[right], arr[left]];
+                            left++;
+                            right--;
+                        }
+                        return arr;
+                    },
+                }
+            ];
+
+            let activeProblemId = problems[0].id;
+            let activeCodeView = 'brute';
+
+            const tabBtn1 = document.getElementById('tab-btn-1');
+            const tabBtn2 = document.getElementById('tab-btn-2');
+            const tabContent1 = document.getElementById('tab-content-1');
+            const tabContent2 = document.getElementById('tab-content-2');
+
+            const problemSelector = document.getElementById('problem-selector');
+            const problemTitle = document.getElementById('problem-title');
+            const problemDescription = document.getElementById('problem-description');
+            const arrayInput = document.getElementById('array-input');
+            const runBtn = document.getElementById('run-btn');
+            const outputDisplay = document.getElementById('output-display');
+            const codeDisplay = document.getElementById('code-display');
+            const codeToggleBrute = document.getElementById('code-toggle-brute');
+            const codeToggleOptimized = document.getElementById('code-toggle-optimized');
+
+            function setActiveTab(tab) {
+                if (tab === 1) {
+                    tabBtn1.classList.add('tab-active');
+                    tabBtn1.classList.remove('tab-inactive');
+                    tabBtn2.classList.add('tab-inactive');
+                    tabBtn2.classList.remove('tab-active');
+                    tabContent1.classList.remove('hidden');
+                    tabContent2.classList.add('hidden');
+                } else {
+                    tabBtn2.classList.add('tab-active');
+                    tabBtn2.classList.remove('tab-inactive');
+                    tabBtn1.classList.add('tab-inactive');
+                    tabBtn1.classList.remove('tab-active');
+                    tabContent2.classList.remove('hidden');
+                    tabContent1.classList.add('hidden');
+                }
+            }
+
+            function renderProblem() {
+                const problem = problems.find(p => p.id === activeProblemId);
+                if (!problem) return;
+
+                problemTitle.textContent = problem.title;
+                problemDescription.textContent = problem.description;
+                arrayInput.value = problem.defaultInput;
+                outputDisplay.textContent = '';
+
+                document.querySelectorAll('.problem-btn').forEach(btn => {
+                    btn.classList.toggle('btn-primary', btn.dataset.id === activeProblemId);
+                    btn.classList.toggle('bg-stone-200', btn.dataset.id !== activeProblemId);
+                    btn.classList.toggle('text-white', btn.dataset.id === activeProblemId);
+                    btn.classList.toggle('text-stone-700', btn.dataset.id !== activeProblemId);
+                });
+
+                renderCode();
+            }
+
+            function renderCode() {
+                const problem = problems.find(p => p.id === activeProblemId);
+                if (!problem) return;
+
+                if (activeCodeView === 'brute') {
+                    codeDisplay.textContent = problem.csharp_brute;
+                    codeToggleBrute.classList.add('btn-secondary-active');
+                    codeToggleBrute.classList.remove('btn-secondary-inactive');
+                    codeToggleOptimized.classList.add('btn-secondary-inactive');
+                    codeToggleOptimized.classList.remove('btn-secondary-active');
+                } else {
+                    codeDisplay.textContent = problem.csharp_optimized;
+                    codeToggleOptimized.classList.add('btn-secondary-active');
+                    codeToggleOptimized.classList.remove('btn-secondary-inactive');
+                    codeToggleBrute.classList.add('btn-secondary-inactive');
+                    codeToggleBrute.classList.remove('btn-secondary-active');
+                }
+            }
+
+            function runCode() {
+                const problem = problems.find(p => p.id === activeProblemId);
+                const rawInput = arrayInput.value.trim();
+
+                if (!problem || !rawInput) {
+                    outputDisplay.textContent = 'Please provide an input.';
+                    outputDisplay.classList.add('text-red-500');
+                    return;
+                }
+
+                outputDisplay.classList.remove('text-red-500');
+
+                try {
+                    const inputArray = rawInput.split(',').map(s => {
+                        const num = Number(s.trim());
+                        if (isNaN(num)) throw new Error('Invalid number in input.');
+                        return num;
+                    });
+
+                    let result;
+                    if (activeCodeView === 'brute') {
+                        result = problem.js_brute(inputArray);
+                    } else {
+                        result = problem.js_optimized(inputArray);
+                    }
+
+                    outputDisplay.textContent = Array.isArray(result) ? `[${result.join(', ')}]` : String(result);
+
+                } catch (error) {
+                    outputDisplay.textContent = `Error: ${error.message}`;
+                    outputDisplay.classList.add('text-red-500');
+                }
+            }
+
+            tabBtn1.addEventListener('click', () => setActiveTab(1));
+            tabBtn2.addEventListener('click', () => setActiveTab(2));
+
+            problems.forEach(problem => {
+                const btn = document.createElement('button');
+                btn.textContent = problem.title;
+                btn.dataset.id = problem.id;
+                btn.className = 'problem-btn py-2 px-4 rounded-md font-semibold transition-colors duration-300';
+                btn.addEventListener('click', () => {
+                    activeProblemId = problem.id;
+                    renderProblem();
+                });
+                problemSelector.appendChild(btn);
+            });
+
+            codeToggleBrute.addEventListener('click', () => {
+                activeCodeView = 'brute';
+                renderCode();
+            });
+            codeToggleOptimized.addEventListener('click', () => {
+                activeCodeView = 'optimized';
+                renderCode();
+            });
+
+            runBtn.addEventListener('click', runCode);
+            arrayInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    runCode();
+                }
+            });
+
+            setActiveTab(1);
+            renderProblem();
+        });
+  </script>
+ </body>
 </html>

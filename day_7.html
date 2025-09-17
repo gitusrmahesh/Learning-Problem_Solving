@@ -1,23 +1,458 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 7: Review & Revision</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-4">Day 7: Review & Revision</h1>
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-2">Topic</h2>
-            <p class="mb-4">Review & Revision</p>
-            <h2 class="text-2xl font-bold mb-2">Content</h2>
-            <p>Content for this day will be added here.</p>
-        </div>
-        <div class="mt-8">
-            <a href="30_days_progress.html" class="text-blue-500 hover:underline">Back to Roadmap</a>
-        </div>
-    </div>
-</body>
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 7: Review & Revision
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Calm Neutrals -->
+  <!-- Application Structure Plan: The application is structured as a single-page, tabbed interface with three main sections: Complexity Analysis, Dry Runs, and Debugging. This non-linear, thematic structure was chosen to allow users to easily switch between core review topics without scrolling. It promotes focused learning on one concept at a time. User flow is driven by the main navigation, leading to interactive components within each section (code analyzers, a step-by-step simulator, and bug-fixing challenges) designed to actively engage the user in the learning process, which is more effective for a "review" day than passive reading. -->
+  <!-- Visualization & Content Choices: Report Info: C# examples for Complexity, Dry Runs, Debugging. -> Goal: Teach, Compare, and Demonstrate Process. -> Viz/Presentation Method: Interactive code blocks, step-through simulations with state tables, and hint/reveal challenges, all built with structured HTML/CSS. -> Interaction: Users click buttons to reveal analysis, step through code execution, and get hints for bugs. -> Justification: These interactive elements turn passive code examples into active learning exercises, reinforcing the concepts more effectively than static text. For instance, the dry-run simulator forces the user to trace logic step-by-step, mimicking the manual skill itself. -> Library/Method: Vanilla JavaScript for all interactions and DOM manipulation. No charts are needed, hence no charting libraries. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+   .tab-active {
+            background-color: #0d9488;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            background-color: #f0f0f0;
+            color: #374151;
+        }
+        .code-line-highlight {
+            background-color: #374151;
+            display: block;
+            margin: 0 -1rem;
+            padding: 0 1rem;
+        }
+        .btn {
+            background-color: #0d9488;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #0f766e;
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #1f2937;
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+  </style>
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=1">
+    &larr; Return to Homepage
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 7: Review & Revision
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 md:p-8">
+   <div class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-teal-700">
+     30-Day Problem Solving Roadmap
+    </h1>
+    <p class="text-xl mt-2 text-stone-600">
+     Day 7: Review & Revision
+    </p>
+   </div>
+   <nav class="flex justify-center mb-8 rounded-lg shadow-sm bg-white p-2 space-x-2">
+    <button class="tab-button flex-1 py-3 px-4 rounded-md transition-colors duration-300 text-sm sm:text-base" id="nav-complexity">
+     Complexity Analysis
+    </button>
+    <button class="tab-button flex-1 py-3 px-4 rounded-md transition-colors duration-300 text-sm sm:text-base" id="nav-dryrun">
+     Dry Runs
+    </button>
+    <button class="tab-button flex-1 py-3 px-4 rounded-md transition-colors duration-300 text-sm sm:text-base" id="nav-debugging">
+     Debugging
+    </button>
+   </nav>
+   <main id="content-container">
+    <!-- Complexity Analysis Section -->
+    <section class="content-section bg-white p-6 rounded-lg shadow-md" id="content-complexity">
+     <h2 class="text-2xl font-semibold text-teal-800 mb-4">
+      Understanding Complexity
+     </h2>
+     <p class="mb-6 text-stone-700">
+      Complexity analysis helps us predict how an algorithm's resource usage (like time or memory) scales with the size of the input. Choosing an efficient algorithm is often the most critical step in problem-solving. This section allows you to compare two different approaches to the same problem and see how their complexities differ dramatically.
+     </p>
+     <div class="grid md:grid-cols-2 gap-6">
+      <div>
+       <h3 class="text-lg font-medium mb-2">
+        Approach 1: Brute Force O(n&sup2;)
+       </h3>
+       <div class="code-block">
+        <pre>public int[] TwoSum_BruteForce(int[] nums, int target) {
+  for (int i = 0; i &lt; nums.Length; i++) {
+    for (int j = i + 1; j &lt; nums.Length; j++) {
+      if (nums[i] + nums[j] == target) {
+        return new int[] { i, j };
+      }
+    }
+  }
+  return null;
+}</pre>
+       </div>
+       <button class="btn mt-4 w-full" onclick="showComplexity('n2')">
+        Analyze Complexity
+       </button>
+      </div>
+      <div>
+       <h3 class="text-lg font-medium mb-2">
+        Approach 2: Optimized O(n)
+       </h3>
+       <div class="code-block">
+        <pre>public int[] TwoSum_Optimized(int[] nums, int target) {
+  var map = new Dictionary&lt;int, int&gt;();
+  for (int i = 0; i &lt; nums.Length; i++) {
+    int complement = target - nums[i];
+    if (map.ContainsKey(complement)) {
+      return new int[] { map[complement], i };
+    }
+    map[nums[i]] = i;
+  }
+  return null;
+}</pre>
+       </div>
+       <button class="btn mt-4 w-full" onclick="showComplexity('n')">
+        Analyze Complexity
+       </button>
+      </div>
+     </div>
+     <div class="mt-6 p-4 bg-stone-100 rounded-lg hidden" id="complexity-explanation">
+      <h4 class="font-semibold text-lg mb-2" id="explanation-title">
+      </h4>
+      <p id="explanation-text">
+      </p>
+     </div>
+    </section>
+    <!-- Dry Run Section -->
+    <section class="content-section hidden bg-white p-6 rounded-lg shadow-md" id="content-dryrun">
+     <h2 class="text-2xl font-semibold text-teal-800 mb-4">
+      The Art of the Dry Run
+     </h2>
+     <p class="mb-6 text-stone-700">
+      A dry run is the process of manually tracing your code's execution with a specific input, step by step. This is an invaluable skill for verifying your logic before you even write code and for finding subtle bugs that are hard to spot. Use the simulator below to walk through an iterative function and observe how variables change at each step.
+     </p>
+     <div class="grid md:grid-cols-2 gap-6 items-start">
+      <div>
+       <h3 class="text-lg font-medium mb-2">
+        C# Function: Iterative Factorial
+       </h3>
+       <div class="code-block" id="dryrun-code">
+        <pre>
+<span id="line-1">public int Factorial(int n) {</span>
+<span id="line-2">  int result = 1;</span>
+<span id="line-3">  for (int i = 1; i &lt;= n; i++) {</span>
+<span id="line-4">    result = result * i;</span>
+<span id="line-5">  }</span>
+<span id="line-6">  return result;</span>
+<span id="line-7">}</span>
+</pre>
+       </div>
+       <div class="mt-4 flex space-x-2">
+        <button class="btn flex-1" id="dryrun-next">
+         Next Step
+        </button>
+        <button class="btn btn-secondary flex-1" id="dryrun-reset">
+         Reset (Input = 4)
+        </button>
+       </div>
+      </div>
+      <div>
+       <h3 class="text-lg font-medium mb-2">
+        Variable State
+       </h3>
+       <div class="p-4 bg-stone-100 rounded-lg">
+        <p class="mb-2">
+         <strong>
+          Input:
+         </strong>
+         n = 4
+        </p>
+        <table class="w-full text-left">
+         <thead class="border-b-2 border-stone-300">
+          <tr>
+           <th class="py-1">
+            Variable
+           </th>
+           <th class="py-1">
+            Value
+           </th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="py-1">
+            result
+           </td>
+           <td class="font-mono" id="var-result">
+            ?
+           </td>
+          </tr>
+          <tr>
+           <td class="py-1">
+            i
+           </td>
+           <td class="font-mono" id="var-i">
+            ?
+           </td>
+          </tr>
+         </tbody>
+        </table>
+        <h4 class="font-medium mt-4">
+         Current Line
+        </h4>
+        <p class="text-stone-600" id="current-line-text">
+         Not started
+        </p>
+       </div>
+      </div>
+     </div>
+    </section>
+    <!-- Debugging Section -->
+    <section class="content-section hidden bg-white p-6 rounded-lg shadow-md" id="content-debugging">
+     <h2 class="text-2xl font-semibold text-teal-800 mb-4">
+      Systematic Debugging
+     </h2>
+     <p class="mb-6 text-stone-700">
+      Debugging isn't just about staring at code until you find the mistake. It's a systematic process of forming a hypothesis, testing it, and narrowing down the problem. Below are examples of common bugs. Analyze the code, try to spot the issue, and then use the buttons to get a hint or see the corrected version.
+     </p>
+     <div id="bug-container">
+      <!-- Bug examples will be injected here by JS -->
+     </div>
+    </section>
+   </main>
+  </div>
+  <footer class="bg-stone-800 text-white mt-12 py-6">
+   <div class="container mx-auto px-4 text-center max-w-5xl">
+    <p class="text-sm text-stone-400">
+     &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+    </p>
+   </div>
+  </footer>
+  <script>
+   const navButtons = {
+            complexity: document.getElementById('nav-complexity'),
+            dryrun: document.getElementById('nav-dryrun'),
+            debugging: document.getElementById('nav-debugging')
+        };
+
+        const contentSections = {
+            complexity: document.getElementById('content-complexity'),
+            dryrun: document.getElementById('content-dryrun'),
+            debugging: document.getElementById('content-debugging')
+        };
+
+        function switchTab(activeTab) {
+            Object.keys(navButtons).forEach(key => {
+                const is_active = key === activeTab;
+                navButtons[key].classList.toggle('tab-active', is_active);
+                navButtons[key].classList.toggle('tab-inactive', !is_active);
+                contentSections[key].classList.toggle('hidden', !is_active);
+            });
+        }
+
+        navButtons.complexity.addEventListener('click', () => switchTab('complexity'));
+        navButtons.dryrun.addEventListener('click', () => switchTab('dryrun'));
+        navButtons.debugging.addEventListener('click', () => switchTab('debugging'));
+
+        // --- Complexity Logic ---
+        const complexityExplanations = {
+            n2: {
+                title: 'O(n²) - Quadratic Time',
+                text: 'The brute force approach uses nested loops. For each element `i`, it iterates through the rest of the array with `j`. If the array has `n` elements, the inner loop runs approximately `n` times for each of the `n` outer loop iterations. This results in roughly `n * n` operations, giving it a time complexity of O(n²). This becomes very slow as the input size grows.'
+            },
+            n: {
+                title: 'O(n) - Linear Time',
+                text: 'The optimized approach uses a hash map (Dictionary in C#) to store numbers it has already seen. It iterates through the array only once. For each element, it performs a constant time lookup `O(1)` in the hash map to check if the complement exists. Since it does this `n` times, the total time complexity is O(n). This is significantly more efficient. The space complexity is also O(n) because the dictionary could store up to `n` elements.'
+            }
+        };
+
+        function showComplexity(type) {
+            const container = document.getElementById('complexity-explanation');
+            const title = document.getElementById('explanation-title');
+            const text = document.getElementById('explanation-text');
+
+            title.textContent = complexityExplanations[type].title;
+            text.textContent = complexityExplanations[type].text;
+            container.classList.remove('hidden');
+        }
+
+        // --- Dry Run Logic ---
+        const dryRunNextBtn = document.getElementById('dryrun-next');
+        const dryRunResetBtn = document.getElementById('dryrun-reset');
+        const varResult = document.getElementById('var-result');
+        const varI = document.getElementById('var-i');
+        const currentLineText = document.getElementById('current-line-text');
+        const codeLines = document.querySelectorAll('#dryrun-code span');
+
+        let dryRunState;
+
+        const dryRunSteps = [
+            { line: 2, description: "Initialize `result` to 1.", action: state => { state.result = 1; state.i = 'undefined'; } },
+            { line: 3, description: "Start `for` loop. Initialize `i` to 1. Check `1 <= 4` (true).", action: state => { state.i = 1; } },
+            { line: 4, description: "`result = 1 * 1`. `result` is now 1.", action: state => { state.result *= state.i; } },
+            { line: 3, description: "Increment `i` to 2. Check `2 <= 4` (true).", action: state => { state.i = 2; } },
+            { line: 4, description: "`result = 1 * 2`. `result` is now 2.", action: state => { state.result *= state.i; } },
+            { line: 3, description: "Increment `i` to 3. Check `3 <= 4` (true).", action: state => { state.i = 3; } },
+            { line: 4, description: "`result = 2 * 3`. `result` is now 6.", action: state => { state.result *= state.i; } },
+            { line: 3, description: "Increment `i` to 4. Check `4 <= 4` (true).", action: state => { state.i = 4; } },
+            { line: 4, description: "`result = 6 * 4`. `result` is now 24.", action: state => { state.result *= state.i; } },
+            { line: 3, description: "Increment `i` to 5. Check `5 <= 4` (false). Exit loop.", action: state => { state.i = 5; } },
+            { line: 6, description: "Return `result` (24).", action: state => {} },
+            { line: 0, description: "Execution finished.", action: state => {} },
+        ];
+
+        function resetDryRun() {
+            dryRunState = { step: 0, result: '?', i: '?' };
+            updateDryRunUI();
+            dryRunNextBtn.disabled = false;
+        }
+
+        function updateDryRunUI() {
+            varResult.textContent = dryRunState.result;
+            varI.textContent = dryRunState.i;
+
+            codeLines.forEach(line => line.classList.remove('code-line-highlight'));
+
+            if (dryRunState.step > 0 && dryRunState.step <= dryRunSteps.length) {
+                const currentStep = dryRunSteps[dryRunState.step - 1];
+                if (currentStep.line > 0) {
+                   document.getElementById(`line-${currentStep.line}`).classList.add('code-line-highlight');
+                }
+                currentLineText.textContent = currentStep.description;
+            } else {
+                 currentLineText.textContent = 'Not started';
+            }
+
+            if(dryRunState.step >= dryRunSteps.length){
+                dryRunNextBtn.disabled = true;
+            }
+        }
+
+        function nextDryRunStep() {
+            if (dryRunState.step < dryRunSteps.length) {
+                const currentStep = dryRunSteps[dryRunState.step];
+                currentStep.action(dryRunState);
+                dryRunState.step++;
+                updateDryRunUI();
+            }
+        }
+
+        dryRunNextBtn.addEventListener('click', nextDryRunStep);
+        dryRunResetBtn.addEventListener('click', resetDryRun);
+
+
+        // --- Debugging Logic ---
+        const bugs = [
+            {
+                title: "Bug 1: Off-by-One Error",
+                description: "This function is supposed to sum all elements in an array, but it's producing an incorrect result or an error.",
+                buggyCode: `public int SumArray(int[] arr) {
+  int sum = 0;
+  for (int i = 0; i <= arr.Length; i++) {
+    sum += arr[i];
+  }
+  return sum;
+}`,
+                hint: "Check the loop's condition. How does array indexing work? What is the last valid index for an array of length `n`?",
+                fixedCode: `public int SumArray(int[] arr) {
+  int sum = 0;
+  // The condition should be i < arr.Length, not <=
+  // An array of length N has indices 0 to N-1.
+  for (int i = 0; i < arr.Length; i++) {
+    sum += arr[i];
+  }
+  return sum;
+}`
+            },
+            {
+                title: "Bug 2: Incorrect Logic",
+                description: "This function aims to find the maximum value in an array, but it returns the wrong number for some inputs.",
+                buggyCode: `public int FindMax(int[] arr) {
+  if (arr.Length == 0) return -1; // Or throw exception
+
+  int max = 0; // Initial assumption
+  foreach (int num in arr) {
+    if (num > max) {
+      max = num;
+    }
+  }
+  return max;
+}`,
+                hint: "What happens if all the numbers in the array are negative? What is the initial value of `max`?",
+                fixedCode: `public int FindMax(int[] arr) {
+  if (arr.Length == 0) return -1;
+
+  // Initialize max to the first element, not 0.
+  // This handles arrays with all negative numbers correctly.
+  int max = arr[0];
+  foreach (int num in arr) {
+    if (num > max) {
+      max = num;
+    }
+  }
+  return max;
+}`
+            }
+        ];
+
+        function createBugElement(bug, index) {
+            const container = document.createElement('div');
+            container.className = 'p-4 border border-stone-200 rounded-lg mb-6';
+
+            container.innerHTML = `
+                <h3 class="text-lg font-medium mb-2">${bug.title}</h3>
+                <p class="mb-4 text-stone-600">${bug.description}</p>
+                <div class="code-block mb-4"><pre>${bug.buggyCode}</pre></div>
+                <div class="flex space-x-2 mb-4">
+                    <button class="btn btn-secondary" onclick="toggleVisibility('hint-${index}')">Show Hint</button>
+                    <button class="btn" onclick="toggleVisibility('fix-${index}')">Show Fix</button>
+                </div>
+                <div id="hint-${index}" class="hidden p-3 bg-yellow-100 text-yellow-800 rounded-md">
+                    <strong>Hint:</strong> ${bug.hint}
+                </div>
+                <div id="fix-${index}" class="hidden mt-4">
+                    <h4 class="font-medium text-md mb-2">Corrected Code:</h4>
+                    <div class="code-block"><pre>${bug.fixedCode}</pre></div>
+                </div>
+            `;
+            return container;
+        }
+
+        function toggleVisibility(elementId) {
+            document.getElementById(elementId).classList.toggle('hidden');
+        }
+
+        const bugContainer = document.getElementById('bug-container');
+        bugs.forEach((bug, index) => {
+            bugContainer.appendChild(createBugElement(bug, index));
+        });
+
+        // --- Initial Load ---
+        window.onload = () => {
+            switchTab('complexity');
+            resetDryRun();
+        };
+  </script>
+ </body>
 </html>

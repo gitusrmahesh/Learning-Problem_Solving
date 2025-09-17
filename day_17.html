@@ -1,23 +1,509 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 17: Sorting Applications</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-4">Day 17: Sorting Applications</h1>
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-2">Topic</h2>
-            <p class="mb-4">Sorting Applications</p>
-            <h2 class="text-2xl font-bold mb-2">Content</h2>
-            <p>Content for this day will be added here.</p>
-        </div>
-        <div class="mt-8">
-            <a href="30_days_progress.html" class="text-blue-500 hover:underline">Back to Roadmap</a>
-        </div>
+ <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+   Day 17: Sorting Applications
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js">
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chosen Palette: Warm Slate -->
+  <!-- Application Structure Plan: A tab-based interactive learning module for two distinct sorting problems ('Kth Largest Element', 'Sort by Frequency'). This structure separates concepts for focused learning. Each tab provides a problem description, conceptual explanation, an interactive demo with a Chart.js visualization, and a C# code snippet with a copy function. This user flow (learn -> visualize -> code) is more engaging and effective for understanding algorithms than a static text page. -->
+  <!-- Visualization & Content Choices: 1. Kth Largest Element: Goal is to demonstrate the selection process. Method is a bar chart (Chart.js) representing the array. Interaction involves user input for the array and 'k', with the chart highlighting elements as the Min-Heap algorithm processes them. This visualizes the algorithm's state. 2. Sort by Frequency: Goal is to illustrate the two-step process. Method uses a bar chart for frequencies and a separate text area for the final sorted result. Interaction is user input for the array, triggering the frequency calculation (visualized on chart) and the final sort. This clarifies the algorithm's logic. Both confirm NO SVG/Mermaid. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <style>
+   body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .tab-active {
+            border-color: #3b82f6; /* blue-500 */
+            color: #3b82f6;
+            background-color: #eff6ff; /* blue-50 */
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #475569; /* slate-600 */
+        }
+        .code-block {
+            background-color: #1e293b; /* slate-800 */
+            color: #e2e8f0; /* slate-200 */
+            border-radius: 0.5rem;
+            padding: 1rem;
+            position: relative;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #334155; /* slate-700 */
+            color: #94a3b8; /* slate-400 */
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #475569; /* slate-600 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+  </style>
+  <link href="css/styles.css" rel="stylesheet">
+ </head>
+ <body>
+  <div class="jules-header-container">
+   <a class="jules-return-button" href="30_days_progress.html?week=3">
+    &larr; Return to Homepage
+   </a>
+   <div class="text-center pt-8 pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-teal-800">
+     Intermediate Problem Solving
+    </h1>
+    <p class="text-lg md:text-xl text-gray-600 mt-2">
+     Day 17: Sorting Applications
+    </p>
+   </div>
+  </div>
+  <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+   <main class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+    <div class="mb-6 border-b border-slate-200">
+     <nav aria-label="Tabs" class="-mb-px flex space-x-4">
+      <button class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-active" id="tab-kth">
+       Kth Largest Element
+      </button>
+      <button class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-inactive" id="tab-freq">
+       Sort by Frequency
+      </button>
+     </nav>
     </div>
-</body>
+    <div id="content-kth">
+     <section>
+      <h2 class="text-2xl font-semibold mb-3 text-slate-800">
+       Kth Largest Element
+      </h2>
+      <p class="text-slate-600 mb-6">
+       This section explores efficient ways to find the Kth largest element in an unsorted array. This is a classic problem that highlights how choosing the right data structure can dramatically improve performance over naive sorting. We will focus on a heap-based approach, which provides a good balance of time complexity and implementation simplicity.
+      </p>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+       <div>
+        <h3 class="text-xl font-semibold mb-2">
+         The Challenge
+        </h3>
+        <p class="mb-4 text-slate-600">
+         Given an integer array `nums` and an integer `k`, return the `k`th largest element in the array. Note that it is the `k`th largest element in the sorted order, not the `k`th distinct element.
+        </p>
+        <h3 class="text-xl font-semibold mb-2 mt-6">
+         Optimal Approach: Min-Heap
+        </h3>
+        <p class="mb-4 text-slate-600">
+         A highly efficient method uses a Min-Heap (in C#, this can be implemented with a `PriorityQueue`). The idea is to maintain a heap of size `k`.
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-slate-600">
+         <li>
+          Iterate through the array elements.
+         </li>
+         <li>
+          For each element, add it to the Min-Heap.
+         </li>
+         <li>
+          If the heap's size exceeds `k`, remove the smallest element (the root of the Min-Heap).
+         </li>
+         <li>
+          After iterating through all elements, the root of the heap will be the Kth largest element.
+         </li>
+        </ul>
+        <p class="mt-4 text-slate-600 font-medium">
+         This approach has a time complexity of O(N log K), which is much better than sorting the entire array (O(N log N)) when `k` is small compared to `N`.
+        </p>
+       </div>
+       <div class="bg-slate-50 p-4 rounded-lg">
+        <h3 class="text-xl font-semibold mb-4 text-center">
+         Interactive Demo
+        </h3>
+        <div class="flex flex-col sm:flex-row gap-4 mb-4">
+         <input class="flex-grow p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" id="kth-array-input" placeholder="e.g., 3,2,1,5,6,4" type="text">
+         <input class="w-20 p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" id="kth-k-input" min="1" placeholder="k" type="number">
+         <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors" id="kth-find-btn">
+          Find
+         </button>
+        </div>
+        <div class="chart-container">
+         <canvas id="kthChart">
+         </canvas>
+        </div>
+        <div class="text-center mt-4 h-8 font-semibold text-lg text-blue-600" id="kth-result">
+        </div>
+       </div>
+      </div>
+      <div class="mt-8">
+       <h3 class="text-xl font-semibold mb-2">
+        C# Implementation
+       </h3>
+       <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">
+         Copy
+        </button>
+        <pre><code>public class Solution {
+    public int FindKthLargest(int[] nums, int k) {
+        // C# 6.0 introduced PriorityQueue
+        // The first argument is the item, the second is its priority.
+        // By default it's a Min-Heap, so we use the number itself as priority.
+        var minHeap = new PriorityQueue&lt;int, int&gt;();
+
+        foreach (int num in nums) {
+            minHeap.Enqueue(num, num);
+            if (minHeap.Count &gt; k) {
+                minHeap.Dequeue();
+            }
+        }
+
+        // The smallest element in a heap of size k is the kth largest overall.
+        return minHeap.Peek();
+    }
+}
+</code></pre>
+       </div>
+      </div>
+     </section>
+    </div>
+    <div class="hidden" id="content-freq">
+     <section>
+      <h2 class="text-2xl font-semibold mb-3 text-slate-800">
+       Sort Array by Increasing Frequency
+      </h2>
+      <p class="text-slate-600 mb-6">
+       This problem requires sorting an array based on the frequency of its elements. If multiple elements share the same frequency, they must be sorted in descending order. This task combines counting, custom sorting logic, and data manipulation, making it an excellent exercise for strengthening your problem-solving skills with dictionaries and LINQ in C#.
+      </p>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+       <div>
+        <h3 class="text-xl font-semibold mb-2">
+         The Challenge
+        </h3>
+        <p class="mb-4 text-slate-600">
+         Given an array of integers `nums`, sort the array in increasing order based on the frequency of the values. If multiple values have the same frequency, sort them in decreasing order.
+        </p>
+        <h3 class="text-xl font-semibold mb-2 mt-6">
+         Approach: Count and Custom Sort
+        </h3>
+        <p class="mb-4 text-slate-600">
+         A clear and effective strategy involves two main steps:
+        </p>
+        <ul class="list-disc list-inside space-y-2 text-slate-600">
+         <li>
+          <strong>
+           Count Frequencies:
+          </strong>
+          Use a Dictionary (or a HashMap) to iterate through the array and store the count of each number.
+         </li>
+         <li>
+          <strong>
+           Custom Sort:
+          </strong>
+          Use a custom sorting logic. In C#, LINQ's `OrderBy` and `ThenByDescending` methods are perfect for this. First, order the numbers by their frequency (from the dictionary) in ascending order. Then, for numbers with the same frequency, order them by their value in descending order.
+         </li>
+        </ul>
+       </div>
+       <div class="bg-slate-50 p-4 rounded-lg">
+        <h3 class="text-xl font-semibold mb-4 text-center">
+         Interactive Demo
+        </h3>
+        <div class="flex flex-col sm:flex-row gap-4 mb-4">
+         <input class="flex-grow p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" id="freq-array-input" placeholder="e.g., 1,1,2,2,2,3" type="text">
+         <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors" id="freq-sort-btn">
+          Sort
+         </button>
+        </div>
+        <div class="chart-container">
+         <canvas id="freqChart">
+         </canvas>
+        </div>
+        <div class="text-center mt-4">
+         <p class="font-semibold text-lg text-slate-800">
+          Sorted Result:
+         </p>
+         <div class="mt-1 h-8 font-mono text-blue-600 bg-slate-200 p-2 rounded" id="freq-result">
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="mt-8">
+       <h3 class="text-xl font-semibold mb-2">
+        C# Implementation (using LINQ)
+       </h3>
+       <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">
+         Copy
+        </button>
+        <pre><code>using System.Collections.Generic;
+using System.Linq;
+
+public class Solution {
+    public int[] FrequencySort(int[] nums) {
+        // 1. Count frequencies of each number
+        var frequencyMap = new Dictionary&lt;int, int&gt;();
+        foreach (int num in nums) {
+            if (!frequencyMap.ContainsKey(num)) {
+                frequencyMap[num] = 0;
+            }
+            frequencyMap[num]++;
+        }
+
+        // 2. Sort the original array using custom logic
+        // We use Array.Sort with a custom Comparison delegate
+        System.Array.Sort(nums, (a, b) =&gt; {
+            int freqA = frequencyMap[a];
+            int freqB = frequencyMap[b];
+
+            if (freqA != freqB) {
+                // Sort by frequency in increasing order
+                return freqA.CompareTo(freqB);
+            } else {
+                // If frequencies are the same, sort by value in decreasing order
+                return b.CompareTo(a);
+            }
+        });
+
+        return nums;
+    }
+}
+</code></pre>
+       </div>
+      </div>
+     </section>
+    </div>
+    <section class="mt-12 border-t border-slate-200 pt-8">
+     <h2 class="text-2xl font-semibold mb-4 text-center text-slate-800">
+      Practice Problems
+     </h2>
+     <p class="text-center text-slate-600 max-w-3xl mx-auto">
+      To solidify your understanding of sorting applications, try to solve 4-5 problems on platforms like LeetCode or HackerRank. Focus on variations of these concepts:
+     </p>
+     <div class="mt-6 flex flex-wrap justify-center gap-4">
+      <span class="bg-sky-100 text-sky-800 font-medium px-4 py-2 rounded-full">
+       Top K Frequent Elements
+      </span>
+      <span class="bg-emerald-100 text-emerald-800 font-medium px-4 py-2 rounded-full">
+       K Closest Points to Origin
+      </span>
+      <span class="bg-amber-100 text-amber-800 font-medium px-4 py-2 rounded-full">
+       Sort Characters By Frequency
+      </span>
+      <span class="bg-rose-100 text-rose-800 font-medium px-4 py-2 rounded-full">
+       Custom Sort String
+      </span>
+     </div>
+    </section>
+   </main>
+   <footer class="bg-stone-800 text-white mt-12 py-6">
+    <div class="container mx-auto px-4 text-center max-w-5xl">
+     <p class="text-sm text-stone-400">
+      &copy; 2025 30-Day Problem Solving Roadmap By Mr. Mahesh Singare. All Rights Reserved.
+     </p>
+    </div>
+   </footer>
+  </div>
+  <script>
+   const tabKth = document.getElementById('tab-kth');
+        const tabFreq = document.getElementById('tab-freq');
+        const contentKth = document.getElementById('content-kth');
+        const contentFreq = document.getElementById('content-freq');
+
+        let kthChartInstance = null;
+        let freqChartInstance = null;
+
+        function switchTab(activeTab, inactiveTab, activeContent, inactiveContent) {
+            activeTab.classList.add('tab-active');
+            activeTab.classList.remove('tab-inactive');
+            inactiveTab.classList.add('tab-inactive');
+            inactiveTab.classList.remove('tab-active');
+            activeContent.classList.remove('hidden');
+            inactiveContent.classList.add('hidden');
+        }
+        
+        tabKth.addEventListener('click', () => switchTab(tabKth, tabFreq, contentKth, contentFreq));
+        tabFreq.addEventListener('click', () => switchTab(tabFreq, tabKth, contentFreq, contentKth));
+
+        function copyCode(button) {
+            const pre = button.nextElementSibling;
+            const code = pre.querySelector('code');
+            navigator.clipboard.writeText(code.innerText).then(() => {
+                button.innerText = 'Copied!';
+                setTimeout(() => { button.innerText = 'Copy'; }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        function parseArrayInput(inputStr) {
+            return inputStr.split(',').map(s => s.trim()).filter(s => s !== '').map(Number).filter(n => !isNaN(n));
+        }
+
+        function createChart(ctx, type, data, options) {
+            return new Chart(ctx, { type, data, options });
+        }
+
+        const defaultChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Value: ${context.parsed.y}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        };
+
+        document.getElementById('kth-find-btn').addEventListener('click', () => {
+            const arrayStr = document.getElementById('kth-array-input').value || '3,2,1,5,6,4';
+            const kStr = document.getElementById('kth-k-input').value || '2';
+            const nums = parseArrayInput(arrayStr);
+            const k = parseInt(kStr);
+            const resultEl = document.getElementById('kth-result');
+            
+            if (nums.length === 0 || isNaN(k) || k <= 0 || k > nums.length) {
+                resultEl.textContent = 'Invalid input. Please provide a valid array and k.';
+                return;
+            }
+
+            resultEl.textContent = 'Processing...';
+
+            if (kthChartInstance) {
+                kthChartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('kthChart').getContext('2d');
+            const initialColors = Array(nums.length).fill('rgba(59, 130, 246, 0.5)'); // blue-500
+            
+            kthChartInstance = createChart(ctx, 'bar', {
+                labels: nums.map(String),
+                datasets: [{
+                    label: 'Value',
+                    data: nums,
+                    backgroundColor: initialColors,
+                    borderColor: Array(nums.length).fill('rgba(59, 130, 246, 1)'),
+                    borderWidth: 1
+                }]
+            }, defaultChartOptions);
+
+            const minHeap = [];
+            let step = 0;
+
+            function processNext() {
+                if (step >= nums.length) {
+                    resultEl.textContent = `Result: ${minHeap[0]}`;
+                    kthChartInstance.data.datasets[0].backgroundColor = initialColors;
+                    const resultIndexInOriginal = nums.findIndex(n => n === minHeap[0]);
+                    if(resultIndexInOriginal !== -1) {
+                        kthChartInstance.data.datasets[0].backgroundColor[resultIndexInOriginal] = 'rgba(239, 68, 68, 0.7)'; // red-500
+                    }
+                    kthChartInstance.update();
+                    return;
+                }
+
+                const num = nums[step];
+                const newColors = [...initialColors];
+                newColors[step] = 'rgba(245, 158, 11, 0.7)'; // amber-500
+                
+                minHeap.push(num);
+                minHeap.sort((a, b) => a - b);
+                
+                if (minHeap.length > k) {
+                    minHeap.shift();
+                }
+
+                minHeap.forEach(hNum => {
+                    const heapIndex = nums.findIndex((n, idx) => n === hNum && newColors[idx] !== 'rgba(34, 197, 94, 0.7)');
+                    if (heapIndex !== -1) {
+                         newColors[heapIndex] = 'rgba(34, 197, 94, 0.7)'; // green-500
+                    }
+                });
+                
+                kthChartInstance.data.datasets[0].backgroundColor = newColors;
+                kthChartInstance.update();
+                
+                step++;
+                setTimeout(processNext, 700);
+            }
+
+            processNext();
+        });
+
+        document.getElementById('freq-sort-btn').addEventListener('click', () => {
+            const arrayStr = document.getElementById('freq-array-input').value || '1,1,2,2,2,3';
+            const nums = parseArrayInput(arrayStr);
+            const resultEl = document.getElementById('freq-result');
+
+            if (nums.length === 0) {
+                resultEl.textContent = 'Invalid input.';
+                return;
+            }
+
+            const frequencyMap = nums.reduce((acc, num) => {
+                acc[num] = (acc[num] || 0) + 1;
+                return acc;
+            }, {});
+
+            const sortedNums = [...nums].sort((a, b) => {
+                const freqA = frequencyMap[a];
+                const freqB = frequencyMap[b];
+                if (freqA !== freqB) {
+                    return freqA - freqB;
+                }
+                return b - a;
+            });
+            
+            resultEl.textContent = sortedNums.join(', ');
+
+            if (freqChartInstance) {
+                freqChartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('freqChart').getContext('2d');
+            const sortedFreqEntries = Object.entries(frequencyMap).sort(([, a], [, b]) => a - b);
+            
+            freqChartInstance = createChart(ctx, 'bar', {
+                labels: sortedFreqEntries.map(([num]) => `Number: ${num}`),
+                datasets: [{
+                    label: 'Frequency',
+                    data: sortedFreqEntries.map(([, freq]) => freq),
+                    backgroundColor: 'rgba(22, 163, 74, 0.5)', // green-600
+                    borderColor: 'rgba(22, 163, 74, 1)',
+                    borderWidth: 1
+                }]
+            }, { ...defaultChartOptions,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Frequency' } },
+                    x: { title: { display: true, text: 'Number' } }
+                }
+             });
+        });
+  </script>
+ </body>
 </html>
